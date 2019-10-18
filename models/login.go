@@ -4,36 +4,66 @@ import (
 "github.com/astaxie/beego/orm"
 _ "github.com/go-sql-driver/mysql"
  "replayanaly/models/sql"
-	//"crypto/md5"
+	"crypto/md5"
     //"encoding/hex"
     "fmt"
 )
 
-func LoginValidate(username string,password string, idkey string, verifyValue string) (string ,*sql.User){
+func LoginValidate(username string,password string, idkey string, verifyValue string) (string ,string,*sql.User){
 	o := orm.NewOrm()
 	o.Using("default")
 	var Userinfo sql.User
 	var loginstate string
+	var errcode string
+	data := []byte(password)
+	has := md5.Sum(data)
+	Password := fmt.Sprintf("%x", has) 
 	//User := new(user)
 	verifyResult := base64Captcha.VerifyCaptcha(idkey, verifyValue)
-	if verifyResult {
+	fmt.Printf("verifyResult:%v\n",verifyResult)
+	/*err:=o.QueryTable("user").Filter("name", username).One(&Userinfo)
+		if err!=nil{
+			fmt.Printf("queryerr:%v\n",err)
+		}
+		fmt.Printf("查询到的用户信息:%v\n",&Userinfo)*/
 	
-	exist := o.QueryTable("user").Filter("name", username).Filter("password", password).Exist()
+	if verifyResult {
+		exist := o.QueryTable("user").Filter("name", username).Filter("password", Password).Exist()
 		if exist {
 			loginstate="true"
-			_,err:=o.QueryTable("user").Filter("name", username).All(&Userinfo)
+			err:=o.QueryTable("user").Filter("name", username).One(&Userinfo)
 			if err!=nil{
 				fmt.Printf("queryerr:%v\n",err)
 			}
-		}else{
+		}else{	
+			errcode="用户不存在"
 			loginstate="false"
 		}
 	}else{
-		fmt.Printf("verifyerr: %v",verifyResult)
+		errcode="验证码错误"
+		fmt.Printf("verifyerr: %v\n",verifyResult)
 	}
-	
-	return loginstate,&Userinfo
+	fmt.Printf("Userinfo:%v\n",&Userinfo)
+	return errcode,loginstate,&Userinfo
 }
-func checkIsLogin(){}
+
+func Test(username,password string) *sql.User {
+	o := orm.NewOrm()
+	o.Using("default")
+	var Userinfo sql.User
+	data := []byte(password)
+	has := md5.Sum(data)
+	Password := fmt.Sprintf("%x", has) 
+	fmt.Printf("Password:%v\n",Password)
+	exist := o.QueryTable("user").Filter("name", username).Filter("password", Password).Exist()
+	fmt.Printf("exist:%v\n",exist)//返回的是布尔型
+	err:=o.QueryTable("user").Filter("name", username).One(&Userinfo)
+		if err!=nil{
+			fmt.Printf("queryerr:%v\n",err)
+		}
+	fmt.Printf("查询到的用户信息:%v\n",&Userinfo)
+	return &Userinfo
+}
+
 
 

@@ -1,3 +1,6 @@
 export default{
-	loginData:null
+	loginState:null,
+	userName:null,
+	captchaKey:null,
+	captchaStr:null
 }

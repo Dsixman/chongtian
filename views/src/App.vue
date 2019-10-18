@@ -3,6 +3,7 @@
     <div id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
+      <p>{{this.$store.state.userName}}</p>
     </div>
     <router-view/>
   </div>
@@ -11,7 +12,7 @@
 //import {mapActions} from 'vuex'
   export default{
     created(){
-      this.$store.dispatch('getloginData')
+      this.$store.dispatch('getAuth')
     }
   }
 </script>
