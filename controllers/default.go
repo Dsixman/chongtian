@@ -29,6 +29,10 @@ type CaptchaController struct{
 type MainController struct {
 	beego.Controller
 }
+// 录像上传路由
+type ReplayUploadController struct {
+	beego.Controller
+}
 type TestController struct {
 	beego.Controller
 }
@@ -111,6 +115,19 @@ func (this *AuthController) Get(){
 	this.Data["json"] = resp
 	this.ServeJSON()
 }
+func (this *ReplayUploadController) Get() {
+	this.TplName = "replay.html"
+}
+func(this *ReplayUploadController) Post() {
+	f, h, err := this.GetFile("myfile") //获取上传的文件
+	path := "./replays/" + h.Filename    //文件目录
+	if err != nil {
+		fmt.Println(err)
+	}
+	f.Close()                       //关闭上传的文件，不然的话会出现临时文件不能清除的情况
+	this.SaveToFile("myfile", path) //存文件
+	this.Redirect("/repupload/", 302)
+}
 
 func (this *TestController) Get(){
 	a:=models.Test("zhengzhihui","zhengzhihui123#")
@@ -120,8 +137,9 @@ func (this *TestController) Get(){
 
 func (this *TestController) Post(){
 	fmt.Printf("this.Ctx.Request :%v\n",this.Ctx.Request )
-	ob := &T{};
+	ob := &Test{};
 	json.Unmarshal(this.Ctx.Input.RequestBody, ob)
 	this.Data["json"] = ob
 	this.ServeJSON()
 }
+
