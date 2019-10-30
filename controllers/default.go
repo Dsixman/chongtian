@@ -61,7 +61,7 @@ func (this *LoginController) Post() {
 	errcode,loginstate,userinfo:=models.LoginValidate(Name,Password,Captchakey,Captcha)
 	fmt.Printf("errcode:%v",errcode)
 	userName:=userinfo.Name
-	fmt.Printf("userName:%v\n",userName)
+	//fmt.Printf("userName:%v\n",userName)
 	this.SetSession("userName",userName)
 	//fmt.Printf("uinfo:%v",userinfo)
 	resp := make(map[string]interface{})
@@ -120,26 +120,34 @@ func (this *ReplayUploadController) Get() {
 }
 func(this *ReplayUploadController) Post() {
 	f, h, err := this.GetFile("myfile") //获取上传的文件
+	version:=this.GetString("version")
 	path := "./replays/" + h.Filename    //文件目录
 	if err != nil {
 		fmt.Println(err)
 	}
 	f.Close()                       //关闭上传的文件，不然的话会出现临时文件不能清除的情况
 	this.SaveToFile("myfile", path) //存文件
+	//fmt.Printf("version:%v\n",version)
+	models.Parse(version,path)
 	this.Redirect("/repupload/", 302)
 }
 
 func (this *TestController) Get(){
-	a:=models.Test("zhengzhihui","zhengzhihui123#")
+	//mysql 测试
+	/*a:=models.Test("zhengzhihui","zhengzhihui123#")
 	fmt.Printf("a:%v\n",a)
+	this.TplName = "test.tpl"*/
+	models.SelectTest()
 	this.TplName = "test.tpl"
+	//mongodb测试
+
 }
 
 func (this *TestController) Post(){
-	fmt.Printf("this.Ctx.Request :%v\n",this.Ctx.Request )
+	/*fmt.Printf("this.Ctx.Request :%v\n",this.Ctx.Request )
 	ob := &Test{};
 	json.Unmarshal(this.Ctx.Input.RequestBody, ob)
 	this.Data["json"] = ob
-	this.ServeJSON()
+	this.ServeJSON()*/
 }
 
