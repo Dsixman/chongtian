@@ -7,11 +7,11 @@ import(
 	"github.com/dotabuff/manta"
 	"github.com/dotabuff/manta/dota"
 	"replayanaly/models/mongodb"
+	"gopkg.in/mgo.v2" 
 	"replayanaly/models/obj"
 	"math"
 	"strconv"
-	"sort"
-	"gopkg.in/mgo.v2" 
+	"sort"	
 )
 func Parse (version,demurl string){
 	session := mongodb.CloneSession()//调用这个获得session
@@ -197,11 +197,17 @@ func Parse (version,demurl string){
 					//fmt.Printf("AbilityArr[playerskey]%v\n", AbilityArr[playerskey])
 					//AbilityArr[][]=append(AbilityArr[],playersvalue.GetAbilityUpgrades())
 					purchaseInfo:=playersvalue.GetInventorySnapshot()
+					items:=playersvalue.GetItems()
 					for _,itemvalue:=range purchaseInfo{
 						if itemvalue.GetGameTime()==0|| itemvalue.GetGameTime()==300 || itemvalue.GetGameTime()==600 || itemvalue.GetGameTime()==900 || itemvalue.GetGameTime()==1200{
 							playersarr[playerskey].InventorySnapshot=append(playersarr[playerskey].InventorySnapshot,itemvalue)
 						}
-					}	
+					}
+					for _,item:=range items{
+						if item.GetItemId()!=16&&item.GetItemId()!=17&&item.GetItemId()!=18&&item.GetItemId()!=19&&item.GetItemId()!=20&&item.GetItemId()!=40&&item.GetItemId()!=42&&item.GetItemId()!=43&&item.GetItemId()!=46{
+							playersarr[playerskey].Item=append(playersarr[playerskey].Item,item)
+						}
+					}
 				}
 			}
 			if (value.GetDotaTeam()==3){
