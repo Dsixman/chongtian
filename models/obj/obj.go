@@ -60,13 +60,6 @@ type HeroLastHit struct{
 	Pre20Count uint32 `bson:"pre_20_count" json:"pre_20_count"`
 	Pre25Count uint32 `bson:"pre_25_count" json:"pre_25_count"`
 }
-/*type HeroDenis struct{
-	Pre5Count uint32 `bson:"pre_5_count" bson:"pre_5_count"`
-	Pre10Count uint32 `bson:"pre_10_count" json:"pre_10_count"`
-	Pre15Count uint32 `bson:"pre_15_count" json:"pre_15_count"`
-	Pre20Count uint32 `bson:"pre_20_count" json:"pre_20_count"`
-	Pre25Count uint32 `bson:"pre_25_count" json:"pre_25_count"`
-}*/
 //击杀英雄的数量跟输赢关系不太大。关系最大的是阵容（大哥输出）是否被克制（在一定的经济差范围内）,前期被克制看后期团战（经济差不大的情况下）,
 type HeroGold struct{
 	Pre5MinGold float64 `bson:"pre_5min_gold" json:"pre_5min_gold"`
@@ -80,11 +73,6 @@ type TowerState struct{
 	Pre20MinTower uint32 `bson:"pre_20min_tower" json:"pre_20min_tower"`
 	Pre30MinTower uint32 `bson:"pre_30min_tower" json:"pre_30min_tower"`
 }
-
-/*type ItemPurchase struct{
-	GameTime string `bson:"game_time" json:"game_time"`
-	ItemId []uint32 `bson:"item_id" json:"item_id"`
-}*/
 type PlayersHeroInfo struct{
 	GameTeam uint32  `bson:"game_team" json:"game_team"`//天辉夜魇
 	HeroName string  `bson:"hero_name" json:"hero_name"`
@@ -102,20 +90,11 @@ type PlayersHeroInfo struct{
 	ChangeLaneTime string `bson:"change_lane_time,omitempty" json:"change_lane_time,omitempty"`
 	//PureLastHitPec float32 `bson:"pure_last_hit_pec" json:"pure_last_hit"`
 	InventorySnapshot []*dota.CDOTAMatchMetadata_Team_InventorySnapshot `bson:"inventory_snap_shot" json:"inventory_snap_shot"`
+	Item []*dota.CDOTAMatchMetadata_Team_ItemPurchase `protobuf:"bytes,6,rep,name=items" json:"items,omitempty"`
 
 	//Lane AgainstLaneInfo `bson:"against_lane_info,omitempty" json:"against_lane_info,omitempty"`
 }
-/*type AgainstLaneInfo struct{
-	Lane string `bson:"lane" json:"lane"`
-	Heroes string `bson:"heroes" json:"heroes"`
-	ChangeLaneTime string `bson:"change_lane_time,omitempty" json:"change_lane_time,omitempty"`
-	PureLastHitPec float32 `bson:"pure_last_hit_pec" json:"pure_last_hit"`
-}*/
-//对线英雄信息
-/*type AgainstLaneHeroes struct{ 
-	Lane string
-	Heroes string
-}*/
+
 type CMsgMatchDetails struct{
 	MatchId              uint64                             `protobuf:"varint,6,opt,name=match_id,json=matchId" json:"match_id,omitempty" bson:"match_id,omitempty"`
 	RadiantTeamTag       string                             `protobuf:"bytes,37,opt,name=radiant_team_tag,json=radiantTeamTag" json:"radiant_team_tag,omitempty" bson:"radiant_team_tag,omitempty"`
@@ -126,29 +105,7 @@ type CMsgMatchDetails struct{
 	DireDestoryTower TowerState `bson:"dire_destory_tower" json:"dire_destory_tower"`
 }
 
-/*type CMsgHeroDetails struct{
-	HeroName             string     `json:"hero_name" bson:"json:"hero_name"`
-	DotaTeam			 uint64     `json:"dota_team" bson:"json:"dota_team"`
-	TeamName			 uint64     `json:"team_name" bson:"json:"team_name"`
-	MatchId              uint64                             `protobuf:"varint,6,opt,name=match_id,json=matchId" json:"match_id,omitempty" bson:"match_id,omitempty"`
-	AccountId            uint32                                       `protobuf:"varint,1,opt,name=account_id,json=accountId" json:"account_id,omitempty"`
-	AbilityUpgrades      []uint32                                      `protobuf:"varint,2,rep,name=ability_upgrades,json=abilityUpgrades" json:"ability_upgrades,omitempty"`
-	PlayerSlot           uint32                                       `protobuf:"varint,3,opt,name=player_slot,json=playerSlot" json:"player_slot,omitempty"`
-	Kills                []*dota.CDOTAMatchMetadata_Team_PlayerKill         `protobuf:"bytes,5,rep,name=kills" json:"kills,omitempty"`
-	Items                []*dota.CDOTAMatchMetadata_Team_ItemPurchase       `protobuf:"bytes,6,rep,name=items" json:"items,omitempty"`
-	AvgKillsX16          uint32                                       `protobuf:"varint,7,opt,name=avg_kills_x16,json=avgKillsX16" json:"avg_kills_x16,omitempty"`
-	AvgDeathsX16         uint32                                       `protobuf:"varint,8,opt,name=avg_deaths_x16,json=avgDeathsX16" json:"avg_deaths_x16,omitempty"`
-	AvgAssistsX16        uint32                                       `protobuf:"varint,9,opt,name=avg_assists_x16,json=avgAssistsX16" json:"avg_assists_x16,omitempty"`
-	AvgGpmX16            uint32                                       `protobuf:"varint,10,opt,name=avg_gpm_x16,json=avgGpmX16" json:"avg_gpm_x16,omitempty"`
-	AvgXpmX16            uint32                                       `protobuf:"varint,11,opt,name=avg_xpm_x16,json=avgXpmX16" json:"avg_xpm_x16,omitempty"`
-	BestKillsX16         uint32                                       `protobuf:"varint,12,opt,name=best_kills_x16,json=bestKillsX16" json:"best_kills_x16,omitempty"`
-	BestAssistsX16       uint32                                       `protobuf:"varint,13,opt,name=best_assists_x16,json=bestAssistsX16" json:"best_assists_x16,omitempty"`
-	BestGpmX16           uint32                                       `protobuf:"varint,14,opt,name=best_gpm_x16,json=bestGpmX16" json:"best_gpm_x16,omitempty"`
-	BestXpmX16           uint32                                       `protobuf:"varint,15,opt,name=best_xpm_x16,json=bestXpmX16" json:"best_xpm_x16,omitempty"`
-	LevelUpTimes         []uint32                                      `protobuf:"varint,22,rep,name=level_up_times,json=levelUpTimes" json:"level_up_times,omitempty"`
-	GraphNetWorth        []float32                                     `protobuf:"fixed32,23,rep,name=graph_net_worth,json=graphNetWorth" json:"graph_net_worth,omitempty"`
-	InventorySnapshot    []*dota.CDOTAMatchMetadata_Team_InventorySnapshot  `protobuf:"bytes,24,rep,name=inventory_snapshot,json=inventorySnapshot" json:"inventory_snapshot,omitempty"`
-}*/
+
 //选手英雄操作细节信息
 
 
