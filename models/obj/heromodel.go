@@ -1,11 +1,11 @@
 package obj
 import(
-	"replayanaly/models/mongodb"
+	/*"replayanaly/models/mongodb"
 	"gopkg.in/mgo.v2/bson"
 	"gopkg.in/mgo.v2"
 	"replayanaly/models" 
 	"fmt"
-	"strconv"
+	"strconv"*/
 )
 type HeroModel struct {
 	HeroName string `json:"hero_name,omitempty"`
@@ -139,7 +139,7 @@ type NpcAbilities struct{
 	AbilityDamage string `bson:"AbilityDamage,omitempty" json:"AbilityDamage,omitempty"`
 	AbilityDuration string`bson:"AbilityDuration,omitempty" json:"AbilityDuration,omitempty"`
 }
-func GetAbility (name string) *Ability{
+/*func GetAbility (name string) *Ability{
 	session := mongodb.CloneSession()//调用这个获得session
     defer session.Close()  //一定要记得释放
     session.SetMode(mgo.Monotonic, true)
@@ -205,4 +205,4 @@ func GetHeroData(name string) *HeroModel{
 	//ability1.AbilityName=result.Abilities1
 	return herodata
 	//err1:=c.Find(bson.M{"matchid": 2271813303}).Select(bson.M{"last_hit.pre_5_count":1}).One(&NewCDotaGameInfo)
-}
+}*/
