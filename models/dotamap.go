@@ -370,279 +370,279 @@ var HeroIDIcon = map[int64]string{
 	7:   "earthshaker.jpg",
 	8:   "juggernaut.jpg",
 	9:   "mirana.jpg",
-	10:  "morphling.jpg",
-	11:  "shadowfiend.jpg",
-	12:  "phantomlancer.jpg",
-	13:  "puck.jpg",
-	14:  "pudge.jpg",
-	15:  "razor.jpg",
-	16:  "sandking.jpg",
-	17:  "stormspirit.jpg",
-	18:  "sven.jpg",
-	19:  "tiny.jpg",
-	20:  "vengeful-spirit.jpg",
-	21:  "windranger.jpg",
-	22:  "zeus.jpg",
-	23:  "kunkka.jpg",
-	25:  "lina.jpg",
-	26:  "lion.jpg",
-	27:  "shadowshaman.jpg",
-	28:  "slardar.jpg",
-	29:  "tidehunter.jpg",
-	30:  "witchdoctor.jpg",
-	31:  "lich.jpg",
-	32:  "riki.jpg",
-	33:  "enigma.jpg",
-	34:  "tinker.jpg",
-	35:  "sniper.jpg",
-	36:  "necrophos.jpg",
-	37:  "warlock.jpg",
-	38:  "beastmaster.jpg",
-	39:  "queenofpain.jpg",
-	40:  "venomancer.jpg",
-	41:  "gyrocopter.jpg",
-	42:  "wraithking.jpg",
-	43:  "deathprophet.jpg",
-	44:  "phantomassassin.jpg",
-	45:  "pugna.jpg",
-	46:  "templarassassin.jpg",
-	47:  "viper.jpg",
-	48:  "luna.jpg",
-	49:  "dragonknight.jpg",
-	50:  "dazzle.jpg",
-	51:  "clockwerk.jpg",
-	52:  "leshrac.jpg",
-	53:  "naturesprophet.jpg",
-	54:  "lifestealer",
-	55:  "dark-seer.jpg",
-	56:  "clinkz.jpg",
-	57:  "omniknight.jpg",
-	58:  "enchantress.jpg",
-	59:  "huskar.jpg",
-	60:  "nightstalker.jpg",
-	61:  "broodmother.jpg",
-	62:  "bountyhunter.jpg",
-	63:  "weaver.jpg",
-	64:  "jakiro.jpg",
-	65:  "batrider.jpg",
-	66:  "chen.jpg",
-	67:  "spectre.jpg",
-	68:  "ancient.jpg",
-	69:  "doom.jpg",
-	70:  "ursa",
-	71:  "spiritbreaker.jpg",
-	72:  "gyrocopter.jpg",
-	73:  "alchemist.jpg",
-	74:  "invoker.jpg",
-	75:  "silencer.jpg",
-	76:  "outworld-devourer.jpg",
-	77:  "lycan.jpg",
-	78:  "brewmaster.jpg",
-	79:  "shadowdemon.jpg",
-	80:  "lone-druid.jpg",
-	81:  "chaosknight.jpg",
-	82:  "meepo.jpg",
-	83:  "treant-protector.jpg",
-	84:  "ogremagi.jpg",
-	85:  "undying.jpg",
-	86:  "rubick.jpg",
-	87:  "disruptor.jpg",
-	88:  "nyx-assassin.jpg",
-	89:  "naga-siren.jpg",
-	90:  "keeperofthelight.jpg",
-	91:  "io.jpg",
-	92:  "visage.jpg",
-	93:  "slark.jpg",
-	94:  "medusa.jpg",
-	95:  "trollwarlord.jpg",
-	96:  "centaurwarrunner.jpg",
-	97:  "magnus.jpg",
-	98:  "timbersaw.jpg",
-	99:  "bristleback.jpg",
-	100: "tusk.jpg",
-	101: "skywrathmage.jpg",
-	102: "abaddon.jpg",
-	103: "eldertitan.jpg",
-	104: "legioncommander.jpg",
-	105: "techies.jpg",
-	106: "emberspirit.jpg",
-	107: "earthspirit.jpg",
-	108: "underlord.jpg",
-	109: "terrorblade.jpg",
-	110: "phoenix.jpg",
-	111: "oracle.jpg",
-	112: "winterwyvern.jpg",
-	113: "arcwarden.jpg",
-	114: "monkey-king.jpg",
-	119: "dark-willow.jpg",
-	120: "pangolier.jpg",
+	10:  "../static/img/morphling.jpg",
+	11:  "../static/img/shadowfiend.jpg",
+	12:  "../static/img/phantomlancer.jpg",
+	13:  "../static/img/puck.jpg",
+	14:  "../static/img/pudge.jpg",
+	15:  "../static/img/razor.jpg",
+	16:  "../static/img/sandking.jpg",
+	17:  "../static/img/stormspirit.jpg",
+	18:  "../static/img/sven.jpg",
+	19:  "../static/img/tiny.jpg",
+	20:  "../static/img/vengeful-spirit.jpg",
+	21:  "../static/img/windranger.jpg",
+	22:  "../static/img/zeus.jpg",
+	23:  "../static/img/kunkka.jpg",
+	25:  "../static/img/lina.jpg",
+	26:  "../static/img/lion.jpg",
+	27:  "../static/img/shadowshaman.jpg",
+	28:  "../static/img/slardar.jpg",
+	29:  "../static/img/tidehunter.jpg",
+	30:  "../static/img/witchdoctor.jpg",
+	31:  "../static/img/lich.jpg",
+	32:  "../static/img/riki.jpg",
+	33:  "../static/img/enigma.jpg",
+	34:  "../static/img/tinker.jpg",
+	35:  "../static/img/sniper.jpg",
+	36:  "../static/img/necrophos.jpg",
+	37:  "../static/img/warlock.jpg",
+	38:  "../static/img/beastmaster.jpg",
+	39:  "../static/img/queenofpain.jpg",
+	40:  "../static/img/venomancer.jpg",
+	41:  "../static/img/gyrocopter.jpg",
+	42:  "../static/img/wraithking.jpg",
+	43:  "../static/img/deathprophet.jpg",
+	44:  "../static/img/phantomassassin.jpg",
+	45:  "../static/img/pugna.jpg",
+	46:  "../static/img/templarassassin.jpg",
+	47:  "../static/img/viper.jpg",
+	48:  "../static/img/luna.jpg",
+	49:  "../static/img/dragonknight.jpg",
+	50:  "../static/img/dazzle.jpg",
+	51:  "../static/img/clockwerk.jpg",
+	52:  "../static/img/leshrac.jpg",
+	53:  "../static/img/naturesprophet.jpg",
+	54:  "../static/img/lifestealer",
+	55:  "../static/img/dark-seer.jpg",
+	56:  "../static/img/clinkz.jpg",
+	57:  "../static/img/omniknight.jpg",
+	58:  "../static/img/enchantress.jpg",
+	59:  "../static/img/huskar.jpg",
+	60:  "../static/img/nightstalker.jpg",
+	61:  "../static/img/broodmother.jpg",
+	62:  "../static/img/bountyhunter.jpg",
+	63:  "../static/img/weaver.jpg",
+	64:  "../static/img/jakiro.jpg",
+	65:  "../static/img/batrider.jpg",
+	66:  "../static/img/chen.jpg",
+	67:  "../static/img/spectre.jpg",
+	68:  "../static/img/ancient.jpg",
+	69:  "../static/img/doom.jpg",
+	70:  "../static/img/ursa",
+	71:  "../static/img/spiritbreaker.jpg",
+	72:  "../static/img/gyrocopter.jpg",
+	73:  "../static/img/alchemist.jpg",
+	74:  "../static/img/invoker.jpg",
+	75:  "../static/img/silencer.jpg",
+	76:  "../static/img/outworld-devourer.jpg",
+	77:  "../static/img/lycan.jpg",
+	78:  "../static/img/brewmaster.jpg",
+	79:  "../static/img/shadowdemon.jpg",
+	80:  "../static/img/lone-druid.jpg",
+	81:  "../static/img/chaosknight.jpg",
+	82:  "../static/img/meepo.jpg",
+	83:  "../static/img/treant-protector.jpg",
+	84:  "../static/img/ogremagi.jpg",
+	85:  "../static/img/undying.jpg",
+	86:  "../static/img/rubick.jpg",
+	87:  "../static/img/disruptor.jpg",
+	88:  "../static/img/nyx-assassin.jpg",
+	89:  "../static/img/naga-siren.jpg",
+	90:  "../static/img/keeperofthelight.jpg",
+	91:  "../static/img/io.jpg",
+	92:  "../static/img/visage.jpg",
+	93:  "../static/img/slark.jpg",
+	94:  "../static/img/medusa.jpg",
+	95:  "../static/img/trollwarlord.jpg",
+	96:  "../static/img/centaurwarrunner.jpg",
+	97:  "../static/img/magnus.jpg",
+	98:  "../static/img/timbersaw.jpg",
+	99:  "../static/img/bristleback.jpg",
+	100: "../static/img/tusk.jpg",
+	101: "../static/img/skywrathmage.jpg",
+	102: "../static/img/abaddon.jpg",
+	103: "../static/img/eldertitan.jpg",
+	104: "../static/img/legioncommander.jpg",
+	105: "../static/img/techies.jpg",
+	106: "../static/img/emberspirit.jpg",
+	107: "../static/img/earthspirit.jpg",
+	108: "../static/img/underlord.jpg",
+	109: "../static/img/terrorblade.jpg",
+	110: "../static/img/phoenix.jpg",
+	111: "../static/img/oracle.jpg",
+	112: "../static/img/winterwyvern.jpg",
+	113: "../static/img/arcwarden.jpg",
+	114: "../static/img/monkey-king.jpg",
+	119: "../static/img/dark-willow.jpg",
+	120: "../static/img/pangolier.jpg",
 }
 
 var ItemIDIcon = map[int64]string{
 	//大飞鞋 ，银月之晶，陨星锤 ，肉山盾，刷新碎片，精灵布带,凝魂之泪，慧光
-	1:  "blink-dagger.jpg",           //跳刀
-	2:  "blades-of-attack.jpg",       //攻击之爪
-	3:  "broadsword.jpg",             //阔剑
-	4:  "chainmail.jpg",              //锁子甲
-	5:  "claymore.jpg",               //大剑
-	6:  "helm_of_iron_will.jpg",      //铁意头盔
-	7:  "javelin.jpg",                //标枪
-	8:  "mithril-hammer.jpg",         //秘银锤
-	9:  "platemail.jpg",              //板甲
-	10: "quarterstaff.jpg",           //短棍
-	11: "quelling-blade.jpg",         //补刀斧
-	12: "ring_of_protection.jpg",     //守护戒指
-	13: "gauntlets-of-strength.jpg",  //力量手套
-	14: "slippers-of-agility.jpg",    //敏捷便鞋
-	15: "mantle-of-intelligence.jpg", //智力斗篷
-	16: "iron-branch.jpg",            //树枝
-	17: "belt-of-strength.jpg",       //力量腰带
-	18: "band-of-elvenskin.jpg",      //精灵布带
-	19: "robe-of-the-magi",           //法师长袍
-	20: "circlet.jpg",                //圆环
-	21: "ogre-axe.jpg",               //食人魔之斧
-	22: "blade-of-alacrity.jpg",      //欢欣之刃
-	23: "staff-of-wizardry.jpg",      //魔力法杖
-	24: "ultimate-orb.jpg",           //极限法球
-	25: "gloves-of-haste.jpg",        //加速手套
-	26: "morbid-mask.jpg",            //吸血面具
-	27: "ring-of-regen.jpg",          //回复戒指
-	28: "sages-mask.jpg",             //艺人面罩
-	29: "boots-of-speed.jpg",         //速度之鞋
-	30: "gem-of-true-sight.jpg",      //珍视宝石
-	31: "cloak.jpg",                  //抗魔斗篷
-	32: "talisman-of-evasion.jpg",    //闪避护符
-	33: "cheese.jpg",                 //奶酪
-	34: "magic-stick.jpg",            //魔棒
+	1:  "../static/img/blink-dagger.jpg",           //跳刀
+	2:  "../static/img/blades-of-attack.jpg",       //攻击之爪
+	3:  "../static/img/broadsword.jpg",             //阔剑
+	4:  "../static/img/chainmail.jpg",              //锁子甲
+	5:  "../static/img/claymore.jpg",               //大剑
+	6:  "../static/img/helm_of_iron_will.jpg",      //铁意头盔
+	7:  "../static/img/javelin.jpg",                //标枪
+	8:  "../static/img/mithril-hammer.jpg",         //秘银锤
+	9:  "../static/img/platemail.jpg",              //板甲
+	10: "../static/img/quarterstaff.jpg",           //短棍
+	11: "../static/img/quelling-blade.jpg",         //补刀斧
+	12: "../static/img/ring_of_protection.jpg",     //守护戒指
+	13: "../static/img/gauntlets-of-strength.jpg",  //力量手套
+	14: "../static/img/slippers-of-agility.jpg",    //敏捷便鞋
+	15: "../static/img/mantle-of-intelligence.jpg", //智力斗篷
+	16: "../static/img/iron-branch.jpg",            //树枝
+	17: "../static/img/belt-of-strength.jpg",       //力量腰带
+	18: "../static/img/band-of-elvenskin.jpg",      //精灵布带
+	19: "../static/img/robe-of-the-magi",           //法师长袍
+	20: "../static/img/circlet.jpg",                //圆环
+	21: "../static/img/ogre-axe.jpg",               //食人魔之斧
+	22: "../static/img/blade-of-alacrity.jpg",      //欢欣之刃
+	23: "../static/img/staff-of-wizardry.jpg",      //魔力法杖
+	24: "../static/img/ultimate-orb.jpg",           //极限法球
+	25: "../static/img/gloves-of-haste.jpg",        //加速手套
+	26: "../static/img/morbid-mask.jpg",            //吸血面具
+	27: "../static/img/ring-of-regen.jpg",          //回复戒指
+	28: "../static/img/sages-mask.jpg",             //艺人面罩
+	29: "../static/img/boots-of-speed.jpg",         //速度之鞋
+	30: "../static/img/gem-of-true-sight.jpg",      //珍视宝石
+	31: "../static/img/cloak.jpg",                  //抗魔斗篷
+	32: "../static/img/talisman-of-evasion.jpg",    //闪避护符
+	33: "../static/img/cheese.jpg",                 //奶酪
+	34: "../static/img/magic-stick.jpg",            //魔棒
 
-	36: "magic-wand.jpg",         //大魔棒
-	37: "ghost-scepter.jpg",      //幽魂权杖
-	38: "clarity.jpg",            //净化药水
-	39: "healing-salve.jpg",      //大药
-	40: "dust-of-appearance.jpg", //显影之尘
-	41: "bottle.jpg",             //瓶子
-	42: "observer-ward.jpg",      //假眼
-	43: "sentry-ward.jpg",        //真眼
-	44: "tango.jpg",              //吃数
-	45: "animal-courier.jpg",     //动物信使
-	46: "town-portal-scrol.jpg",  //TP
-	48: "boots-of-travel.jpg",    //飞鞋
+	36: "../static/img/magic-wand.jpg",         //大魔棒
+	37: "../static/img/ghost-scepter.jpg",      //幽魂权杖
+	38: "../static/img/clarity.jpg",            //净化药水
+	39: "../static/img/healing-salve.jpg",      //大药
+	40: "../static/img/dust-of-appearance.jpg", //显影之尘
+	41: "../static/img/bottle.jpg",             //瓶子
+	42: "../static/img/observer-ward.jpg",      //假眼
+	43: "../static/img/sentry-ward.jpg",        //真眼
+	44: "../static/img/tango.jpg",              //吃数
+	45: "../static/img/animal-courier.jpg",     //动物信使
+	46: "../static/img/town-portal-scrol.jpg",  //TP
+	48: "../static/img/boots-of-travel.jpg",    //飞鞋
 
-	50: "phase-boots.jpg",      //相位鞋
-	51: "demon-edge.jpg",       //恶魔刀锋
-	52: "eaglesong.jpg",        //鹰歌弓
-	53: "reaver.jpg",           //掠夺
-	54: "sacred-relic.jpg",     //圣者遗物
-	55: "hyperstone.jpg",       //振奋宝石
-	56: "ring-of-health.jpg",   //治疗指环
-	57: "void-stone.jpg",       //虚无宝石
-	58: "mystic-staff.jpg",     //神秘法杖
-	59: "energy-booster.jpg",   //能量之球
-	60: "point-booster.jpg",    //精气之球
-	61: "vitality-booster.jpg", //活力之球
-	63: "power-treads.jpg",     //假腿
+	50: "../static/img/phase-boots.jpg",      //相位鞋
+	51: "../static/img/demon-edge.jpg",       //恶魔刀锋
+	52: "../static/img/eaglesong.jpg",        //鹰歌弓
+	53: "../static/img/reaver.jpg",           //掠夺
+	54: "../static/img/sacred-relic.jpg",     //圣者遗物
+	55: "../static/img/hyperstone.jpg",       //振奋宝石
+	56: "../static/img/ring-of-health.jpg",   //治疗指环
+	57: "../static/img/void-stone.jpg",       //虚无宝石
+	58: "../static/img/mystic-staff.jpg",     //神秘法杖
+	59: "../static/img/energy-booster.jpg",   //能量之球
+	60: "../static/img/point-booster.jpg",    //精气之球
+	61: "../static/img/vitality-booster.jpg", //活力之球
+	63: "../static/img/power-treads.jpg",     //假腿
 
-	65: "hand-of-midas.jpg", //点金手
+	65: "../static/img/hand-of-midas.jpg", //点金手
 
-	67:  "oblivion-staff.jpg",           //空明帐
-	69:  "perseverance.jpg",             //坚韧球
-	73:  "bracer.jpg",                   //护腕
-	75:  "wraith-band.jpg",              //怨灵系带
-	77:  "null-talisman.jpg",            //空灵挂件
-	79:  "mekansm.jpg",                  //梅肯
-	81:  "vladmirs-offering.jpg",        //祭品
-	84:  "flying_courier_lg.png",        //动物信使
-	86:  "buckler.jpg",                  //玄冥盾牌
-	88:  "ring-of-basilius.jpg",         //圣殿
-	90:  "pipe-of-insight.jpg",          //笛子
-	92:  "urn-of-shadows.jpg",           //骨灰
-	94:  "headdress.jpg",                //回复头巾
-	96:  "scythe-of-vyse.jpg",           //羊刀
-	98:  "orchid-malevolence.jpg",       //紫苑
-	250: "bloodthorn.jpg",               //血棘
-	252: "echo-sabre.jpg",               //回音战刃
-	100: "euls-scepter-of-divinity.jpg", //吹风
-	232: "aether-lens.jpg",              //以太之镜
-	102: "force-staff.jpg",              //推推
-	263: "hurricane-pike.jpg",           //大推推
-	104: "dagon.jpg",                    //大根
-	201: "dagon-level-2.jpg",
-	202: "dagon-level-3.jpg",
-	203: "dagon-level-4.jpg",
-	204: "dagon-level-5.jpg",
-	106: "necronomicon.jpg", //死灵书
-	193: "necronomicon-level-2.jpg",
-	194: "necronomicon-level-3.jpg",
-	108: "aghanims-scepter.jpg",        //A帐
-	110: "refresher-orb.jpg",           //刷新球
-	117: "aegis-of-the-immortal.jpg",   //肉山盾
-	112: "assault-cuirass.jpg",         //强袭装甲
-	114: "heart-of-tarrasque.jpg",      //龙心
-	116: "black-king-bar.jpg",          //BKB
-	118: "",                            //
-	119: "shivas-guard.jpg",            //西瓦
-	121: "bloodstone.jpg",              //血精石
-	123: "linkens-sphere.jpg",          //林肯
-	226: "lotus-orb.jpg",               //莲花
-	125: "vanguard.jpg",                //先锋盾
-	242: "crimson-guard.jpg",           //赤红甲
-	127: "blade-mail.jpg",              //刃甲
-	129: "soul-booster.jpg",            //镇魂石
-	131: "hood-of-defiance.jpg",        //挑战
-	133: "divine-rapier.jpg",           //圣剑
-	135: "monkey-king-bar.jpg",         //金箍棒
-	137: "radiance.jpg",                //辉耀
-	139: "butterfly.jpg",               //蝴蝶
-	141: "daedalus.jpg",                //大炮
-	143: "skull-basher.jpg",            //碎颅锤
-	145: "battle-fury.jpg",             //狂战斧
-	147: "manta-style.jpg",             //分身斧
-	149: "crystalys.jpg",               //水晶剑
-	236: "dragon-lance.jpg",            //魔龙枪
-	151: "armlet-of-mordiggian.jpg",    //臂章
-	152: "shadow-blade.jpg",            //隐刀
-	249: "silver-edge.jpg",             //大隐刀，白银之锋
-	154: "sange-and-yasha.jpg",         //双刀
-	156: "satanic.jpg",                 //撒旦
-	158: "mjollnir.jpg",                //大电锤
-	160: "eye-of-skadi.jpg",            //冰眼
-	162: "sange.jpg",                   //散华
-	164: "helm-of-the-dominator.jpg",   //支配
-	166: "maelstrom.jpg",               //电锤
-	168: "desolator.jpg",               //暗灭
-	170: "yasha.jpg",                   //单刀夜叉
-	172: "mask-of-madness.jpg",         //疯脸
-	174: "diffusal-blade.jpg",          //散失
-	196: "diffusal-blade-2.jpg",        //
-	176: "ethereal-blade.jpg",          //虚灵刀
-	178: "soul-ring.jpg",               //魂戒
-	180: "arcane-boots.jpg",            //秘法
-	235: "octarine-core.jpg",           //玲珑心
-	181: "orb-of-venom.jpg",            //毒球
-	240: "blight-stone.jpg",            //枯萎之石
-	185: "drum-of-endurance.jpg",       //战鼓
-	187: "medallion-of-courage.jpg",    //勇气勋章
-	229: "solar-crest.jpg",             //炎阳纹章
-	188: "smoke-of-deceit.jpg",         //雾
-	257: "tome-of-knowledge.jpg",       //经验书
-	190: "veil-of-discord.jpg",         //纷争面纱
-	231: "guardian-greaves.jpg",        //大鞋
-	206: "rod-of-atos.jpg",             //阿托斯
-	239: "",                            //打野爪
-	208: "abyssal-blade.jpg",           //深渊之刃
-	210: "heavens-halberd.jpg",         //天堂
-	212: "ring-of-aquila.jpg",          //天鹰
-	214: "tranquil-boots.jpg",          //绿鞋
-	215: "shadow-amulet.jpg",           //暗影护符
-	254: "glimmer-cape.jpg",            //微光披风
-	256: "aeon-disk.jpg",               //免死金牌
-	225: "nullifier.jpg",               //否决
-	267: "spirit-vessel.jpg",           //大骨灰
-	244: "wind-lace.jpg",               //风灵之纹
-	259: "kaya.jpg",                    //慧光
-	260: "refresher-shard.jpg",         //刷新碎片
-	223: "meteor-hammer.jpg",           //陨星锤
-	220: "boots-of-travel-level-2.jpg", //大飞鞋
-	265: "infused-raindrops.jpg",       //凝魂之泪
-	247: "moon-shard.jpg",              //银月之晶
+	67:  "../static/img/oblivion-staff.jpg",           //空明帐
+	69:  "../static/img/perseverance.jpg",             //坚韧球
+	73:  "../static/img/bracer.jpg",                   //护腕
+	75:  "../static/img/wraith-band.jpg",              //怨灵系带
+	77:  "../static/img/null-talisman.jpg",            //空灵挂件
+	79:  "../static/img/mekansm.jpg",                  //梅肯
+	81:  "../static/img/vladmirs-offering.jpg",        //祭品
+	84:  "../static/img/flying_courier_lg.png",        //动物信使
+	86:  "../static/img/buckler.jpg",                  //玄冥盾牌
+	88:  "../static/img/ring-of-basilius.jpg",         //圣殿
+	90:  "../static/img/pipe-of-insight.jpg",          //笛子
+	92:  "../static/img/urn-of-shadows.jpg",           //骨灰
+	94:  "../static/img/headdress.jpg",                //回复头巾
+	96:  "../static/img/scythe-of-vyse.jpg",           //羊刀
+	98:  "../static/img/orchid-malevolence.jpg",       //紫苑
+	250: "../static/img/bloodthorn.jpg",               //血棘
+	252: "../static/img/echo-sabre.jpg",               //回音战刃
+	100: "../static/img/euls-scepter-of-divinity.jpg", //吹风
+	232: "../static/img/aether-lens.jpg",              //以太之镜
+	102: "../static/img/force-staff.jpg",              //推推
+	263: "../static/img/hurricane-pike.jpg",           //大推推
+	104: "../static/img/dagon.jpg",                    //大根
+	201: "../static/img/dagon-level-2.jpg",
+	202: "../static/img/dagon-level-3.jpg",
+	203: "../static/img/dagon-level-4.jpg",
+	204: "../static/img/dagon-level-5.jpg",
+	106: "../static/img/necronomicon.jpg", //死灵书
+	193: "../static/img/necronomicon-level-2.jpg",
+	194: "../static/img/necronomicon-level-3.jpg",
+	108: "../static/img/aghanims-scepter.jpg",        //A帐
+	110: "../static/img/refresher-orb.jpg",           //刷新球
+	117: "../static/img/aegis-of-the-immortal.jpg",   //肉山盾
+	112: "../static/img/assault-cuirass.jpg",         //强袭装甲
+	114: "../static/img/heart-of-tarrasque.jpg",      //龙心
+	116: "../static/img/black-king-bar.jpg",          //BKB
+	118: "../static/img/",                            //
+	119: "../static/img/shivas-guard.jpg",            //西瓦
+	121: "../static/img/bloodstone.jpg",              //血精石
+	123: "../static/img/linkens-sphere.jpg",          //林肯
+	226: "../static/img/lotus-orb.jpg",               //莲花
+	125: "../static/img/vanguard.jpg",                //先锋盾
+	242: "../static/img/crimson-guard.jpg",           //赤红甲
+	127: "../static/img/blade-mail.jpg",              //刃甲
+	129: "../static/img/soul-booster.jpg",            //镇魂石
+	131: "../static/img/hood-of-defiance.jpg",        //挑战
+	133: "../static/img/divine-rapier.jpg",           //圣剑
+	135: "../static/img/monkey-king-bar.jpg",         //金箍棒
+	137: "../static/img/radiance.jpg",                //辉耀
+	139: "../static/img/butterfly.jpg",               //蝴蝶
+	141: "../static/img/daedalus.jpg",                //大炮
+	143: "../static/img/skull-basher.jpg",            //碎颅锤
+	145: "../static/img/battle-fury.jpg",             //狂战斧
+	147: "../static/img/manta-style.jpg",             //分身斧
+	149: "../static/img/crystalys.jpg",               //水晶剑
+	236: "../static/img/dragon-lance.jpg",            //魔龙枪
+	151: "../static/img/armlet-of-mordiggian.jpg",    //臂章
+	152: "../static/img/shadow-blade.jpg",            //隐刀
+	249: "../static/img/silver-edge.jpg",             //大隐刀，白银之锋
+	154: "../static/img/sange-and-yasha.jpg",         //双刀
+	156: "../static/img/satanic.jpg",                 //撒旦
+	158: "../static/img/mjollnir.jpg",                //大电锤
+	160: "../static/img/eye-of-skadi.jpg",            //冰眼
+	162: "../static/img/sange.jpg",                   //散华
+	164: "../static/img/helm-of-the-dominator.jpg",   //支配
+	166: "../static/img/maelstrom.jpg",               //电锤
+	168: "../static/img/desolator.jpg",               //暗灭
+	170: "../static/img/yasha.jpg",                   //单刀夜叉
+	172: "../static/img/mask-of-madness.jpg",         //疯脸
+	174: "../static/img/diffusal-blade.jpg",          //散失
+	196: "../static/img/diffusal-blade-2.jpg",        //
+	176: "../static/img/ethereal-blade.jpg",          //虚灵刀
+	178: "../static/img/soul-ring.jpg",               //魂戒
+	180: "../static/img/arcane-boots.jpg",            //秘法
+	235: "../static/img/octarine-core.jpg",           //玲珑心
+	181: "../static/img/orb-of-venom.jpg",            //毒球
+	240: "../static/img/blight-stone.jpg",            //枯萎之石
+	185: "../static/img/drum-of-endurance.jpg",       //战鼓
+	187: "../static/img/medallion-of-courage.jpg",    //勇气勋章
+	229: "../static/img/solar-crest.jpg",             //炎阳纹章
+	188: "../static/img/smoke-of-deceit.jpg",         //雾
+	257: "../static/img/tome-of-knowledge.jpg",       //经验书
+	190: "../static/img/veil-of-discord.jpg",         //纷争面纱
+	231: "../static/img/guardian-greaves.jpg",        //大鞋
+	206: "../static/img/rod-of-atos.jpg",             //阿托斯
+	239: "../static/img/",                            //打野爪
+	208: "../static/img/abyssal-blade.jpg",           //深渊之刃
+	210: "../static/img/heavens-halberd.jpg",         //天堂
+	212: "../static/img/ring-of-aquila.jpg",          //天鹰
+	214: "../static/img/tranquil-boots.jpg",          //绿鞋
+	215: "../static/img/shadow-amulet.jpg",           //暗影护符
+	254: "../static/img/glimmer-cape.jpg",            //微光披风
+	256: "../static/img/aeon-disk.jpg",               //免死金牌
+	225: "../static/img/nullifier.jpg",               //否决
+	267: "../static/img/spirit-vessel.jpg",           //大骨灰
+	244: "../static/img/wind-lace.jpg",               //风灵之纹
+	259: "../static/img/kaya.jpg",                    //慧光
+	260: "../static/img/refresher-shard.jpg",         //刷新碎片
+	223: "../static/img/meteor-hammer.jpg",           //陨星锤
+	220: "../static/img/boots-of-travel-level-2.jpg", //大飞鞋
+	265: "../static/img/infused-raindrops.jpg",       //凝魂之泪
+	247: "../static/img/moon-shard.jpg",              //银月之晶
 }
