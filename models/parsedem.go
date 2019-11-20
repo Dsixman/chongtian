@@ -8,6 +8,7 @@ import(
 	"github.com/dotabuff/manta/dota"
 	"replayanaly/models/mongodb"
 	"gopkg.in/mgo.v2" 
+	"gopkg.in/mgo.v2/bson"
 	"replayanaly/models/obj"
 	"math"
 	"strconv"
@@ -21,6 +22,9 @@ func Parse (version,demurl string){
 	c := db.C("CDotaGameInfo")
 	c2 := db.C("CMsgDOTAMatch")
 	c3 := db.C("CMsgMatchDetails")
+	c4:=db.C("player_info")//all_player_info
+	//cteam_player := db.C("team_player")
+
 	f, err := os.Open(demurl)
 	if err != nil {
 		//log.Fatalf("unable to open file: %s", err)
@@ -33,6 +37,11 @@ func Parse (version,demurl string){
 	}
 	var NewCDotaGameInfo obj.CDotaGameInfo
 	var NewCMsgDOTAMatch obj.CMsgDOTAMatch
+	var NewTeamPlayer obj.TeamPlayerInfo
+	//var NewPlayer1,NewPlayer2,NewPlayer3,NewPlayer4,NewPlayer5,NewPlayer6,NewPlayer7,NewPlayer8,NewPlayer9,NewPlayer10 obj.Player
+	//var NewPlayer =[]obj.Player{&NewPlayer1,&NewPlayer2,&NewPlayer3,&NewPlayer4,&NewPlayer5,&NewPlayer6,&NewPlayer7,&NewPlayer8,&NewPlayer9,&NewPlayer10}
+	var NewHeroCount1,NewHeroCount2,NewHeroCount3,NewHeroCount4,NewHeroCount5,NewHeroCount6,NewHeroCount7,NewHeroCount8,NewHeroCount9,NewHeroCount10 obj.HeroCount
+	var NewHeroCountArr=[]*obj.HeroCount{&NewHeroCount1,&NewHeroCount2,&NewHeroCount3,&NewHeroCount4,&NewHeroCount5,&NewHeroCount6,&NewHeroCount7,&NewHeroCount8,&NewHeroCount9,&NewHeroCount10}
 	var HeroIdArr []uint32
 	var AbilityArr=make([][]uint32,10)
 	var NewCMsgMatchDetails obj.CMsgMatchDetails
@@ -98,6 +107,7 @@ func Parse (version,demurl string){
 	var runegold = []float64{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}
 	var deathgold = []float64{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}
 	var buybackgold = []float64{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}
+	var killwardgold = []float64{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}
 	var lasthitgold = []float64{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}
 	var combatgold = []float64{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}
 	var killtowergold = []float64{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}
@@ -131,23 +141,53 @@ func Parse (version,demurl string){
 			if m.GetGameInfo().GetDota().GetRadiantTeamTag() != "" {
 				NewCDotaGameInfo.GameWinner=NewCDotaGameInfo.RadiantTeamTag
 				NewCDotaGameInfo.GameLoser=NewCDotaGameInfo.DireTeamTag
+				for _,value:=range NewCDotaGameInfo.PicksBans{
+					if *value.IsPick==true&&*value.Team==2{
+						NewCDotaGameInfo.GameWinnerBp=append(NewCDotaGameInfo.GameWinnerBp,value)
+					}
+					if *value.IsPick==true&&*value.Team==3{
+						NewCDotaGameInfo.GameLoserBp=append(NewCDotaGameInfo.GameLoserBp,value)
+					}
+				}
 			}else{
-
 				NewCDotaGameInfo.GameWinner="天辉"
 				NewCDotaGameInfo.GameLoser="夜魇"
+				for _,value:=range NewCDotaGameInfo.PicksBans{
+					if *value.IsPick==true&&*value.Team==2{
+						NewCDotaGameInfo.GameWinnerBp=append(NewCDotaGameInfo.GameWinnerBp,value)
+					}
+					if *value.IsPick==true&&*value.Team==3{
+						NewCDotaGameInfo.GameLoserBp=append(NewCDotaGameInfo.GameLoserBp,value)
+					}
+				}
 			}
 		}else{
 			if m.GetGameInfo().GetDota().GetRadiantTeamTag() != "" {
 				NewCDotaGameInfo.GameWinner=NewCDotaGameInfo.DireTeamTag
 				NewCDotaGameInfo.GameLoser=NewCDotaGameInfo.RadiantTeamTag
+				for _,value:=range NewCDotaGameInfo.PicksBans{
+					if *value.IsPick==true&&*value.Team==3{
+						NewCDotaGameInfo.GameWinnerBp=append(NewCDotaGameInfo.GameWinnerBp,value)
+					}
+					if *value.IsPick==true&&*value.Team==2{
+						NewCDotaGameInfo.GameLoserBp=append(NewCDotaGameInfo.GameLoserBp,value)
+					}
+				}
 			}else{
 				NewCDotaGameInfo.GameWinner="夜魇"
 				NewCDotaGameInfo.GameLoser="天辉"
+				for _,value:=range NewCDotaGameInfo.PicksBans{
+					if *value.IsPick==true&&*value.Team==3{
+						NewCDotaGameInfo.GameWinnerBp=append(NewCDotaGameInfo.GameWinnerBp,value)
+					}
+					if *value.IsPick==true&&*value.Team==2{
+						NewCDotaGameInfo.GameLoserBp=append(NewCDotaGameInfo.GameLoserBp,value)
+					}
+				}
 			}
 		}
 		return nil
 	})
-
 	
 	p.Callbacks.OnCMsgDOTAMatch(func(m *dota.CMsgDOTAMatch) error {
 		NewCMsgDOTAMatch.Duration = m.GetDuration()
@@ -528,16 +568,21 @@ func Parse (version,demurl string){
 					if target == value1 {
 						if math.Floor(float64(time)) > prev5 && gtimei[key1] < 1 {
 							allgold[key1] = allgold[key1] + 90.0*5.0
-							playersarr[key1].Gold.Pre5MinGold=allgold[key1]
+							playersarr[key1].Gold.Pre5MinGold=append(playersarr[key1].Gold.Pre5MinGold,allgold[key1])
+							playersarr[key1].Gold.Pre5MinGold=append(playersarr[key1].Gold.Pre5MinGold,lasthitgold[key1])
+							playersarr[key1].Gold.Pre5MinGold=append(playersarr[key1].Gold.Pre5MinGold,combatgold[key1])
 							gtimei[key1] = gtimei[key1] + 1
 						}
 						if math.Floor(float64(time)) > prev10 && gtimei[key1] < 2 {
 							gtimei[key1] = gtimei[key1] + 1
 							allgold[key1] = allgold[key1] + 90.0*5.0
-							playersarr[key1].Gold.Pre10MinGold=allgold[key1]
+							playersarr[key1].Gold.Pre5MinGold=append(playersarr[key1].Gold.Pre5MinGold,allgold[key1])
+							playersarr[key1].Gold.Pre5MinGold=append(playersarr[key1].Gold.Pre5MinGold,lasthitgold[key1])
+							playersarr[key1].Gold.Pre5MinGold=append(playersarr[key1].Gold.Pre5MinGold,combatgold[key1])
 							runegold[key1] = 0
 							deathgold[key1] = 0
 							buybackgold[key1] = 0
+							killwardgold[key1] = 0
 							lasthitgold[key1] = 0
 							killtowergold[key1] = 0
 							roshangold[key1] = 0
@@ -563,10 +608,13 @@ func Parse (version,demurl string){
 							}*/
 							gtimei[key1] = gtimei[key1] + 1
 							allgold[key1] = allgold[key1] + 90.0*5.0
-							playersarr[key1].Gold.Pre15MinGold=allgold[key1]
+							playersarr[key1].Gold.Pre5MinGold=append(playersarr[key1].Gold.Pre5MinGold,allgold[key1])
+							playersarr[key1].Gold.Pre5MinGold=append(playersarr[key1].Gold.Pre5MinGold,lasthitgold[key1])
+							playersarr[key1].Gold.Pre5MinGold=append(playersarr[key1].Gold.Pre5MinGold,combatgold[key1])
 							runegold[key1] = 0
 							deathgold[key1] = 0
 							buybackgold[key1] = 0
+							killwardgold[key1] = 0
 							lasthitgold[key1] = 0
 							killtowergold[key1] = 0
 							roshangold[key1] = 0
@@ -575,10 +623,14 @@ func Parse (version,demurl string){
 						if math.Floor(float64(time)) > prev20 && gtimei[key1] < 4 {
 							gtimei[key1] = gtimei[key1] + 1
 							allgold[key1] = allgold[key1] + 9.0*5.0
-							playersarr[key1].Gold.Pre20MinGold=allgold[key1]
+							allgold[key1] = allgold[key1] + 90.0*5.0
+							playersarr[key1].Gold.Pre5MinGold=append(playersarr[key1].Gold.Pre5MinGold,allgold[key1])
+							playersarr[key1].Gold.Pre5MinGold=append(playersarr[key1].Gold.Pre5MinGold,lasthitgold[key1])
+							playersarr[key1].Gold.Pre5MinGold=append(playersarr[key1].Gold.Pre5MinGold,combatgold[key1])
 							runegold[key1] = 0
 							deathgold[key1] = 0
 							buybackgold[key1] = 0
+							killwardgold[key1] = 0
 							lasthitgold[key1] = 0
 							killtowergold[key1] = 0
 							roshangold[key1] = 0
@@ -587,10 +639,14 @@ func Parse (version,demurl string){
 						if math.Floor(float64(time)) > prev25 && gtimei[key1] < 5 {
 							gtimei[key1] = gtimei[key1] + 1
 							allgold[key1] = allgold[key1] + 90.0*5.0
-							playersarr[key1].Gold.Pre25MinGold=allgold[key1]
+							allgold[key1] = allgold[key1] + 90.0*5.0
+							playersarr[key1].Gold.Pre5MinGold=append(playersarr[key1].Gold.Pre5MinGold,allgold[key1])
+							playersarr[key1].Gold.Pre5MinGold=append(playersarr[key1].Gold.Pre5MinGold,lasthitgold[key1])
+							playersarr[key1].Gold.Pre5MinGold=append(playersarr[key1].Gold.Pre5MinGold,combatgold[key1])
 							runegold[key1] = 0
 							deathgold[key1] = 0
 							buybackgold[key1] = 0
+							killwardgold[key1] = 0
 							lasthitgold[key1] = 0
 							killtowergold[key1] = 0
 							roshangold[key1] = 0
@@ -606,6 +662,9 @@ func Parse (version,demurl string){
 						}
 						if m.GetGoldReason() == 2 {
 							buybackgold[key1] = buybackgold[key1] + u
+						}
+						if m.GetGoldReason() == 6 {
+							killwardgold[key1] = killwardgold[key1] + u
 						}
 						if m.GetGoldReason() == 13 {
 							lasthitgold[key1] = lasthitgold[key1] + u
@@ -642,6 +701,10 @@ func Parse (version,demurl string){
 		value.Player=*NewCMsgDOTAMatch.Players[key].PlayerName
 		heroid:=*NewCMsgDOTAMatch.Players[key].HeroId
 		value.HeroName=HeroIDName[heroid]
+		/*err1:=cteam_player.find(bson.M{}).Select(bson.M{RadiantTeamTag:1}.One(&NewTeamPlayer))
+		if err1 !=nil{
+			fmt.Printf("teamplayer err:%v\n",err1)
+		}*/
 		ability:=value.AbilityUpgrades
 		lvl:=value.LevelUpTimes
 		for abilitykey,abilityvalue:=range ability {
@@ -654,32 +717,42 @@ func Parse (version,demurl string){
 			goldtime1:=600-goldtalenttime
 			
 			talentgold1 = float64(goldtime1) * (talentgold / 60.0)
-			playersarr[key].Gold.Pre10MinGold=playersarr[key].Gold.Pre10MinGold+talentgold1*float64(goldtime1)
-			playersarr[key].Gold.Pre15MinGold=playersarr[key].Gold.Pre15MinGold+talentgold1*5.0
-			playersarr[key].Gold.Pre20MinGold=playersarr[key].Gold.Pre20MinGold+talentgold1*5.0
-			playersarr[key].Gold.Pre25MinGold=playersarr[key].Gold.Pre10MinGold+talentgold1*5.0
+			Pre10MinGold:=playersarr[key].Gold.Pre10MinGold[0]
+			Pre15MinGold:=playersarr[key].Gold.Pre15MinGold[0] 
+			Pre20MinGold:=playersarr[key].Gold.Pre20MinGold[0]
+			Pre25MinGold:=playersarr[key].Gold.Pre25MinGold[0]
+			playersarr[key].Gold.Pre10MinGold[0]=Pre10MinGold+talentgold1*float64(goldtime1)
+			playersarr[key].Gold.Pre15MinGold[0]=Pre15MinGold+talentgold1*5.0
+			playersarr[key].Gold.Pre20MinGold[0]=Pre20MinGold+talentgold1*5.0
+			playersarr[key].Gold.Pre25MinGold[0]=Pre25MinGold+talentgold1*5.0
 		}
 		if goldtalenttime>600 && goldtalenttime<900{
 			goldtime1:=900-goldtalenttime
 			
 			talentgold1 = float64(goldtime1) * (talentgold / 60.0)
 //			playersarr[key].Gold.Pre10MinGold=playersarr[key].Gold.Pre10MinGold+talentgold1
-			playersarr[key].Gold.Pre15MinGold=playersarr[key].Gold.Pre15MinGold+talentgold1*float64(goldtime1)
-			playersarr[key].Gold.Pre20MinGold=playersarr[key].Gold.Pre20MinGold+talentgold1*5.0
-			playersarr[key].Gold.Pre25MinGold=playersarr[key].Gold.Pre10MinGold+talentgold1*5.0
+			Pre15MinGold:=playersarr[key].Gold.Pre15MinGold[0] 
+			Pre20MinGold:=playersarr[key].Gold.Pre20MinGold[0]
+			Pre25MinGold:=playersarr[key].Gold.Pre25MinGold[0]
+			playersarr[key].Gold.Pre15MinGold[0]=Pre15MinGold+talentgold1*float64(goldtime1)
+			playersarr[key].Gold.Pre20MinGold[0]=Pre20MinGold+talentgold1*5.0
+			playersarr[key].Gold.Pre25MinGold[0]=Pre25MinGold+talentgold1*5.0
 		}
 		if goldtalenttime>900 && goldtalenttime<1200{
 			goldtime1:=900-goldtalenttime
 			
 			talentgold1 = float64(goldtime1) * (talentgold / 60.0)
-			playersarr[key].Gold.Pre20MinGold=playersarr[key].Gold.Pre20MinGold+talentgold1*float64(goldtime1)
-			playersarr[key].Gold.Pre25MinGold=playersarr[key].Gold.Pre10MinGold+talentgold1*5.0
+			Pre20MinGold:=playersarr[key].Gold.Pre20MinGold[0]
+			Pre25MinGold:=playersarr[key].Gold.Pre25MinGold[0]
+			playersarr[key].Gold.Pre20MinGold[0]=Pre20MinGold+talentgold1*float64(goldtime1)
+			playersarr[key].Gold.Pre25MinGold[0]=Pre25MinGold+talentgold1*5.0
 		}
 		if goldtalenttime>1200 && goldtalenttime<1500{
 			goldtime1:=1500-goldtalenttime
 			
 			talentgold1 = float64(goldtime1) * (talentgold / 60.0)
-			playersarr[key].Gold.Pre25MinGold=playersarr[key].Gold.Pre10MinGold+talentgold1*float64(goldtime1)
+			Pre25MinGold:=playersarr[key].Gold.Pre25MinGold[0]
+			playersarr[key].Gold.Pre25MinGold[0]=Pre25MinGold+talentgold1*float64(goldtime1)
 		}
 		
 		if (value.InitLane=="上路"){	
@@ -706,7 +779,7 @@ func Parse (version,demurl string){
 			}
 			
 		}
-		
+
 	}
 	yslane=yslane+"vs"+ysdirelane
 	lslane=lslane+"vs"+lsdirelane
@@ -717,10 +790,180 @@ func Parse (version,demurl string){
 	NewCMsgMatchDetails.DireTeamTag=NewCDotaGameInfo.DireTeamTag
 	NewCMsgMatchDetails.PlayersHeroesDets=playersarr
 	//fmt.Printf("NewCDotaGameInfo:%v\n",NewCDotaGameInfo)
+	/*for key,value:=range NewPlayer{
+			value.PlayerDota2Id=playersarr[key].AccountId
+			value.MatchPlayerId=playersarr[key].Player
+	}*/
+	allplayererr:=c4.Find(bson.M{}).Select(bson.M{"all_player_info":1}).All(&NewTeamPlayer)
+	if allplayererr!=nil{
+		fmt.Printf("allplayererr:%v\n", allplayererr)
+	}else{
+		for _,value:= range NewTeamPlayer.AllPlayerInfo{
+			if value.PlayerDota2Id==0{
+				for key2,value2:=range playersarr{
+					if value2.Player==value.MatchPlayerId{
+						value.PlayerDota2Id=value2.AccountId
+						NewHeroCountArr[key2].Version=version
+						NewHeroCountArr[key2].Hero=value2.HeroName
+						NewHeroCountArr[key2].Count=1
+						if NewCDotaGameInfo.GameMode==2{
+							if key2<=4{
+								value.MatchPlayerHeroes.ClubTeamTag=NewCDotaGameInfo.RadiantTeamTag
+								value.MatchPlayerHeroes.ClubTeam=NewCMsgDOTAMatch.RadiantTeamName
+								if len(value.MatchPlayerHeroes.HeroPlayCount)==0{
+									value.MatchPlayerHeroes.HeroPlayCount=append(value.MatchPlayerHeroes.HeroPlayCount,NewHeroCountArr[key2])
+								}else{
+									for _,value3:=range value.MatchPlayerHeroes.HeroPlayCount{
+										if value3.Hero==NewHeroCountArr[key2].Hero&&value3.Version==NewHeroCountArr[key2].Hero{
+											value3.Count=value3.Count+1
+										}
+									}
+								}
+							}else{
+								value.MatchPlayerHeroes.ClubTeamTag=NewCDotaGameInfo.DireTeamTag
+								value.MatchPlayerHeroes.ClubTeam=NewCMsgDOTAMatch.DireTeamName
+								if len(value.MatchPlayerHeroes.HeroPlayCount)==0{
+									value.MatchPlayerHeroes.HeroPlayCount=append(value.MatchPlayerHeroes.HeroPlayCount,NewHeroCountArr[key2])
+								}else{
+									for _,value3:=range value.MatchPlayerHeroes.HeroPlayCount{
+										if value3.Hero==NewHeroCountArr[key2].Hero&&value3.Version==NewHeroCountArr[key2].Hero{
+											value3.Count=value3.Count+1
+										}
+									}
+								}
+							}	
+						}else{
+							if key2<=4{
+								
+								if len(value.RankPlayerHeroes)==0{
+									value.RankPlayerHeroes=append(value.RankPlayerHeroes,NewHeroCountArr[key2])
+								}else{
+									for _,value3:=range value.RankPlayerHeroes{
+										if value3.Hero==NewHeroCountArr[key2].Hero&&value3.Version==NewHeroCountArr[key2].Hero{
+											value3.Count=value3.Count+1
+										}
+									}
+								}
+							}else{
+								
+								if len(value.RankPlayerHeroes)==0{
+									value.RankPlayerHeroes=append(value.RankPlayerHeroes,NewHeroCountArr[key2])
+								}else{
+									for _,value3:=range value.RankPlayerHeroes{
+										if value3.Hero==NewHeroCountArr[key2].Hero&&value3.Version==NewHeroCountArr[key2].Hero{
+											value3.Count=value3.Count+1
+										}
+									}
+								}
+							}	
+						}
+					}
+				}
+			}else{
+				if value.PlayerState=="正式选手"{
+					for key2,value2:=range playersarr{
+						if value2.Player==value.MatchPlayerId{
+							value.PlayerDota2Id=value2.AccountId
+							NewHeroCountArr[key2].Version=version
+							NewHeroCountArr[key2].Hero=value2.HeroName
+							NewHeroCountArr[key2].Count=1
+							if NewCDotaGameInfo.GameMode==2{
+								if key2<=4{
+									value.MatchPlayerHeroes.ClubTeamTag=NewCDotaGameInfo.RadiantTeamTag
+									value.MatchPlayerHeroes.ClubTeam=NewCMsgDOTAMatch.RadiantTeamName
+									if len(value.MatchPlayerHeroes.HeroPlayCount)==0{
+										value.MatchPlayerHeroes.HeroPlayCount=append(value.MatchPlayerHeroes.HeroPlayCount,NewHeroCountArr[key2])
+									}else{
+										for _,value3:=range value.MatchPlayerHeroes.HeroPlayCount{
+											if value3.Hero==NewHeroCountArr[key2].Hero&&value3.Version==NewHeroCountArr[key2].Hero{
+												value3.Count=value3.Count+1
+											}
+										}
+									}
+								}else{
+									value.MatchPlayerHeroes.ClubTeamTag=NewCDotaGameInfo.DireTeamTag
+									value.MatchPlayerHeroes.ClubTeam=NewCMsgDOTAMatch.DireTeamName
+									if len(value.MatchPlayerHeroes.HeroPlayCount)==0{
+										value.MatchPlayerHeroes.HeroPlayCount=append(value.MatchPlayerHeroes.HeroPlayCount,NewHeroCountArr[key2])
+									}else{
+										for _,value3:=range value.MatchPlayerHeroes.HeroPlayCount{
+											if value3.Hero==NewHeroCountArr[key2].Hero&&value3.Version==NewHeroCountArr[key2].Hero{
+												value3.Count=value3.Count+1
+											}
+										}
+									}
+								}	
+							}else{
+								if key2<=4{
+									
+									if len(value.RankPlayerHeroes)==0{
+										value.RankPlayerHeroes=append(value.RankPlayerHeroes,NewHeroCountArr[key2])
+									}else{
+										for _,value3:=range value.RankPlayerHeroes{
+											if value3.Hero==NewHeroCountArr[key2].Hero&&value3.Version==NewHeroCountArr[key2].Hero{
+												value3.Count=value3.Count+1
+											}
+										}
+									}
+								}else{
+									
+									if len(value.RankPlayerHeroes)==0{
+										value.RankPlayerHeroes=append(value.RankPlayerHeroes,NewHeroCountArr[key2])
+									}else{
+										for _,value3:=range value.RankPlayerHeroes{
+											if value3.Hero==NewHeroCountArr[key2].Hero&&value3.Version==NewHeroCountArr[key2].Hero{
+												value3.Count=value3.Count+1
+											}
+										}
+									}
+								}	
+							}
+						}
+					}
+				}
+				if value.PlayerState=="临时替补"{
+					for key2,value2:=range playersarr{
+						if value2.Player==value.MatchPlayerId{
+							value.PlayerDota2Id=value2.AccountId
+							NewHeroCountArr[key2].Version=version
+							NewHeroCountArr[key2].Hero=value2.HeroName
+							NewHeroCountArr[key2].Count=1							
+								if key2<=4{
+									value.AlternatePlayerHeroes.ClubTeamTag=NewCDotaGameInfo.RadiantTeamTag
+									value.AlternatePlayerHeroes.ClubTeam=NewCMsgDOTAMatch.RadiantTeamName
+									if len(value.AlternatePlayerHeroes.HeroPlayCount)==0{
+										value.AlternatePlayerHeroes.HeroPlayCount=append(value.AlternatePlayerHeroes.HeroPlayCount,NewHeroCountArr[key2])
+									}else{
+										for _,value3:=range value.AlternatePlayerHeroes.HeroPlayCount{
+											if value3.Hero==NewHeroCountArr[key2].Hero&&value3.Version==NewHeroCountArr[key2].Hero{
+												value3.Count=value3.Count+1
+											}
+										}
+									}
+								}else{
+									value.AlternatePlayerHeroes.ClubTeamTag=NewCDotaGameInfo.DireTeamTag
+									value.AlternatePlayerHeroes.ClubTeam=NewCMsgDOTAMatch.DireTeamName
+									if len(value.AlternatePlayerHeroes.HeroPlayCount)==0{
+										value.AlternatePlayerHeroes.HeroPlayCount=append(value.AlternatePlayerHeroes.HeroPlayCount,NewHeroCountArr[key2])
+									}else{
+										for _,value3:=range value.AlternatePlayerHeroes.HeroPlayCount{
+											if value3.Hero==NewHeroCountArr[key2].Hero&&value3.Version==NewHeroCountArr[key2].Hero{
+												value3.Count=value3.Count+1
+											}
+										}
+									}
+								}	
+						}
+					}	
+				}
+			}
+		}
+	}
 
 	inserterr := c.Insert(&NewCDotaGameInfo)
 	inserterr2 := c2.Insert(&NewCMsgDOTAMatch)
 	inserterr3 := c3.Insert(&NewCMsgMatchDetails)
+	inserterr4 := c4.Insert(&NewTeamPlayer)
 	if inserterr!=nil{
 		fmt.Printf("数据库插入错误：%v\n",inserterr)
 	}
@@ -729,5 +972,8 @@ func Parse (version,demurl string){
 	}
 	if inserterr3!=nil{
 		fmt.Printf("CMsgMatchDetails插入错误：%v\n",inserterr3)
+	}
+	if inserterr4!=nil{
+		fmt.Printf("NewTeamPlayer插入错误：%v\n",inserterr4)
 	}
 }
