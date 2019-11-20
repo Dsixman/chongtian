@@ -6,18 +6,57 @@ import(
 	"strings"
 	"time"
 )
+/*type TeamPlayer struct{
+	PositionCarry Position `bson:"position_carry" json:"position_carry"`
+	PositionMid Position `bson:"position_mid" json:"position_mid"`
+	PositionHard Position `bson:"position_hard" json:"position_hard"`
+	PositionSoftSupport Position `bson:"position_soft_support" json:"position_soft_support"`
+	PositionHardSupport Position `bson:"position_hard_support" json:"position_hard_support"`
+}*/
+type TeamPlayerInfo struct{
+	AllPlayerInfo []*Player `json:"all_player_info" bson:"all_player_info"`
+}
+type Player struct{
+	MatchPlayerId string `bson:"match_player_id" json:"match_player_id"`
+	PlayerDota2Id uint32 `bson:"player_dota2_id" json:"player_dota2_id"`
+	PlayerSteamId uint64 `bson:"player_steam_id" json:"player_steam_id"`
+	SecondDota2Id uint32 `bson:"second_dota2_id" json:"second_dota2_id"`
+	ThirdDota2Id  uint32 `bson:"third_dota2_id" json:"third_dota2_id"`
+	Position string `bson:"position" json:"position"`
+	PlayerState string `bson:"player_state" json:"player_state"`
+	MatchPlayerHeroes *PlayerCommonHero `bson:"match_player_heroes" json:"match_player_heroes"`
+	AlternatePlayerHeroes *PlayerCommonHero `bson:"alternate_player_heroes" json:"alternate_player_heroes"`
+	OldClubPlayerHeroes *PlayerCommonHero`bson:"old_club_player_heroes" json:"old_club_player_heroes"`
+	RankPlayerHeroes []*HeroCount `bson:"rank_player_heroes" json:"rank_player_heroes"`
+}
+type HeroCount struct{
+	Hero string `bson:"hero" json:"hero"`
+	Version string `bson:"version" json:"version"`
+	Count int `bson:"count" json:"count"`
+}
+type PlayerCommonHero struct{
+	ClubTeam string `bson:"club_team" json:"club_team"`
+	ClubTeamTag string `bson:"club_team_tag" json:"club_team_tag"`
+	HeroPlayCount []*HeroCount `bson:"hero_play_count" json:"hero_play_count"`
+	Position string `bson:"position" json:"position"`
+} 
+
 type CDotaGameInfo struct{
 		//Id_       bson.ObjectId `bson:"_id" json:"_id,omitempty"`
-		Version string `bson:"version" json:"version"`
-		MatchId uint64 `bson:"match_id" json:"match_id"`
-		GameMode int32 `protobuf:"varint,2,opt,name=game_mode,json=gameMode" json:"game_mode,omitempty" bson:"game_mode,omitempty"`
-		GameWinner string `json:"game_winner,omitempty" bson:"game_winner"`
-		GameLoser string `json:"game_loser,omitempty" bson:game_loser`
-		Leagueid             uint32                                     `protobuf:"varint,5,opt,name=leagueid" json:"leagueid,omitempty" bson:"leagueid,omitempty"`
-		PicksBans            []*dota.CGameInfo_CDotaGameInfo_CHeroSelectEvent `protobuf:"bytes,6,rep,name=picks_bans,json=picksBans" json:"picks_bans,omitempty" bson:"picks_bans,omitempty"`
-		RadiantTeamTag       string                                     `protobuf:"bytes,9,opt,name=radiant_team_tag,json=radiantTeamTag" json:"radiant_team_tag,omitempty" bson:"radiant_team_tag,omitempty"`
-		DireTeamTag          string                                     `protobuf:"bytes,10,opt,name=dire_team_tag,json=direTeamTag" json:"dire_team_tag,omitempty" bson:"dire_team_tag,omitempty"`
-		EndTime              uint32                                     `protobuf:"varint,11,opt,name=end_time,json=endTime" json:"end_time,omitempty" bson:"end_time,omitempty"`
+	Version string `bson:"version" json:"version"`
+	MatchId uint64 `bson:"match_id" json:"match_id"`
+	GameMode int32 `protobuf:"varint,2,opt,name=game_mode,json=gameMode" json:"game_mode,omitempty" bson:"game_mode,omitempty"`
+	GameWinner string `json:"game_winner,omitempty" bson:"game_winner"`
+	GameLoser string `json:"game_loser,omitempty" bson:game_loser`
+	Leagueid             uint32                                     `protobuf:"varint,5,opt,name=leagueid" json:"leagueid,omitempty" bson:"leagueid,omitempty"`
+	PicksBans            []*dota.CGameInfo_CDotaGameInfo_CHeroSelectEvent `protobuf:"bytes,6,rep,name=picks_bans,json=picksBans" json:"picks_bans,omitempty" bson:"picks_bans,omitempty"`
+	RadiantTeamTag       string                                     `protobuf:"bytes,9,opt,name=radiant_team_tag,json=radiantTeamTag" json:"radiant_team_tag,omitempty" bson:"radiant_team_tag,omitempty"`
+	DireTeamTag          string                                     `protobuf:"bytes,10,opt,name=dire_team_tag,json=direTeamTag" json:"dire_team_tag,omitempty" bson:"dire_team_tag,omitempty"`
+	RadiantTeamName      string                             `protobuf:"bytes,23,opt,name=radiant_team_name,json=radiantTeamName" json:"radiant_team_name,omitempty" bson:"radiant_team_name,omitempty"`
+	DireTeamName         string                             `protobuf:"bytes,24,opt,name=dire_team_name,json=direTeamName" json:"dire_team_name,omitempty" bson:"dire_team_name,omitempty"`
+	EndTime              uint32                                     `protobuf:"varint,11,opt,name=end_time,json=endTime" json:"end_time,omitempty" bson:"end_time,omitempty"`
+	GameWinnerBp []*dota.CGameInfo_CDotaGameInfo_CHeroSelectEvent `json:"game_winer_bp,omitempty" bson:"game_winer_bp,omitempty"`
+	GameLoserBp []*dota.CGameInfo_CDotaGameInfo_CHeroSelectEvent `json:"game_loser_bp,omitempty" bson:"game_loser_bp,omitempty"`
 }
 
 
@@ -62,11 +101,11 @@ type HeroLastHit struct{
 }
 //击杀英雄的数量跟输赢关系不太大。关系最大的是阵容（大哥输出）是否被克制（在一定的经济差范围内）,前期被克制看后期团战（经济差不大的情况下）,
 type HeroGold struct{
-	Pre5MinGold float64 `bson:"pre_5min_gold" json:"pre_5min_gold"`
-	Pre10MinGold float64 `bson:"pre_10min_gold" json:"pre_10min_gold"`
-	Pre15MinGold float64 `bson:"pre_15min_gold" json:"pre_15min_gold"`
-	Pre20MinGold float64 `bson:"pre_20min_gold" json:"pre_20min_gold"`
-	Pre25MinGold float64 `bson:"pre_25min_gold" json:"pre_25min_gold"`
+	Pre5MinGold []float64 `bson:"pre_5min_gold" json:"pre_5min_gold"`
+	Pre10MinGold []float64 `bson:"pre_10min_gold" json:"pre_10min_gold"`
+	Pre15MinGold []float64 `bson:"pre_15min_gold" json:"pre_15min_gold"`
+	Pre20MinGold []float64 `bson:"pre_20min_gold" json:"pre_20min_gold"`
+	Pre25MinGold []float64 `bson:"pre_25min_gold" json:"pre_25min_gold"`
 }
 type TowerState struct{
 	Pre10MinTower uint32 `bson:"pre_10min_tower" json:"pre_10min_tower"`
@@ -104,11 +143,6 @@ type CMsgMatchDetails struct{
 	RadiantDestoryTower TowerState `bson:"radiant_destory_tower" json:"radiant_destory_tower"`
 	DireDestoryTower TowerState `bson:"dire_destory_tower" json:"dire_destory_tower"`
 }
-
-
-//选手英雄操作细节信息
-
-
 
 /*      游戏时间转换成字符串的函数                    */
 func Durformat(durint int64) string {
