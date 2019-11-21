@@ -50,13 +50,13 @@ type LoginController struct {
 }
 func (this *LoginController) Post() {
 	//var login Logindata
-	fmt.Printf("this.Ctx.Request :%v\n",this.Ctx.Request )
-	ob := &Logindata{};
-	json.Unmarshal(this.Ctx.Input.RequestBody, ob)
-	Name:=ob.Username
-	Password:=ob.Password
-	Captchakey:=ob.Captchakey
-	Captcha:=ob.Captcha
+	//fmt.Printf("this.Ctx.Request :%v\n",this.Ctx.Request )
+	obj := &Logindata{};
+	json.Unmarshal(this.Ctx.Input.RequestBody, obj)
+	Name:=obj.Username
+	Password:=obj.Password
+	Captchakey:=obj.Captchakey
+	Captcha:=obj.Captcha
 	//fmt.Printf("name:%v\n",Name)
 	errcode,loginstate,userinfo:=models.LoginValidate(Name,Password,Captchakey,Captcha)
 	fmt.Printf("errcode:%v",errcode)
