@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>admin</title>
+</head>
+<body>
+	<div>{{.Name}}</div>
+<form id="form" method="post" action="/adminlogin/" enctype="multipart/form-data">
+	<label for="name">名称：</label><input type="text" name="name">
+	<label for="pwd">密码：</label><input type="password" name="pwd">
+	<input type="submit">
+</form>
+</body>
+</html>
