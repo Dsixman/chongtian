@@ -61,8 +61,10 @@ func (this *LoginController) Post() {
 	errcode,loginstate,userinfo:=models.LoginValidate(Name,Password,Captchakey,Captcha)
 	fmt.Printf("errcode:%v",errcode)
 	userName:=userinfo.Name
+	privilege:=userinfo.Privilege
 	//fmt.Printf("userName:%v\n",userName)
 	this.SetSession("userName",userName)
+	this.SetSession("privilege",privilege)
 	//fmt.Printf("uinfo:%v",userinfo)
 	resp := make(map[string]interface{})
 	resp["loginState"] = loginstate
@@ -82,7 +84,7 @@ func (this *LoginController) Get() {
 	}else{
 		loginstate="false"
 		key,capstr:=models.CreateCaptcha()
-		fmt.Printf("key:%v\n",key)
+		//fmt.Printf("key:%v\n",key)
 		resp["loginState"] = loginstate
 		resp["capKey"] =key
 		resp["capStr"] =capstr
@@ -116,7 +118,16 @@ func (this *AuthController) Get(){
 	this.ServeJSON()
 }
 func (this *ReplayUploadController) Get() {
-	this.TplName = "replay.html"
+	v:=this.GetSession("userName")
+	if v!=nil{
+		//loginstate="true"
+		username:=v.(string)
+		this.Data["Name"]=username
+		this.TplName = "replay.html"
+	}else{
+		this.Redirect("/adminlogin", 302)	
+	}
+	
 }
 func(this *ReplayUploadController) Post() {
 	f, h, err := this.GetFile("myfile") //获取上传的文件
@@ -127,7 +138,6 @@ func(this *ReplayUploadController) Post() {
 	}
 	f.Close()                       //关闭上传的文件，不然的话会出现临时文件不能清除的情况
 	this.SaveToFile("myfile", path) //存文件
-	//fmt.Printf("version:%v\n",version)
 	models.Parse(version,path)
 	this.Redirect("/repupload/", 302)
 }
@@ -150,4 +160,45 @@ func (this *TestController) Post(){
 	this.Data["json"] = ob
 	this.ServeJSON()*/
 }
+type HeroDataController struct{
+	beego.Controller
+}
+func (this *HeroDataController) Get(){
+	//heroobj:=
+}
+type SetPlayerInfoController struct{
+	beego.Controller
+}
 
+type AdminLoginController struct{
+	beego.Controller
+}
+
+func (this *AdminLoginController) Get(){
+	v:=this.GetSession("userName")
+	v2:=this.GetSession("privilege")
+	var privilege int
+	if v!=nil{
+		//username:=v.(string)
+		if v2!=nil{
+			privilege=v2.(int)
+		}
+		if privilege!=1{
+			this.Redirect("/repupload/", 302)
+		}
+	}else{
+		this.TplName="adminlogin.html"	
+		this.Data["Name"]="请先登录"	
+	}
+	
+}
+func (this *AdminLoginController) Post(){
+	adminName:=this.GetString("name")
+	pwd:=this.GetString("pwd")
+	bl,privilege:=models.AdminLogin(adminName,pwd)	
+	if bl==true{
+		this.SetSession("userName",adminName)
+		this.SetSession("privilege",privilege)
+		this.Redirect("/repupload/", 302)
+	}
+}
