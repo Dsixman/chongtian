@@ -97,9 +97,6 @@ func getTeamBp(team string) *[][]*dota.CGameInfo_CDotaGameInfo_CHeroSelectEvent{
 	defer session.Close()  //一定要记得释放
     session.SetMode(mgo.Monotonic, true)
 	c := session.DB("dota2_big_data").C("CDotaGameInfo")
-	//{ $or: [ { status: "A" }, { qty: { $lt: 30 } } ] }
-	//err:=c.Find(bson.M{"RadiantTeamTag": team}).Select(bson.M{"PicksBans":1}).All(&NewCDotaGameInfo)
-	//err:=c.Find(bson.M{or:{"radiant_team_tag":team},{"dire_team_tag":team}}).Select(bson.M{"PicksBans":1}).All(&NewCDotaGameInfo)
 	err:=c.Find(bson.M{"$or": []bson.M{bson.M{"radiant_team_tag":team},bson.M{"dire_team_tag": team}}}).Select(bson.M{"PicksBans":1}).All(&NewCDotaGameInfo)
 	if err!=nil{
 		fmt.Printf("select bp has err:%v\n",err)
@@ -129,13 +126,13 @@ func getHeroBp(hero string) *[][]*dota.CGameInfo_CDotaGameInfo_CHeroSelectEvent{
 	return &teambp
 }
 //队伍各成员英雄池及各英雄使用次数
-func getTeamPlayer(team string) *obj.TeamPlayerInfo{
-	var NewTeamPlayer obj.TeamPlayerInfo
+func getTeamPlayer(team string) *obj.Player{
+	var NewTeamPlayer obj.Player
 	session := mongodb.CloneSession()
 	defer session.Close()  //一定要记得释放
     session.SetMode(mgo.Monotonic, true)
 	c := session.DB("dota2_big_data").C("player_info")
-	err:=c.Find(bson.M{"all_player_info.match_player_heroes.club_team":team}).All(&NewTeamPlayer)
+	err:=c.Find(bson.M{"match_player_heroes.club_team":team}).All(&NewTeamPlayer)
 	if err!=nil{
 		fmt.Printf("get hero bp has err:%v\n",err)
 	}
