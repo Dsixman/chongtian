@@ -6,22 +6,16 @@ import(
 	"strings"
 	"time"
 )
-/*type TeamPlayer struct{
-	PositionCarry Position `bson:"position_carry" json:"position_carry"`
-	PositionMid Position `bson:"position_mid" json:"position_mid"`
-	PositionHard Position `bson:"position_hard" json:"position_hard"`
-	PositionSoftSupport Position `bson:"position_soft_support" json:"position_soft_support"`
-	PositionHardSupport Position `bson:"position_hard_support" json:"position_hard_support"`
-}*/
-type TeamPlayerInfo struct{
-	AllPlayerInfo []*Player `json:"all_player_info" bson:"all_player_info"`
-}
+
 type Player struct{
-	MatchPlayerId string `bson:"match_player_id" json:"match_player_id"`
-	PlayerDota2Id uint32 `bson:"player_dota2_id" json:"player_dota2_id"`
+	MatchPlayerId string `bson:"player_register_string_id" json:"match_player_id"`
+	PlayerDota2NumId uint32 `bson:"player_dota2_register_num_id" json:"player_dota2_id"`
 	PlayerSteamId uint64 `bson:"player_steam_id" json:"player_steam_id"`
-	SecondDota2Id uint32 `bson:"second_dota2_id" json:"second_dota2_id"`
-	ThirdDota2Id  uint32 `bson:"third_dota2_id" json:"third_dota2_id"`
+	SecondNumId uint32 `bson:"second_num_id" json:"second_num_id"`
+	ThirdNumId  uint32 `bson:"third_num_id" json:"third_num_id"`
+	FourthNumId uint32 `bson:"fourth_num_id" json:"forth_num_id"`
+	TeamName string `bson:"team_name" json:"team_name"`
+	TeamNameTag string `bson:"team_name_tag" json:"team_name_tag"`
 	Position string `bson:"position" json:"position"`
 	PlayerState string `bson:"player_state" json:"player_state"`
 	MatchPlayerHeroes *PlayerCommonHero `bson:"match_player_heroes" json:"match_player_heroes"`
@@ -38,7 +32,7 @@ type PlayerCommonHero struct{
 	ClubTeam string `bson:"club_team" json:"club_team"`
 	ClubTeamTag string `bson:"club_team_tag" json:"club_team_tag"`
 	HeroPlayCount []*HeroCount `bson:"hero_play_count" json:"hero_play_count"`
-	Position string `bson:"position" json:"position"`
+	RankPosition string `bson:"rank_position" json:"rank_position"`
 } 
 
 type CDotaGameInfo struct{
