@@ -22,7 +22,7 @@ func Parse (version,demurl string){
 	c := db.C("CDotaGameInfo")
 	c2 := db.C("CMsgDOTAMatch")
 	c3 := db.C("CMsgMatchDetails")
-	c4:=db.C("player_info")//all_player_info
+	playerdb:=db.C("player_info")//all_player_info
 	//cteam_player := db.C("team_player")
 
 	f, err := os.Open(demurl)
@@ -37,11 +37,11 @@ func Parse (version,demurl string){
 	}
 	var NewCDotaGameInfo obj.CDotaGameInfo
 	var NewCMsgDOTAMatch obj.CMsgDOTAMatch
-	var NewTeamPlayer obj.TeamPlayerInfo
 	//var NewPlayer1,NewPlayer2,NewPlayer3,NewPlayer4,NewPlayer5,NewPlayer6,NewPlayer7,NewPlayer8,NewPlayer9,NewPlayer10 obj.Player
 	//var NewPlayer =[]obj.Player{&NewPlayer1,&NewPlayer2,&NewPlayer3,&NewPlayer4,&NewPlayer5,&NewPlayer6,&NewPlayer7,&NewPlayer8,&NewPlayer9,&NewPlayer10}
-	var NewHeroCount1,NewHeroCount2,NewHeroCount3,NewHeroCount4,NewHeroCount5,NewHeroCount6,NewHeroCount7,NewHeroCount8,NewHeroCount9,NewHeroCount10 obj.HeroCount
+/*	var NewHeroCount1,NewHeroCount2,NewHeroCount3,NewHeroCount4,NewHeroCount5,NewHeroCount6,NewHeroCount7,NewHeroCount8,NewHeroCount9,NewHeroCount10 obj.HeroCount
 	var NewHeroCountArr=[]*obj.HeroCount{&NewHeroCount1,&NewHeroCount2,&NewHeroCount3,&NewHeroCount4,&NewHeroCount5,&NewHeroCount6,&NewHeroCount7,&NewHeroCount8,&NewHeroCount9,&NewHeroCount10}
+	*/
 	var HeroIdArr []uint32
 	var AbilityArr=make([][]uint32,10)
 	var NewCMsgMatchDetails obj.CMsgMatchDetails
@@ -123,7 +123,7 @@ func Parse (version,demurl string){
 
 	//fmt.Printf("version:%v\n", version)
 	p.Callbacks.OnCDemoFileInfo(func(m *dota.CDemoFileInfo) error {
-		version:=version
+		//version:=version
 		NewCDotaGameInfo.Version=version
 		//fmt.Printf("NewCDotaGameInfo.Version:%v\n",NewCDotaGameInfo.Version)
 		NewCDotaGameInfo.MatchId=m.GetGameInfo().GetDota().GetMatchId()
@@ -691,6 +691,9 @@ func Parse (version,demurl string){
 	p.Start()
 	
 	NewCMsgDOTAMatch.MatchId=NewCDotaGameInfo.MatchId
+	NewCMsgMatchDetails.MatchId=NewCDotaGameInfo.MatchId
+	NewCMsgMatchDetails.RadiantTeamTag=NewCDotaGameInfo.RadiantTeamTag
+	NewCMsgMatchDetails.DireTeamTag=NewCDotaGameInfo.DireTeamTag
 	var ysdirelane string=""
 	var lsdirelane string=""
 	var diremidlane string=""
@@ -701,10 +704,6 @@ func Parse (version,demurl string){
 		value.Player=*NewCMsgDOTAMatch.Players[key].PlayerName
 		heroid:=*NewCMsgDOTAMatch.Players[key].HeroId
 		value.HeroName=HeroIDName[heroid]
-		/*err1:=cteam_player.find(bson.M{}).Select(bson.M{RadiantTeamTag:1}.One(&NewTeamPlayer))
-		if err1 !=nil{
-			fmt.Printf("teamplayer err:%v\n",err1)
-		}*/
 		ability:=value.AbilityUpgrades
 		lvl:=value.LevelUpTimes
 		for abilitykey,abilityvalue:=range ability {
@@ -714,8 +713,7 @@ func Parse (version,demurl string){
 			}
 		}
 		if goldtalenttime>300 && goldtalenttime<600{
-			goldtime1:=600-goldtalenttime
-			
+			goldtime1:=600-goldtalenttime	
 			talentgold1 = float64(goldtime1) * (talentgold / 60.0)
 			Pre10MinGold:=playersarr[key].Gold.Pre10MinGold[0]
 			Pre15MinGold:=playersarr[key].Gold.Pre15MinGold[0] 
@@ -760,8 +758,7 @@ func Parse (version,demurl string){
 				yslane=yslane+value.HeroName
 			}else{
 				ysdirelane=ysdirelane+value.HeroName
-			}
-			
+			}	
 		}
 		if (value.InitLane=="下路"){
 			
@@ -776,8 +773,120 @@ func Parse (version,demurl string){
 				midlane=midlane+value.HeroName
 			}else{
 				diremidlane=diremidlane+value.HeroName
+			}	
+		}
+		count,playerdberr:=playerdb.Find(bson.M{"player_dota2_register_num_id":value.AccountId}).Count()
+		if playerdberr!=nil{
+			fmt.Printf("playerdberr%v\n", playerdberr)
+		}
+		//fmt.Printf("version:%v\n",version)
+		if count==0{
+			newplayer:=obj.Player{}
+			newPlayerCommonHero:=obj.PlayerCommonHero{}
+			newHeroCount:=obj.HeroCount{}
+			newplayer.PlayerState="正式选手"
+			newplayer.MatchPlayerId=value.Player
+			newplayer.PlayerDota2NumId=value.AccountId
+			if key<4{
+				newplayer.TeamName=NewCMsgDOTAMatch.RadiantTeamName
+				newplayer.TeamNameTag=NewCDotaGameInfo.RadiantTeamTag
+				newPlayerCommonHero.ClubTeam=NewCMsgDOTAMatch.RadiantTeamName
+				newPlayerCommonHero.ClubTeamTag=NewCDotaGameInfo.RadiantTeamTag
+			}else{
+				newplayer.TeamName=NewCMsgDOTAMatch.RadiantTeamName
+				newplayer.TeamNameTag=NewCDotaGameInfo.RadiantTeamTag
+				newPlayerCommonHero.ClubTeam=NewCMsgDOTAMatch.DireTeamName
+				newPlayerCommonHero.ClubTeamTag=NewCDotaGameInfo.DireTeamTag
 			}
-			
+			newHeroCount.Hero=value.HeroName
+			newHeroCount.Count=1
+			//fmt.Printf("version:%v\n",version)
+			newHeroCount.Version=version
+			newPlayerCommonHero.HeroPlayCount=append(newPlayerCommonHero.HeroPlayCount,&newHeroCount)
+			if NewCDotaGameInfo.GameMode==2{
+				newplayer.MatchPlayerHeroes=&newPlayerCommonHero
+			}else{
+				newplayer.RankPlayerHeroes=append(newplayer.RankPlayerHeroes,&newHeroCount)
+			}
+			playerinserterr := playerdb.Insert(&newplayer)
+			if playerinserterr!=nil{
+				fmt.Printf("playerinserterr :%v\n", playerinserterr)
+			}
+			/*Updateerr:=playerdb.Update(bson.M{"Id_":1},bson.M{"$push":bson.M{&newplayer}})
+			if Updateerr!=nil{
+				fmt.Printf("Updateerr:%v\n", Updateerr)
+			}*/
+		}else{
+			if NewCDotaGameInfo.GameMode==2{
+				newplayer:=obj.Player{}
+				err:=playerdb.Find(bson.M{"player_dota2_register_num_id":value.AccountId}).Select(bson.M{"player_state":1}).Select(bson.M{"match_player_heroes":1}).One(&newplayer)
+				if err!=nil{
+					fmt.Printf("select hero_play_count err:%v\n", err)
+				}
+				heroplaycount:=newplayer.MatchPlayerHeroes.HeroPlayCount
+				Loop:
+				for _,v:=range heroplaycount{
+					if v.Version==version&&v.Hero==value.HeroName{
+						v.Count=v.Count+1
+						break Loop	
+					}
+				}
+				if key<4{
+					if (newplayer.PlayerState=="正式选手"&&newplayer.MatchPlayerHeroes.ClubTeam==NewCMsgDOTAMatch.RadiantTeamName) || (newplayer.PlayerState=="正式选手"&&NewCMsgDOTAMatch.RadiantTeamName==""){
+						updateerr:=playerdb.Update(bson.M{"player_dota2_register_num_id":value.AccountId},bson.M{"$set":bson.M{"match_player_heroes.hero_play_count":heroplaycount}})
+						if updateerr!=nil{
+							fmt.Printf("playerdberr%v\n", updateerr)
+						}	
+					}
+					/*if newplayer.PlayerState=="正式选手"&&newplayer.MatchPlayerHeroes.ClubTeam!=newplayer.TeamName{
+						newplayer.OldClubPlayerHeroes=newplayer.MatchPlayerHeroes
+						newplayer.MatchPlayerHeroes.ClubTeam=NewCMsgDOTAMatch.RadiantTeamName
+						newplayer.MatchPlayerHeroes.ClubTeamTag=NewCDotaGameInfo.RadiantTeamTag
+						newHeroCounts:=obj.HeroCount
+						newHeroCounts.Hero=value.HeroName
+						newHeroCounts.Version=version
+						newHeroCounts.Count=1
+						newplayer.MatchPlayerHeroes.HeroPlayCount=[]*obj.HeroCount{&newHeroCounts}
+						Updateerr:=playerdb.Update(bson.M{"all_player_info.player_dota2_register_num_id":value.AccountId},bson.M{"$push":bson.M{&newplayer.MatchPlayerHeroes}})
+					}*/	
+				}else{
+					if (newplayer.PlayerState=="正式选手"&&newplayer.MatchPlayerHeroes.ClubTeam==NewCMsgDOTAMatch.RadiantTeamName) || (newplayer.PlayerState=="正式选手"&&NewCMsgDOTAMatch.RadiantTeamName==""){
+						updateerr:=playerdb.Update(bson.M{"player_dota2_register_num_id":value.AccountId},bson.M{"$set":bson.M{"match_player_heroes.hero_play_count":heroplaycount}})	
+						if updateerr!=nil{
+							fmt.Printf("playerdberr%v\n", updateerr)
+						}
+					}
+					/*if newplayer.PlayerState=="正式选手"&&newplayer.MatchPlayerHeroes.ClubTeam!=newplayer.TeamName{
+						newplayer.OldClubPlayerHeroes=newplayer.MatchPlayerHeroes
+						newplayer.MatchPlayerHeroes.ClubTeam=NewCMsgDOTAMatch.DireTeamName
+						newplayer.MatchPlayerHeroes.ClubTeamTag=NewCDotaGameInfo.DireTeamTag
+						newHeroCounts:=obj.HeroCount
+						newHeroCounts.Hero=value.HeroName
+						newHeroCounts.Version=version
+						newHeroCounts.Count=1
+						newplayer.MatchPlayerHeroes.HeroPlayCount=[]*obj.HeroCount{&newHeroCounts}
+						Updateerr:=playerdb.Update(bson.M{"all_player_info.player_dota2_register_num_id":value.AccountId},bson.M{"$push":bson.M{&newplayer.MatchPlayerHeroes}})
+					}*/
+				}
+			}else{
+				newplayer:=obj.Player{}
+				err:=playerdb.Find(bson.M{"player_dota2_register_num_id":value.AccountId}).Select(bson.M{"match_player_heroes.hero_play_count":1}).One(&newplayer)
+				if err!=nil{
+					fmt.Printf("select hero_play_count err:%v\n", err)
+				}
+				heroplaycount:=newplayer.RankPlayerHeroes
+				loop:
+				for _,v:=range heroplaycount{
+					if v.Version==version&&v.Hero==value.HeroName{
+						v.Count=v.Count+1
+						break loop
+					}
+				}
+				updateerr:=playerdb.Update(bson.M{"player_dota2_register_num_id":value.AccountId},bson.M{"$set":bson.M{"rank_player_heroes":heroplaycount}})
+				if updateerr!=nil{
+					fmt.Printf("playerdberr%v\n", updateerr)
+				}
+			}
 		}
 
 	}
@@ -785,185 +894,11 @@ func Parse (version,demurl string){
 	lslane=lslane+"vs"+lsdirelane
 	midlane=midlane+"vs"+diremidlane
 	NewCMsgMatchDetails.AgainstHeroes=yslane+" "+lslane+" "+midlane
-	NewCMsgMatchDetails.MatchId=NewCDotaGameInfo.MatchId
-	NewCMsgMatchDetails.RadiantTeamTag=NewCDotaGameInfo.RadiantTeamTag
-	NewCMsgMatchDetails.DireTeamTag=NewCDotaGameInfo.DireTeamTag
 	NewCMsgMatchDetails.PlayersHeroesDets=playersarr
-	//fmt.Printf("NewCDotaGameInfo:%v\n",NewCDotaGameInfo)
-	/*for key,value:=range NewPlayer{
-			value.PlayerDota2Id=playersarr[key].AccountId
-			value.MatchPlayerId=playersarr[key].Player
-	}*/
-	allplayererr:=c4.Find(bson.M{}).Select(bson.M{"all_player_info":1}).All(&NewTeamPlayer)
-	if allplayererr!=nil{
-		fmt.Printf("allplayererr:%v\n", allplayererr)
-	}else{
-		for _,value:= range NewTeamPlayer.AllPlayerInfo{
-			if value.PlayerDota2Id==0{
-				for key2,value2:=range playersarr{
-					if value2.Player==value.MatchPlayerId{
-						value.PlayerDota2Id=value2.AccountId
-						NewHeroCountArr[key2].Version=version
-						NewHeroCountArr[key2].Hero=value2.HeroName
-						NewHeroCountArr[key2].Count=1
-						if NewCDotaGameInfo.GameMode==2{
-							if key2<=4{
-								value.MatchPlayerHeroes.ClubTeamTag=NewCDotaGameInfo.RadiantTeamTag
-								value.MatchPlayerHeroes.ClubTeam=NewCMsgDOTAMatch.RadiantTeamName
-								if len(value.MatchPlayerHeroes.HeroPlayCount)==0{
-									value.MatchPlayerHeroes.HeroPlayCount=append(value.MatchPlayerHeroes.HeroPlayCount,NewHeroCountArr[key2])
-								}else{
-									for _,value3:=range value.MatchPlayerHeroes.HeroPlayCount{
-										if value3.Hero==NewHeroCountArr[key2].Hero&&value3.Version==NewHeroCountArr[key2].Hero{
-											value3.Count=value3.Count+1
-										}
-									}
-								}
-							}else{
-								value.MatchPlayerHeroes.ClubTeamTag=NewCDotaGameInfo.DireTeamTag
-								value.MatchPlayerHeroes.ClubTeam=NewCMsgDOTAMatch.DireTeamName
-								if len(value.MatchPlayerHeroes.HeroPlayCount)==0{
-									value.MatchPlayerHeroes.HeroPlayCount=append(value.MatchPlayerHeroes.HeroPlayCount,NewHeroCountArr[key2])
-								}else{
-									for _,value3:=range value.MatchPlayerHeroes.HeroPlayCount{
-										if value3.Hero==NewHeroCountArr[key2].Hero&&value3.Version==NewHeroCountArr[key2].Hero{
-											value3.Count=value3.Count+1
-										}
-									}
-								}
-							}	
-						}else{
-							if key2<=4{
-								
-								if len(value.RankPlayerHeroes)==0{
-									value.RankPlayerHeroes=append(value.RankPlayerHeroes,NewHeroCountArr[key2])
-								}else{
-									for _,value3:=range value.RankPlayerHeroes{
-										if value3.Hero==NewHeroCountArr[key2].Hero&&value3.Version==NewHeroCountArr[key2].Hero{
-											value3.Count=value3.Count+1
-										}
-									}
-								}
-							}else{
-								
-								if len(value.RankPlayerHeroes)==0{
-									value.RankPlayerHeroes=append(value.RankPlayerHeroes,NewHeroCountArr[key2])
-								}else{
-									for _,value3:=range value.RankPlayerHeroes{
-										if value3.Hero==NewHeroCountArr[key2].Hero&&value3.Version==NewHeroCountArr[key2].Hero{
-											value3.Count=value3.Count+1
-										}
-									}
-								}
-							}	
-						}
-					}
-				}
-			}else{
-				if value.PlayerState=="正式选手"{
-					for key2,value2:=range playersarr{
-						if value2.Player==value.MatchPlayerId{
-							value.PlayerDota2Id=value2.AccountId
-							NewHeroCountArr[key2].Version=version
-							NewHeroCountArr[key2].Hero=value2.HeroName
-							NewHeroCountArr[key2].Count=1
-							if NewCDotaGameInfo.GameMode==2{
-								if key2<=4{
-									value.MatchPlayerHeroes.ClubTeamTag=NewCDotaGameInfo.RadiantTeamTag
-									value.MatchPlayerHeroes.ClubTeam=NewCMsgDOTAMatch.RadiantTeamName
-									if len(value.MatchPlayerHeroes.HeroPlayCount)==0{
-										value.MatchPlayerHeroes.HeroPlayCount=append(value.MatchPlayerHeroes.HeroPlayCount,NewHeroCountArr[key2])
-									}else{
-										for _,value3:=range value.MatchPlayerHeroes.HeroPlayCount{
-											if value3.Hero==NewHeroCountArr[key2].Hero&&value3.Version==NewHeroCountArr[key2].Hero{
-												value3.Count=value3.Count+1
-											}
-										}
-									}
-								}else{
-									value.MatchPlayerHeroes.ClubTeamTag=NewCDotaGameInfo.DireTeamTag
-									value.MatchPlayerHeroes.ClubTeam=NewCMsgDOTAMatch.DireTeamName
-									if len(value.MatchPlayerHeroes.HeroPlayCount)==0{
-										value.MatchPlayerHeroes.HeroPlayCount=append(value.MatchPlayerHeroes.HeroPlayCount,NewHeroCountArr[key2])
-									}else{
-										for _,value3:=range value.MatchPlayerHeroes.HeroPlayCount{
-											if value3.Hero==NewHeroCountArr[key2].Hero&&value3.Version==NewHeroCountArr[key2].Hero{
-												value3.Count=value3.Count+1
-											}
-										}
-									}
-								}	
-							}else{
-								if key2<=4{
-									
-									if len(value.RankPlayerHeroes)==0{
-										value.RankPlayerHeroes=append(value.RankPlayerHeroes,NewHeroCountArr[key2])
-									}else{
-										for _,value3:=range value.RankPlayerHeroes{
-											if value3.Hero==NewHeroCountArr[key2].Hero&&value3.Version==NewHeroCountArr[key2].Hero{
-												value3.Count=value3.Count+1
-											}
-										}
-									}
-								}else{
-									
-									if len(value.RankPlayerHeroes)==0{
-										value.RankPlayerHeroes=append(value.RankPlayerHeroes,NewHeroCountArr[key2])
-									}else{
-										for _,value3:=range value.RankPlayerHeroes{
-											if value3.Hero==NewHeroCountArr[key2].Hero&&value3.Version==NewHeroCountArr[key2].Hero{
-												value3.Count=value3.Count+1
-											}
-										}
-									}
-								}	
-							}
-						}
-					}
-				}
-				if value.PlayerState=="临时替补"{
-					for key2,value2:=range playersarr{
-						if value2.Player==value.MatchPlayerId{
-							value.PlayerDota2Id=value2.AccountId
-							NewHeroCountArr[key2].Version=version
-							NewHeroCountArr[key2].Hero=value2.HeroName
-							NewHeroCountArr[key2].Count=1							
-								if key2<=4{
-									value.AlternatePlayerHeroes.ClubTeamTag=NewCDotaGameInfo.RadiantTeamTag
-									value.AlternatePlayerHeroes.ClubTeam=NewCMsgDOTAMatch.RadiantTeamName
-									if len(value.AlternatePlayerHeroes.HeroPlayCount)==0{
-										value.AlternatePlayerHeroes.HeroPlayCount=append(value.AlternatePlayerHeroes.HeroPlayCount,NewHeroCountArr[key2])
-									}else{
-										for _,value3:=range value.AlternatePlayerHeroes.HeroPlayCount{
-											if value3.Hero==NewHeroCountArr[key2].Hero&&value3.Version==NewHeroCountArr[key2].Hero{
-												value3.Count=value3.Count+1
-											}
-										}
-									}
-								}else{
-									value.AlternatePlayerHeroes.ClubTeamTag=NewCDotaGameInfo.DireTeamTag
-									value.AlternatePlayerHeroes.ClubTeam=NewCMsgDOTAMatch.DireTeamName
-									if len(value.AlternatePlayerHeroes.HeroPlayCount)==0{
-										value.AlternatePlayerHeroes.HeroPlayCount=append(value.AlternatePlayerHeroes.HeroPlayCount,NewHeroCountArr[key2])
-									}else{
-										for _,value3:=range value.AlternatePlayerHeroes.HeroPlayCount{
-											if value3.Hero==NewHeroCountArr[key2].Hero&&value3.Version==NewHeroCountArr[key2].Hero{
-												value3.Count=value3.Count+1
-											}
-										}
-									}
-								}	
-						}
-					}	
-				}
-			}
-		}
-	}
-
 	inserterr := c.Insert(&NewCDotaGameInfo)
 	inserterr2 := c2.Insert(&NewCMsgDOTAMatch)
 	inserterr3 := c3.Insert(&NewCMsgMatchDetails)
-	inserterr4 := c4.Insert(&NewTeamPlayer)
+	//inserterr4 := c4.Insert(&NewTeamPlayer)
 	if inserterr!=nil{
 		fmt.Printf("数据库插入错误：%v\n",inserterr)
 	}
@@ -973,7 +908,5 @@ func Parse (version,demurl string){
 	if inserterr3!=nil{
 		fmt.Printf("CMsgMatchDetails插入错误：%v\n",inserterr3)
 	}
-	if inserterr4!=nil{
-		fmt.Printf("NewTeamPlayer插入错误：%v\n",inserterr4)
-	}
+	
 }
