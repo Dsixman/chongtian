@@ -94,12 +94,17 @@ type HeroLastHit struct{
 	Pre25Count uint32 `bson:"pre_25_count" json:"pre_25_count"`
 }
 //击杀英雄的数量跟输赢关系不太大。关系最大的是阵容（大哥输出）是否被克制（在一定的经济差范围内）,前期被克制看后期团战（经济差不大的情况下）,
+type GoldType struct{
+	LastHitGold float64 `bson:"last_hit_gold" json:"last_hit_gold"`
+	CombatGold float64 `bson:"combat_gold" json:"combat_gold"`
+	AllGold float64 `bson:"all_gold" json:"all_gold"` 
+}
 type HeroGold struct{
-	Pre5MinGold []float64 `bson:"pre_5min_gold" json:"pre_5min_gold"`
-	Pre10MinGold []float64 `bson:"pre_10min_gold" json:"pre_10min_gold"`
-	Pre15MinGold []float64 `bson:"pre_15min_gold" json:"pre_15min_gold"`
-	Pre20MinGold []float64 `bson:"pre_20min_gold" json:"pre_20min_gold"`
-	Pre25MinGold []float64 `bson:"pre_25min_gold" json:"pre_25min_gold"`
+	Pre5MinGold *GoldType `bson:"pre_5min_gold" json:"pre_5min_gold"`
+	Pre10MinGold *GoldType `bson:"pre_10min_gold" json:"pre_10min_gold"`
+	Pre15MinGold *GoldType `bson:"pre_15min_gold" json:"pre_15min_gold"`
+	Pre20MinGold *GoldType `bson:"pre_20min_gold" json:"pre_20min_gold"`
+	Pre25MinGold *GoldType `bson:"pre_25min_gold" json:"pre_25min_gold"`
 }
 type TowerState struct{
 	Pre10MinTower uint32 `bson:"pre_10min_tower" json:"pre_10min_tower"`
