@@ -252,19 +252,24 @@ func Parse (version,demurl string){
 			}
 			if (value.GetDotaTeam()==3){
 				var dotateam uint32=value.GetDotaTeam()
-
 				players:=value.GetPlayers()
 				for playerskey,playersvalue:=range players{	
-					playersarr[playerskey+5].AccountId=playersvalue.GetAccountId()
-					playersarr[playerskey+5].GameTeam=dotateam
-					playersarr[playerskey+5].PlayerSlot=playersvalue.GetPlayerSlot()
-					playersarr[playerskey+5].LevelUpTimes=playersvalue.GetLevelUpTimes()
-					AbilityArr[playerskey+5]=playersvalue.GetAbilityUpgrades()
-					//fmt.Printf("playersarr[playerskey].AbilityUpgrades：%v\n",playersarr[playerskey].AbilityUpgrades)
+					playerskey2:=playerskey+5
+					playersarr[playerskey2].AccountId=playersvalue.GetAccountId()
+					playersarr[playerskey2].GameTeam=dotateam
+					playersarr[playerskey2].PlayerSlot=playersvalue.GetPlayerSlot()
+					playersarr[playerskey2].LevelUpTimes=playersvalue.GetLevelUpTimes()
+					playersarr[playerskey2].AbilityUpgrades=playersvalue.GetAbilityUpgrades()
 					purchaseInfo:=playersvalue.GetInventorySnapshot()
+					items:=playersvalue.GetItems()
 					for _,itemvalue:=range purchaseInfo{
 						if itemvalue.GetGameTime()==0|| itemvalue.GetGameTime()==300 || itemvalue.GetGameTime()==600 || itemvalue.GetGameTime()==900 || itemvalue.GetGameTime()==1200{
-							playersarr[playerskey+5].InventorySnapshot=append(playersarr[playerskey+5].InventorySnapshot,itemvalue)
+							playersarr[playerskey2].InventorySnapshot=append(playersarr[playerskey2].InventorySnapshot,itemvalue)
+						}
+					}
+					for _,item:=range items{
+						if item.GetItemId()!=16&&item.GetItemId()!=17&&item.GetItemId()!=18&&item.GetItemId()!=19&&item.GetItemId()!=20&&item.GetItemId()!=40&&item.GetItemId()!=42&&item.GetItemId()!=43&&item.GetItemId()!=46{
+							playersarr[playerskey2].Item=append(playersarr[playerskey2].Item,item)
 						}
 					}	
 				}
@@ -568,17 +573,21 @@ func Parse (version,demurl string){
 					if target == value1 {
 						if math.Floor(float64(time)) > prev5 && gtimei[key1] < 1 {
 							allgold[key1] = allgold[key1] + 90.0*5.0
-							playersarr[key1].Gold.Pre5MinGold=append(playersarr[key1].Gold.Pre5MinGold,allgold[key1])
-							playersarr[key1].Gold.Pre5MinGold=append(playersarr[key1].Gold.Pre5MinGold,lasthitgold[key1])
-							playersarr[key1].Gold.Pre5MinGold=append(playersarr[key1].Gold.Pre5MinGold,combatgold[key1])
+							allgoldstruct:=&obj.GoldType{}
+							allgoldstruct.AllGold=allgold[key1]
+							allgoldstruct.LastHitGold=lasthitgold[key1]
+							allgoldstruct.CombatGold=combatgold[key1]
+							playersarr[key1].Gold.Pre5MinGold=allgoldstruct
 							gtimei[key1] = gtimei[key1] + 1
 						}
 						if math.Floor(float64(time)) > prev10 && gtimei[key1] < 2 {
 							gtimei[key1] = gtimei[key1] + 1
 							allgold[key1] = allgold[key1] + 90.0*5.0
-							playersarr[key1].Gold.Pre5MinGold=append(playersarr[key1].Gold.Pre5MinGold,allgold[key1])
-							playersarr[key1].Gold.Pre5MinGold=append(playersarr[key1].Gold.Pre5MinGold,lasthitgold[key1])
-							playersarr[key1].Gold.Pre5MinGold=append(playersarr[key1].Gold.Pre5MinGold,combatgold[key1])
+							allgoldstruct:=&obj.GoldType{}
+							allgoldstruct.AllGold=allgold[key1]
+							allgoldstruct.LastHitGold=lasthitgold[key1]
+							allgoldstruct.CombatGold=combatgold[key1]
+							playersarr[key1].Gold.Pre10MinGold=allgoldstruct
 							runegold[key1] = 0
 							deathgold[key1] = 0
 							buybackgold[key1] = 0
@@ -589,28 +598,13 @@ func Parse (version,demurl string){
 							killcouriergold[key1] = 0
 						}
 						if math.Floor(float64(time)) > prev15 && gtimei[key1] < 3 {
-							/*for i := 0; i < 10; i++ {
-								abilityorder1 := playersarr[i].AbilityUpgrades
-								for i2 := 0; i2 < len(abilityorder1); i2++ {
-									value := abilityorder1[i2]
-									if value == 5955 || value == 5956 || value == 6007 || value == 6008 || value == 5957 || value == 6026 || value == 6301 || value == 6318 || value == 6446||value==8005 {
-										goldtalenttime=int(playersarr[i].LevelUpTimes[i2-1])
-										talentgold = TalentGold[value]
-										if istalentgold == false {
-											goldtime1 := prev15 - float64(goldtalenttime)
-											talentgold1 = goldtime1 * (talentgold / 60.0)
-											istalentgold = true
-										} else {
-											talentgold1 = 5.0 * talentgold
-										}
-									}
-								}
-							}*/
 							gtimei[key1] = gtimei[key1] + 1
 							allgold[key1] = allgold[key1] + 90.0*5.0
-							playersarr[key1].Gold.Pre5MinGold=append(playersarr[key1].Gold.Pre5MinGold,allgold[key1])
-							playersarr[key1].Gold.Pre5MinGold=append(playersarr[key1].Gold.Pre5MinGold,lasthitgold[key1])
-							playersarr[key1].Gold.Pre5MinGold=append(playersarr[key1].Gold.Pre5MinGold,combatgold[key1])
+							allgoldstruct:=&obj.GoldType{}
+							allgoldstruct.AllGold=allgold[key1]
+							allgoldstruct.LastHitGold=lasthitgold[key1]
+							allgoldstruct.CombatGold=combatgold[key1]
+							playersarr[key1].Gold.Pre15MinGold=allgoldstruct
 							runegold[key1] = 0
 							deathgold[key1] = 0
 							buybackgold[key1] = 0
@@ -622,11 +616,12 @@ func Parse (version,demurl string){
 						}
 						if math.Floor(float64(time)) > prev20 && gtimei[key1] < 4 {
 							gtimei[key1] = gtimei[key1] + 1
-							allgold[key1] = allgold[key1] + 9.0*5.0
 							allgold[key1] = allgold[key1] + 90.0*5.0
-							playersarr[key1].Gold.Pre5MinGold=append(playersarr[key1].Gold.Pre5MinGold,allgold[key1])
-							playersarr[key1].Gold.Pre5MinGold=append(playersarr[key1].Gold.Pre5MinGold,lasthitgold[key1])
-							playersarr[key1].Gold.Pre5MinGold=append(playersarr[key1].Gold.Pre5MinGold,combatgold[key1])
+							allgoldstruct:=&obj.GoldType{}
+							allgoldstruct.AllGold=allgold[key1]
+							allgoldstruct.LastHitGold=lasthitgold[key1]
+							allgoldstruct.CombatGold=combatgold[key1]
+							playersarr[key1].Gold.Pre20MinGold=allgoldstruct
 							runegold[key1] = 0
 							deathgold[key1] = 0
 							buybackgold[key1] = 0
@@ -639,10 +634,11 @@ func Parse (version,demurl string){
 						if math.Floor(float64(time)) > prev25 && gtimei[key1] < 5 {
 							gtimei[key1] = gtimei[key1] + 1
 							allgold[key1] = allgold[key1] + 90.0*5.0
-							allgold[key1] = allgold[key1] + 90.0*5.0
-							playersarr[key1].Gold.Pre5MinGold=append(playersarr[key1].Gold.Pre5MinGold,allgold[key1])
-							playersarr[key1].Gold.Pre5MinGold=append(playersarr[key1].Gold.Pre5MinGold,lasthitgold[key1])
-							playersarr[key1].Gold.Pre5MinGold=append(playersarr[key1].Gold.Pre5MinGold,combatgold[key1])
+							allgoldstruct:=&obj.GoldType{}
+							allgoldstruct.AllGold=allgold[key1]
+							allgoldstruct.LastHitGold=lasthitgold[key1]
+							allgoldstruct.CombatGold=combatgold[key1]
+							playersarr[key1].Gold.Pre25MinGold=allgoldstruct
 							runegold[key1] = 0
 							deathgold[key1] = 0
 							buybackgold[key1] = 0
@@ -710,49 +706,58 @@ func Parse (version,demurl string){
 			if abilityvalue== 5955 || abilityvalue== 5956 || abilityvalue== 6007 || abilityvalue== 6008 ||abilityvalue== 5957 || abilityvalue== 6026 || abilityvalue== 6301 || abilityvalue == 6318 ||abilityvalue == 6446||abilityvalue==8005 {
 				goldtalenttime=int(lvl[abilitykey-1])
 				talentgold = TalentGold[abilityvalue]
+				goldtalenttime=int(lvl[abilitykey-1])
+				talentgold = TalentGold[abilityvalue]
+				if goldtalenttime>300 && goldtalenttime<600{
+					goldtime1:=600-goldtalenttime
+					talentgold1 = float64(goldtime1) * (talentgold / 60.0)
+					Pre10MinGold:=playersarr[key].Gold.Pre10MinGold.AllGold
+					Pre15MinGold:=playersarr[key].Gold.Pre15MinGold.AllGold 
+					playersarr[key].Gold.Pre10MinGold.AllGold=Pre10MinGold+talentgold1*float64(goldtime1)
+					playersarr[key].Gold.Pre15MinGold.AllGold=Pre15MinGold+talentgold1*5.0
+					if playersarr[key].Gold.Pre20MinGold!=nil{
+						Pre20MinGold:=playersarr[key].Gold.Pre20MinGold.AllGold
+						playersarr[key].Gold.Pre20MinGold.AllGold=Pre20MinGold+talentgold1*10.0
+					}
+					if playersarr[key].Gold.Pre25MinGold!=nil{
+						Pre25MinGold:=playersarr[key].Gold.Pre25MinGold.AllGold
+						playersarr[key].Gold.Pre25MinGold.AllGold=Pre25MinGold+talentgold1*15.0
+					}
+				}
+				if goldtalenttime>600 && goldtalenttime<900{
+					goldtime1:=900-goldtalenttime
+					talentgold1 = float64(goldtime1) * (talentgold / 60.0)
+					Pre15MinGold:=playersarr[key].Gold.Pre15MinGold.AllGold
+					playersarr[key].Gold.Pre15MinGold.AllGold=Pre15MinGold+talentgold1*float64(goldtime1)
+					if playersarr[key].Gold.Pre20MinGold!=nil{
+						Pre20MinGold:=playersarr[key].Gold.Pre20MinGold.AllGold
+						playersarr[key].Gold.Pre20MinGold.AllGold=Pre20MinGold+talentgold1*5.0
+					}
+					if playersarr[key].Gold.Pre25MinGold!=nil{
+						Pre25MinGold:=playersarr[key].Gold.Pre25MinGold.AllGold
+						playersarr[key].Gold.Pre25MinGold.AllGold=Pre25MinGold+talentgold1*10.0
+					}					
+				}
+				if goldtalenttime>900 && goldtalenttime<1200{
+					goldtime1:=1200-goldtalenttime
+					talentgold1 = float64(goldtime1) * (talentgold / 60.0)
+					Pre20MinGold:=playersarr[key].Gold.Pre20MinGold.AllGold
+					playersarr[key].Gold.Pre20MinGold.AllGold=Pre20MinGold+talentgold1*float64(goldtime1)
+					if playersarr[key].Gold.Pre25MinGold!=nil{
+						Pre25MinGold:=playersarr[key].Gold.Pre25MinGold.AllGold
+						playersarr[key].Gold.Pre25MinGold.AllGold=Pre25MinGold+talentgold1*5.0
+					}	
+				}
+				if goldtalenttime>1200 && goldtalenttime<1500{
+					goldtime1:=1500-goldtalenttime
+					talentgold1 = float64(goldtime1) * (talentgold / 60.0)
+					if playersarr[key].Gold.Pre25MinGold!=nil{
+						Pre25MinGold:=playersarr[key].Gold.Pre25MinGold.AllGold
+						playersarr[key].Gold.Pre25MinGold.AllGold=Pre25MinGold+talentgold1*float64(goldtime1)
+					}					
+				}
 			}
 		}
-		if goldtalenttime>300 && goldtalenttime<600{
-			goldtime1:=600-goldtalenttime	
-			talentgold1 = float64(goldtime1) * (talentgold / 60.0)
-			Pre10MinGold:=playersarr[key].Gold.Pre10MinGold[0]
-			Pre15MinGold:=playersarr[key].Gold.Pre15MinGold[0] 
-			Pre20MinGold:=playersarr[key].Gold.Pre20MinGold[0]
-			Pre25MinGold:=playersarr[key].Gold.Pre25MinGold[0]
-			playersarr[key].Gold.Pre10MinGold[0]=Pre10MinGold+talentgold1*float64(goldtime1)
-			playersarr[key].Gold.Pre15MinGold[0]=Pre15MinGold+talentgold1*5.0
-			playersarr[key].Gold.Pre20MinGold[0]=Pre20MinGold+talentgold1*5.0
-			playersarr[key].Gold.Pre25MinGold[0]=Pre25MinGold+talentgold1*5.0
-		}
-		if goldtalenttime>600 && goldtalenttime<900{
-			goldtime1:=900-goldtalenttime
-			
-			talentgold1 = float64(goldtime1) * (talentgold / 60.0)
-//			playersarr[key].Gold.Pre10MinGold=playersarr[key].Gold.Pre10MinGold+talentgold1
-			Pre15MinGold:=playersarr[key].Gold.Pre15MinGold[0] 
-			Pre20MinGold:=playersarr[key].Gold.Pre20MinGold[0]
-			Pre25MinGold:=playersarr[key].Gold.Pre25MinGold[0]
-			playersarr[key].Gold.Pre15MinGold[0]=Pre15MinGold+talentgold1*float64(goldtime1)
-			playersarr[key].Gold.Pre20MinGold[0]=Pre20MinGold+talentgold1*5.0
-			playersarr[key].Gold.Pre25MinGold[0]=Pre25MinGold+talentgold1*5.0
-		}
-		if goldtalenttime>900 && goldtalenttime<1200{
-			goldtime1:=900-goldtalenttime
-			
-			talentgold1 = float64(goldtime1) * (talentgold / 60.0)
-			Pre20MinGold:=playersarr[key].Gold.Pre20MinGold[0]
-			Pre25MinGold:=playersarr[key].Gold.Pre25MinGold[0]
-			playersarr[key].Gold.Pre20MinGold[0]=Pre20MinGold+talentgold1*float64(goldtime1)
-			playersarr[key].Gold.Pre25MinGold[0]=Pre25MinGold+talentgold1*5.0
-		}
-		if goldtalenttime>1200 && goldtalenttime<1500{
-			goldtime1:=1500-goldtalenttime
-			
-			talentgold1 = float64(goldtime1) * (talentgold / 60.0)
-			Pre25MinGold:=playersarr[key].Gold.Pre25MinGold[0]
-			playersarr[key].Gold.Pre25MinGold[0]=Pre25MinGold+talentgold1*float64(goldtime1)
-		}
-		
 		if (value.InitLane=="上路"){	
 			if(value.GameTeam==2){
 				yslane=yslane+value.HeroName
@@ -779,7 +784,6 @@ func Parse (version,demurl string){
 		if playerdberr!=nil{
 			fmt.Printf("playerdberr%v\n", playerdberr)
 		}
-		//fmt.Printf("version:%v\n",version)
 		if count==0{
 			newplayer:=obj.Player{}
 			newPlayerCommonHero:=obj.PlayerCommonHero{}
@@ -800,7 +804,6 @@ func Parse (version,demurl string){
 			}
 			newHeroCount.Hero=value.HeroName
 			newHeroCount.Count=1
-			//fmt.Printf("version:%v\n",version)
 			newHeroCount.Version=version
 			newPlayerCommonHero.HeroPlayCount=append(newPlayerCommonHero.HeroPlayCount,&newHeroCount)
 			if NewCDotaGameInfo.GameMode==2{
@@ -898,7 +901,6 @@ func Parse (version,demurl string){
 	inserterr := c.Insert(&NewCDotaGameInfo)
 	inserterr2 := c2.Insert(&NewCMsgDOTAMatch)
 	inserterr3 := c3.Insert(&NewCMsgMatchDetails)
-	//inserterr4 := c4.Insert(&NewTeamPlayer)
 	if inserterr!=nil{
 		fmt.Printf("数据库插入错误：%v\n",inserterr)
 	}
