@@ -702,7 +702,6 @@ func Parse (version string,demurl string,fname string) string{
 			return nil
 		})
 		p.Start()
-		value.Gold.Pre5MinGold.TestGold=value.Gold.Pre5MinGold.TestGold
 		NewCMsgDOTAMatch.MatchId=NewCDotaGameInfo.MatchId
 		NewCMsgMatchDetails.MatchId=NewCDotaGameInfo.MatchId
 		NewCMsgMatchDetails.RadiantTeamTag=NewCDotaGameInfo.RadiantTeamTag
@@ -714,6 +713,7 @@ func Parse (version string,demurl string,fname string) string{
 			if value.InitLane==""{
 				value.InitLane="打野"
 			}
+			value.Gold.Pre5MinGold.TestGold=value.Gold.Pre5MinGold.TestGold
 			value.Player=*NewCMsgDOTAMatch.Players[key].PlayerName
 			heroid:=*NewCMsgDOTAMatch.Players[key].HeroId
 			value.HeroName=HeroIDName[heroid]
