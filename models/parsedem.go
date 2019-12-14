@@ -43,11 +43,6 @@ func Parse (version string,demurl string,fname string) string{
 		}
 		var NewCDotaGameInfo obj.CDotaGameInfo
 		var NewCMsgDOTAMatch obj.CMsgDOTAMatch
-		//var NewPlayer1,NewPlayer2,NewPlayer3,NewPlayer4,NewPlayer5,NewPlayer6,NewPlayer7,NewPlayer8,NewPlayer9,NewPlayer10 obj.Player
-		//var NewPlayer =[]obj.Player{&NewPlayer1,&NewPlayer2,&NewPlayer3,&NewPlayer4,&NewPlayer5,&NewPlayer6,&NewPlayer7,&NewPlayer8,&NewPlayer9,&NewPlayer10}
-	/*	var NewHeroCount1,NewHeroCount2,NewHeroCount3,NewHeroCount4,NewHeroCount5,NewHeroCount6,NewHeroCount7,NewHeroCount8,NewHeroCount9,NewHeroCount10 obj.HeroCount
-		var NewHeroCountArr=[]*obj.HeroCount{&NewHeroCount1,&NewHeroCount2,&NewHeroCount3,&NewHeroCount4,&NewHeroCount5,&NewHeroCount6,&NewHeroCount7,&NewHeroCount8,&NewHeroCount9,&NewHeroCount10}
-		*/
 		var HeroIdArr []uint32
 		var AbilityArr=make([][]uint32,10)
 		var NewCMsgMatchDetails obj.CMsgMatchDetails
@@ -108,16 +103,17 @@ func Parse (version string,demurl string,fname string) string{
 		var goldtalenttime int
 		var talentgold float64
 		var talentgold1 float64
-		//var istalentgold bool
 		var allgold = []float64{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}
 		var runegold = []float64{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}
 		var deathgold = []float64{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}
 		var buybackgold = []float64{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}
 		var killwardgold = []float64{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}
 		var lasthitgold = []float64{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}
+		var creepsgold = []float64{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}
 		var combatgold = []float64{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}
 		var killtowergold = []float64{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}
 		var roshangold = []float64{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}
+		var pregold float64
 
 		var killcouriergold = []float64{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0} //击杀信使获得的金钱*/
 		var denies = []uint32{0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
@@ -127,18 +123,12 @@ func Parse (version string,demurl string,fname string) string{
 		var radiantkilltower uint32
 		var direkilltower uint32
 
-		//fmt.Printf("version:%v\n", version)
 		p.Callbacks.OnCDemoFileInfo(func(m *dota.CDemoFileInfo) error {
-			//version:=version
 			NewCDotaGameInfo.Version=version
-			//fmt.Printf("NewCDotaGameInfo.Version:%v\n",NewCDotaGameInfo.Version)
 			NewCDotaGameInfo.MatchId=m.GetGameInfo().GetDota().GetMatchId()
 			NewCDotaGameInfo.GameMode=m.GetGameInfo().GetDota().GetGameMode()
-			//NewCDotaGameInfo.PlayerInfo=m.GetGameInfo().GetDota().GetPlayerInfo()
 			NewCDotaGameInfo.Leagueid=m.GetGameInfo().GetDota().GetLeagueid()
 			NewCDotaGameInfo.PicksBans=m.GetGameInfo().GetDota().GetPicksBans()
-			//NewCDotaGameInfo.RadiantTeamId=m.GetGameInfo().GetDota().GetRadiantTeamId()
-			//NewCDotaGameInfo.DireTeamId=m.GetGameInfo().GetDota().GetDireTeamId()
 			NewCDotaGameInfo.RadiantTeamTag=m.GetGameInfo().GetDota().GetRadiantTeamTag()
 			NewCDotaGameInfo.DireTeamTag=m.GetGameInfo().GetDota().GetDireTeamTag()		
 			NewCDotaGameInfo.EndTime=m.GetGameInfo().GetDota().GetEndTime()
@@ -240,8 +230,6 @@ func Parse (version string,demurl string,fname string) string{
 						playersarr[playerskey].LevelUpTimes=playersvalue.GetLevelUpTimes()
 						playersarr[playerskey].AbilityUpgrades=playersvalue.GetAbilityUpgrades()
 						AbilityArr[playerskey]=playersvalue.GetAbilityUpgrades()
-						//fmt.Printf("AbilityArr[playerskey]%v\n", AbilityArr[playerskey])
-						//AbilityArr[][]=append(AbilityArr[],playersvalue.GetAbilityUpgrades())
 						purchaseInfo:=playersvalue.GetInventorySnapshot()
 						items:=playersvalue.GetItems()
 						for _,itemvalue:=range purchaseInfo{
@@ -454,14 +442,23 @@ func Parse (version string,demurl string,fname string) string{
 					//attackerteam1 := m.GetAttackerTeam()
 					targetteam1 := m.GetTargetTeam()
 					for key, value := range heroslice {
-						//
 						istargethero := m.GetIsTargetHero()
 						istargettower := m.GetIsTargetBuilding()
 						damagesource := int(m.GetDamageSourceName())
 						attackerteam := m.GetAttackerTeam()
 						target := m.GetTargetName()
 						targetteam := m.GetTargetTeam()
+						targetsource:=m.GetTargetSourceName()
 						//正补反补
+
+						if target==99&&damagesource == value{								
+									playersarr[key].KillCourierCount=playersarr[key].KillCourierCount+1
+						}
+						if target==99&&targetsource == uint32(value){
+									deathtime:=float64(time-starttime-27.0)
+									deathtimeuint:=uint32(int(math.Floor(deathtime)))
+									playersarr[key].CourierDeathTime=append(playersarr[key].CourierDeathTime,deathtimeuint)
+						}
 						if istargethero == false && target != 279 && damagesource == value && target != 184 {
 							if math.Floor(float64(time)) > prev5 && timei[key] < 1 && !istargettower {
 								var herolasthit, herodenies uint32
@@ -472,12 +469,15 @@ func Parse (version string,demurl string,fname string) string{
 								} else {
 									herodenies = denies[key] - 1
 								}
+
 								playersarr[key].LastHit=&obj.HeroLastHit{}
 								playersarr[key].Denis=&obj.HeroLastHit{}
 								playersarr[key].LastHit.Pre5Count=herolasthit
 								playersarr[key].Denis.Pre5Count=herodenies
 								//*dota2lasthit[key] = strconv.FormatInt(herolasthit, 10) + " " + strconv.FormatInt(herodenies, 10) + ","
 								timei[key] = timei[key] + 1
+								playersarr[key].Gold.Pre5MinGold.CreepsGold=creepsgold[key]
+
 							}
 							if math.Floor(float64(time)) > prev10 && timei[key] < 2 && !istargettower {
 								var herolasthit, herodenies uint32
@@ -492,6 +492,7 @@ func Parse (version string,demurl string,fname string) string{
 								playersarr[key].Denis.Pre10Count=herodenies
 								//*dota2lasthit[key] = *dota2lasthit[key] + strconv.FormatInt(herolasthit, 10) + " " + strconv.FormatInt(herodenies, 10) + ","
 								timei[key] = timei[key] + 1
+								playersarr[key].Gold.Pre10MinGold.CreepsGold=creepsgold[key]
 							}
 							if math.Floor(float64(time)) > prev15 && timei[key] < 3 && !istargettower {
 								var herolasthit, herodenies uint32
@@ -506,6 +507,7 @@ func Parse (version string,demurl string,fname string) string{
 								playersarr[key].Denis.Pre15Count=herodenies
 								//*dota2lasthit[key] = *dota2lasthit[key] + strconv.FormatInt(herolasthit, 10) + " " + strconv.FormatInt(herodenies, 10) + ","
 								timei[key] = timei[key] + 1
+								playersarr[key].Gold.Pre15MinGold.CreepsGold=creepsgold[key]
 							}
 							if math.Floor(float64(time)) > prev20 && timei[key] < 4 && !istargettower {
 								var herolasthit, herodenies uint32
@@ -520,6 +522,7 @@ func Parse (version string,demurl string,fname string) string{
 								playersarr[key].Denis.Pre20Count=herodenies
 								//*dota2lasthit[key] = *dota2lasthit[key] + strconv.FormatInt(herolasthit, 10) + " " + strconv.FormatInt(herodenies, 10) + ","
 								timei[key] = timei[key] + 1
+								playersarr[key].Gold.Pre20MinGold.CreepsGold=creepsgold[key]
 							}
 							if math.Floor(float64(time)) > prev25 && timei[key] < 5 && !istargettower {
 								var herolasthit, herodenies uint32
@@ -534,9 +537,14 @@ func Parse (version string,demurl string,fname string) string{
 								playersarr[key].Denis.Pre25Count=herodenies
 								//*dota2lasthit[key] = *dota2lasthit[key] + strconv.FormatInt(herolasthit, 10) + " " + strconv.FormatInt(herodenies, 10)
 								timei[key] = timei[key] + 1
+								playersarr[key].Gold.Pre25MinGold.CreepsGold=creepsgold[key]
 							}
 							if attackerteam == targetteam {
 								denies[key] = denies[key] + 1
+							}
+
+							if targetteam!=2&&targetteam!=3{
+								creepsgold[key]=creepsgold[key]+pregold
 							}
 						}
 					}
@@ -572,15 +580,15 @@ func Parse (version string,demurl string,fname string) string{
 							direkilltower = direkilltower + 1
 						}
 					}
-
 				}
 				//金钱
 				if msgtype == 8 {
 					target := int(m.GetTargetName())
+					//premsgtype=msgtype
 					for key1, value1 := range heroslice {
 						if target == value1 {
 							if math.Floor(float64(time)) > prev5 && gtimei[key1] < 1 {
-								allgold[key1] = allgold[key1] + 90.0*5.0
+								allgold[key1] = allgold[key1]
 								allgoldstruct:=&obj.GoldType{}
 								allgoldstruct.AllGold=allgold[key1]
 								allgoldstruct.LastHitGold=lasthitgold[key1]
@@ -591,7 +599,7 @@ func Parse (version string,demurl string,fname string) string{
 							}
 							if math.Floor(float64(time)) > prev10 && gtimei[key1] < 2 {
 								gtimei[key1] = gtimei[key1] + 1
-								allgold[key1] = allgold[key1] + 90.0*5.0
+								allgold[key1] = allgold[key1]
 								allgoldstruct:=&obj.GoldType{}
 								allgoldstruct.AllGold=allgold[key1]
 								allgoldstruct.LastHitGold=lasthitgold[key1]
@@ -608,7 +616,7 @@ func Parse (version string,demurl string,fname string) string{
 							}
 							if math.Floor(float64(time)) > prev15 && gtimei[key1] < 3 {
 								gtimei[key1] = gtimei[key1] + 1
-								allgold[key1] = allgold[key1] + 90.0*5.0
+								allgold[key1] = allgold[key1]
 								allgoldstruct:=&obj.GoldType{}
 								allgoldstruct.AllGold=allgold[key1]
 								allgoldstruct.LastHitGold=lasthitgold[key1]
@@ -625,7 +633,7 @@ func Parse (version string,demurl string,fname string) string{
 							}
 							if math.Floor(float64(time)) > prev20 && gtimei[key1] < 4 {
 								gtimei[key1] = gtimei[key1] + 1
-								allgold[key1] = allgold[key1] + 90.0*5.0
+								allgold[key1] = allgold[key1]
 								allgoldstruct:=&obj.GoldType{}
 								allgoldstruct.AllGold=allgold[key1]
 								allgoldstruct.LastHitGold=lasthitgold[key1]
@@ -642,7 +650,7 @@ func Parse (version string,demurl string,fname string) string{
 							}
 							if math.Floor(float64(time)) > prev25 && gtimei[key1] < 5 {
 								gtimei[key1] = gtimei[key1] + 1
-								allgold[key1] = allgold[key1] + 90.0*5.0
+								allgold[key1] = allgold[key1]
 								allgoldstruct:=&obj.GoldType{}
 								allgoldstruct.AllGold=allgold[key1]
 								allgoldstruct.LastHitGold=lasthitgold[key1]
@@ -659,6 +667,7 @@ func Parse (version string,demurl string,fname string) string{
 							}
 							u := float64(int32(m.GetValue()))
 							allgold[key1] = allgold[key1] + u
+							pregold=u
 							if m.GetGoldReason() == 0 {
 								runegold[key1] = runegold[key1] + u
 							}
@@ -687,14 +696,13 @@ func Parse (version string,demurl string,fname string) string{
 								killcouriergold[key1] = killcouriergold[key1] + u
 							}
 						}
-
 					}
 				}
 			}
 			return nil
 		})
 		p.Start()
-		
+		value.Gold.Pre5MinGold.TestGold=value.Gold.Pre5MinGold.TestGold
 		NewCMsgDOTAMatch.MatchId=NewCDotaGameInfo.MatchId
 		NewCMsgMatchDetails.MatchId=NewCDotaGameInfo.MatchId
 		NewCMsgMatchDetails.RadiantTeamTag=NewCDotaGameInfo.RadiantTeamTag
@@ -711,13 +719,389 @@ func Parse (version string,demurl string,fname string) string{
 			value.HeroName=HeroIDName[heroid]
 			ability:=value.AbilityUpgrades
 			lvl:=value.LevelUpTimes
+			//假设有信使死亡
+		var allsalary float64
+		var nowlvluptime uint32
+		var reborntime uint32
+		var deathnextlvltime uint32
+		var deathduration uint32
+		var deathlvl int
+		for lvlkey,nextlvluptime:=range lvl{
+			 persecsalary:=(83.0+(2.0*float64(lvlkey+1)))/60.0
+			 if lvlkey!=0{
+			 	nowlvluptime=lvl[lvlkey-1]
+			 }
+			 perlvlsalary:=persecsalary*float64(nextlvluptime-nowlvluptime)
+			 allsalary=allsalary+perlvlsalary
+			 
+			 if nextlvluptime>300&&nowlvluptime<=300{ 	
+			 	value.Gold.Pre5MinGold.AllGold=value.Gold.Pre5MinGold.AllGold+allsalary-persecsalary*float64(nextlvluptime-300)
+			 	value.Gold.Pre5MinGold.TestGold=value.Gold.Pre5MinGold.TestGold+allsalary-persecsalary*float64(nextlvluptime-300)
+			 }
+			 if nextlvluptime>600&&nowlvluptime<=600{
+			 	value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold+allsalary-persecsalary*float64(nextlvluptime-600)
+			 	value.Gold.Pre10MinGold.TestGold=value.Gold.Pre10MinGold.TestGold+allsalary-persecsalary*float64(nextlvluptime-600)
+			 }
+			 if nextlvluptime>900&&nowlvluptime<=900{
+			 	value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold+allsalary-persecsalary*float64(nextlvluptime-900)
+			 	value.Gold.Pre15MinGold.TestGold=value.Gold.Pre15MinGold.TestGold+allsalary-persecsalary*float64(nextlvluptime-900)
+			 }
+			 if nextlvluptime>1200&&nowlvluptime<=1200{
+			 	value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold+allsalary-persecsalary*float64(nextlvluptime-1200)
+			 	value.Gold.Pre20MinGold.TestGold=value.Gold.Pre20MinGold.TestGold+allsalary-persecsalary*float64(nextlvluptime-1200)
+			 }
+			 if nextlvluptime>1500&&nowlvluptime<=1500{
+			 	value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold+allsalary-persecsalary*float64(nextlvluptime-1500)
+			 	value.Gold.Pre25MinGold.TestGold=value.Gold.Pre25MinGold.TestGold+allsalary-persecsalary*float64(nextlvluptime-1500)
+			 }
+			 			 
+			 if len(value.CourierDeathTime)>0{
+			 	for _,deathtime:=range value.CourierDeathTime{
+			 		if deathtime>=nowlvluptime&&deathtime<nextlvluptime&&deathtime<300{			
+			 			deathduration=uint32(50+7*(lvlkey+1))
+			 			reborntime=deathtime+deathduration
+			 			deathnextlvltime=nextlvluptime
+			 			deathlvl=lvlkey+2
+			 			if reborntime<=nextlvluptime&&nextlvluptime<300{
+			 				value.Gold.Pre5MinGold.AllGold=value.Gold.Pre5MinGold.AllGold-persecsalary*float64(deathduration)
+			 				value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-persecsalary*float64(deathduration)
+			 				value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(deathduration)
+			 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(deathduration)
+			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(deathduration)
+			 			}
+
+			 			if reborntime<=nextlvluptime&&reborntime<=300&&nextlvluptime>300{
+			 				value.Gold.Pre5MinGold.AllGold=value.Gold.Pre5MinGold.AllGold-persecsalary*float64(deathduration)
+			 				value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-persecsalary*float64(deathduration)
+			 				value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(deathduration)
+			 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(deathduration)
+			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(deathduration)
+			 			}
+
+			 			if reborntime>nextlvluptime&&nextlvluptime<300{
+			 				value.Gold.Pre5MinGold.AllGold=value.Gold.Pre5MinGold.AllGold-persecsalary*float64(nextlvluptime-deathtime)
+			 				value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-persecsalary*float64(nextlvluptime-deathtime)
+			 				value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(nextlvluptime-deathtime)
+			 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(nextlvluptime-deathtime)
+			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-deathtime)
+			 			}
+
+			 			if reborntime>nextlvluptime&&nextlvluptime>=300{
+			 				value.Gold.Pre5MinGold.AllGold=value.Gold.Pre5MinGold.AllGold-persecsalary*float64(300-deathtime)
+			 				value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-persecsalary*float64(300-deathtime)
+			 				value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(300-deathtime)
+			 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(300-deathtime)
+			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(300-deathtime)
+			 			}
+
+			 			if reborntime<=nextlvluptime&&reborntime>300{
+			 				value.Gold.Pre5MinGold.AllGold=value.Gold.Pre5MinGold.AllGold-persecsalary*float64(300-deathtime)
+			 				value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-persecsalary*float64(300-deathtime)
+			 				value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(300-deathtime)
+			 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(300-deathtime)
+			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(300-deathtime)
+			 			}	 
+			 		}
+			 		if nowlvluptime>=300&&deathtime>=nowlvluptime&&deathtime<nextlvluptime&&deathtime<600{
+			 			deathduration=uint32(50+7*(lvlkey+1))
+			 			reborntime:=deathtime+deathduration
+			 			if reborntime<=nextlvluptime&&nextlvluptime<600{
+			 				value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-persecsalary*float64(deathduration)
+			 				value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(deathduration)
+			 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(deathduration)
+			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(deathduration)
+			 			}
+
+			 			if reborntime<=nextlvluptime&&reborntime<=600&&nextlvluptime>600{
+			 				value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-persecsalary*float64(deathduration)
+			 				value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(deathduration)
+			 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(deathduration)
+			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(deathduration)
+			 			}
+
+			 			if reborntime>nextlvluptime&&nextlvluptime<600{
+			 				value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-persecsalary*float64(nextlvluptime-deathtime)
+			 				value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(nextlvluptime-deathtime)
+			 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(nextlvluptime-deathtime)
+			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-deathtime)
+			 			}
+
+			 			if reborntime>nextlvluptime&&nextlvluptime>=600{
+			 				value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-persecsalary*float64(300-deathtime)
+			 				value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(300-deathtime)
+			 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(300-deathtime)
+			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(300-deathtime)
+			 			}
+
+			 			if reborntime<=nextlvluptime&&reborntime>600{
+			 				value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-persecsalary*float64(300-deathtime)
+			 				value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(300-deathtime)
+			 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(300-deathtime)
+			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(300-deathtime)
+			 			}	 
+			 		}
+			 		if nowlvluptime>=600&&deathtime>=nowlvluptime&&deathtime<nextlvluptime&&deathtime<900{
+			 			deathduration=uint32(50+7*(lvlkey+1))
+			 			reborntime:=deathtime+deathduration
+			 			if reborntime<=nextlvluptime&&nextlvluptime<900{
+			 				value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(deathduration)
+			 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(deathduration)
+			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(deathduration)
+			 			}
+
+			 			if reborntime<=nextlvluptime&&reborntime<=900&&nextlvluptime>900{
+			 				value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(deathduration)
+			 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(deathduration)
+			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(deathduration)
+			 			}
+
+			 			if reborntime>nextlvluptime&&nextlvluptime<900{
+			 				value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(nextlvluptime-deathtime)
+			 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(nextlvluptime-deathtime)
+			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-deathtime)
+			 			}
+
+
+			 			if reborntime>nextlvluptime&&nextlvluptime>=900{
+			 				value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(900-deathtime)
+			 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(900-deathtime)
+			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(900-deathtime)
+			 			}
+
+			 			if reborntime<=nextlvluptime&&reborntime>00{
+			 				value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(900-deathtime)
+			 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(900-deathtime)
+			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(900-deathtime)
+			 			}	 
+			 		}
+			 		if nowlvluptime>=900&&deathtime>=nowlvluptime&&deathtime<nextlvluptime&&deathtime<1200{
+			 			deathduration=uint32(50+7*(lvlkey+1))
+			 			reborntime:=deathtime+deathduration
+			 			if reborntime<=nextlvluptime&&nextlvluptime<1200{
+			 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(deathduration)
+			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(deathduration)
+			 			}
+
+			 			if reborntime<=nextlvluptime&&reborntime<=1200&&nextlvluptime>1200{
+			 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(deathduration)
+			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(deathduration)
+			 			}
+
+			 			if reborntime>nextlvluptime&&nextlvluptime<1200{
+			 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(nextlvluptime-deathtime)
+			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-deathtime)
+			 			}
+
+
+			 			if reborntime>nextlvluptime&&nextlvluptime>=1200{
+			 				value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-persecsalary*float64(1200-deathtime)
+			 				value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(1200-deathtime)
+			 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(1200-deathtime)
+			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(1200-deathtime)
+			 			}
+
+			 			if reborntime<=nextlvluptime&&reborntime>1200{
+			 				value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-persecsalary*float64(1200-deathtime)
+			 				value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(1200-deathtime)
+			 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(1200-deathtime)
+			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(1200-deathtime)
+			 			}	 
+			 		}
+			 		if nowlvluptime>=1200&&deathtime>=nowlvluptime&&deathtime<nextlvluptime&&deathtime<1500{
+			 			deathduration=uint32(50+7*(lvlkey+1))
+			 			reborntime:=deathtime+deathduration
+			 			if reborntime<=nextlvluptime&&nextlvluptime<1500{
+			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(deathduration)
+			 			}
+
+			 			if reborntime<=nextlvluptime&&reborntime<=1500&&nextlvluptime>1500{
+			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(deathduration)
+			 			}
+
+			 			if reborntime>nextlvluptime&&nextlvluptime<1500{
+			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-deathtime)
+			 			}
+
+
+			 			if reborntime>nextlvluptime&&nextlvluptime>=1500{
+
+			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(1500-deathtime)
+			 			}
+
+			 			if reborntime<=nextlvluptime&&reborntime>1500{
+			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(1500-deathtime)
+			 			}	 
+			 		}
+			 		if deathtime<deathnextlvltime&&deathnextlvltime==nowlvluptime{
+			 			if reborntime<nextlvluptime {
+			 				if nextlvluptime<300{
+			 					value.Gold.Pre5MinGold.AllGold=value.Gold.Pre5MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					value.Gold.Pre10MinGold.AllGold=value.Gold.Pre5MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					value.Gold.Pre15MinGold.AllGold=value.Gold.Pre5MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre5MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre5MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 				}
+			 				if deathnextlvltime<300&&nextlvluptime>300&&reborntime<300{
+			 					value.Gold.Pre5MinGold.AllGold=value.Gold.Pre5MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					value.Gold.Pre15MinGold.AllGold=value.Gold.Pre5MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre5MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre5MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 				}
+			 				if deathnextlvltime<300&&nextlvluptime>300&&reborntime>=300{
+			 					value.Gold.Pre5MinGold.AllGold=value.Gold.Pre5MinGold.AllGold-float64(300-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-float64(nextlvluptime-300)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-float64(nextlvluptime-300)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-float64(nextlvluptime-300)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-float64(nextlvluptime-300)*((83.0+(2.0*float64(deathlvl)))/60)
+			 				}
+
+			 				if nowlvluptime>=300&&nextlvluptime<600{
+			 					value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 				}
+			 				if nowlvluptime>=300&&deathnextlvltime<600&&nextlvluptime>600&&reborntime<600{
+			 					value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 				}
+			 				if nowlvluptime>=300&&deathnextlvltime<600&&nextlvluptime>600&&reborntime>=600{
+			 					value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-float64(600-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-float64(nextlvluptime-600)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-float64(nextlvluptime-600)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-float64(nextlvluptime-600)*((83.0+(2.0*float64(deathlvl)))/60)
+			 				}
+
+			 				if nowlvluptime>=600&&nextlvluptime<900{
+			 					value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 				}
+			 				if nowlvluptime>=600&&deathnextlvltime<900&&nextlvluptime>900&&reborntime<900{
+			 					value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 				}
+			 				if nowlvluptime>=600&&deathnextlvltime<900&&nextlvluptime>900&&reborntime>=900{
+			 					value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-float64(900-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-float64(nextlvluptime-900)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-float64(nextlvluptime-900)*((83.0+(2.0*float64(deathlvl)))/60)
+			 				}
+
+			 				if nowlvluptime>=900&&nextlvluptime<1200{
+			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 				}
+			 				if nowlvluptime>=900&&deathnextlvltime<1200&&nextlvluptime>1200&&reborntime<1200{
+			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 				}
+			 				if nowlvluptime>=900&&deathnextlvltime<1200&&nextlvluptime>1200&&reborntime>=1200{
+			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-float64(1200-nextlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-float64(nextlvluptime-1200)*((83.0+(2.0*float64(deathlvl)))/60)
+			 				}
+			 				if nowlvluptime>=1200&&nextlvluptime<1500{
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 				}
+			 				if nowlvluptime>=1200&&deathnextlvltime<1500&&nextlvluptime>1500&&reborntime<1500{
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 				}
+			 				if nowlvluptime>=1200&&deathnextlvltime<1500&&nextlvluptime>1500&&reborntime>=1500{
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-float64(nextlvluptime-1200)*((83.0+(2.0*float64(deathlvl)))/60)
+			 				}
+
+			 			}	 			
+			 		}
+			 		if deathtime<nowlvluptime&&reborntime>=nextlvluptime{
+			 				if nextlvluptime<300{
+			 					value.Gold.Pre5MinGold.AllGold=value.Gold.Pre5MinGold.AllGold-persecsalary*float64(nextlvluptime-nowlvluptime)
+			 					value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-persecsalary*float64(nextlvluptime-nowlvluptime)
+			 					value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(nextlvluptime-nowlvluptime)
+			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(nextlvluptime-nowlvluptime)
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-nowlvluptime)
+			 					deathnextlvltime=nextlvluptime
+			 					deathlvl=lvlkey+2
+			 					
+			 				}
+			 				if nowlvluptime>300&&nextlvluptime<=600{
+			 					value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-persecsalary*float64(nextlvluptime-nowlvluptime)
+			 					value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(nextlvluptime-nowlvluptime)
+			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(nextlvluptime-nowlvluptime)
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-nowlvluptime)
+			 					deathnextlvltime=nextlvluptime
+			 					deathlvl=lvlkey+2
+			 				}
+			 				if nowlvluptime>600&&nextlvluptime<=900{
+			 					value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(nextlvluptime-nowlvluptime)
+			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(nextlvluptime-nowlvluptime)
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-nowlvluptime)
+			 					deathnextlvltime=nextlvluptime
+			 					deathlvl=lvlkey+2
+			 				}
+			 				if nowlvluptime>900&&nextlvluptime<=1200{
+			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(nextlvluptime-nowlvluptime)
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-nowlvluptime)
+			 					deathnextlvltime=nextlvluptime
+			 					deathlvl=lvlkey+2
+			 				}
+			 				if nowlvluptime>1200&&nextlvluptime<=1500{
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-nowlvluptime)
+			 					deathnextlvltime=nextlvluptime
+			 					deathlvl=lvlkey+2
+			 				}
+			 				if nowlvluptime<300&&nextlvluptime>=300&&nextlvluptime<600{
+			 					value.Gold.Pre5MinGold.AllGold=value.Gold.Pre5MinGold.AllGold-persecsalary*float64(300-nowlvluptime)
+			 					value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-persecsalary*float64(nextlvluptime-reborntime)
+			 					value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(nextlvluptime-reborntime)
+			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(nextlvluptime-reborntime)
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-reborntime)
+			 					deathnextlvltime=nextlvluptime
+			 					deathlvl=lvlkey+2
+			 				}
+			 				if nowlvluptime<600&&nextlvluptime>=600&&nextlvluptime<900{
+			 					value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-persecsalary*float64(600-nowlvluptime)
+			 					value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(nextlvluptime-reborntime)
+			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(nextlvluptime-reborntime)
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-reborntime)
+			 					deathnextlvltime=nextlvluptime
+			 					deathlvl=lvlkey+2
+			 				}
+			 				if nowlvluptime<900&&nextlvluptime>=900&&nextlvluptime<1200{
+			 					value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(900-nowlvluptime)
+			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(nextlvluptime-reborntime)
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-reborntime)
+			 					deathnextlvltime=nextlvluptime
+			 					deathlvl=lvlkey+2
+			 				}
+			 				if nowlvluptime<1200&&nextlvluptime>=1200&&nextlvluptime<1500{
+			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(1200-nowlvluptime)
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-reborntime)
+			 					deathnextlvltime=nextlvluptime
+			 					deathlvl=lvlkey+2
+			 				}
+			 				if nowlvluptime<1500&&nextlvluptime>=1500&&nextlvluptime<2000{
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(1500-nowlvluptime)
+			 					deathnextlvltime=nextlvluptime
+			 					deathlvl=lvlkey+2
+			 				}
+			 			
+			 		}
+			 	}
+			 }
+		}
+
+
 			for abilitykey,abilityvalue:=range ability {
 				if abilityvalue== 5955 || abilityvalue== 5956 || abilityvalue== 6007 || abilityvalue== 6008 ||abilityvalue== 5957 || abilityvalue== 6026 || abilityvalue== 6301 || abilityvalue == 6318 ||abilityvalue == 6446||abilityvalue==8005 {
 					goldtalenttime=int(lvl[abilitykey-1])
 					talentgold = TalentGold[abilityvalue]
 					goldtalenttime=int(lvl[abilitykey-1])
 					talentgold = TalentGold[abilityvalue]
-					if goldtalenttime>300 && goldtalenttime<600{
+
+					if goldtalenttime>300 && goldtalenttime<=600{
 						goldtime1:=600-goldtalenttime
 						talentgold1 = float64(goldtime1) * (talentgold / 60.0)
 						Pre10MinGold:=playersarr[key].Gold.Pre10MinGold.AllGold
@@ -733,7 +1117,7 @@ func Parse (version string,demurl string,fname string) string{
 							playersarr[key].Gold.Pre25MinGold.AllGold=Pre25MinGold+talentgold1*15.0
 						}
 					}
-					if goldtalenttime>600 && goldtalenttime<900{
+					if goldtalenttime>600 && goldtalenttime<=900{
 						goldtime1:=900-goldtalenttime
 						talentgold1 = float64(goldtime1) * (talentgold / 60.0)
 						Pre15MinGold:=playersarr[key].Gold.Pre15MinGold.AllGold
@@ -747,7 +1131,7 @@ func Parse (version string,demurl string,fname string) string{
 							playersarr[key].Gold.Pre25MinGold.AllGold=Pre25MinGold+talentgold1*10.0
 						}					
 					}
-					if goldtalenttime>900 && goldtalenttime<1200{
+					if goldtalenttime>900 && goldtalenttime<=1200{
 						goldtime1:=1200-goldtalenttime
 						talentgold1 = float64(goldtime1) * (talentgold / 60.0)
 						Pre20MinGold:=playersarr[key].Gold.Pre20MinGold.AllGold
@@ -757,7 +1141,7 @@ func Parse (version string,demurl string,fname string) string{
 							playersarr[key].Gold.Pre25MinGold.AllGold=Pre25MinGold+talentgold1*5.0
 						}	
 					}
-					if goldtalenttime>1200 && goldtalenttime<1500{
+					if goldtalenttime>1200 && goldtalenttime<=1500{
 						goldtime1:=1500-goldtalenttime
 						talentgold1 = float64(goldtime1) * (talentgold / 60.0)
 						if playersarr[key].Gold.Pre25MinGold!=nil{
