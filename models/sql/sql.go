@@ -13,3 +13,4 @@ func init() {
     orm.RegisterDataBase("default", "mysql", "root:zhengzhihui123@/dota2_admin?charset=utf8")
     orm.RegisterModel(new(User))
 }
+

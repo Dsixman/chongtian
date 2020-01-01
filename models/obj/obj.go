@@ -97,7 +97,9 @@ type HeroLastHit struct{
 type GoldType struct{
 	LastHitGold float64 `bson:"last_hit_gold" json:"last_hit_gold"`
 	CombatGold float64 `bson:"combat_gold" json:"combat_gold"`
-	AllGold float64 `bson:"all_gold" json:"all_gold"` 
+	CreepsGold float64 `bson:"creeps_gold" json:"creeps_gold"`
+	AllGold float64 `bson:"all_gold" json:"all_gold"`
+	TestGold float64 `bson:"test_gold" json:"test_gold"` 
 }
 type HeroGold struct{
 	Pre5MinGold *GoldType `bson:"pre_5min_gold" json:"pre_5min_gold"`
@@ -111,16 +113,17 @@ type TowerState struct{
 	Pre20MinTower uint32 `bson:"pre_20min_tower" json:"pre_20min_tower"`
 	Pre30MinTower uint32 `bson:"pre_30min_tower" json:"pre_30min_tower"`
 }
+
 type PlayersHeroInfo struct{
 	GameTeam uint32  `bson:"game_team" json:"game_team"`//天辉夜魇
 	HeroName string  `bson:"hero_name" json:"hero_name"`
 	Player string `bson:"player" json:"player"`
 	AccountId            uint32   `protobuf:"varint,1,opt,name=account_id,json=accountId" json:"account_id,omitempty"`
 	PlayerSlot           uint32 `protobuf:"varint,3,opt,name=player_slot,json=playerSlot" json:"player_slot,omitempty"`
-	LastHit HeroLastHit `bson:"last_hit,omitempty" json:"last_hit"`//每5分钟补刀数
-	Denis HeroLastHit `bson:"denis,omitempty" json:"denis"`//每5分钟反补数
+	LastHit *HeroLastHit `bson:"last_hit,omitempty" json:"last_hit"`//每5分钟补刀数
+	Denis *HeroLastHit `bson:"denis,omitempty" json:"denis"`//每5分钟反补数
 	LevelUpTimes         []uint32  `protobuf:"varint,22,rep,name=level_up_times,json=levelUpTimes" json:"level_up_times,omitempty" bson:"level_up_times,omitempty"`
-	Gold HeroGold `bson:"gold,omitempty" json:"gold,omitempty"`//每5分钟金钱信息 
+	Gold *HeroGold `bson:"gold,omitempty" json:"gold,omitempty"`//每5分钟金钱信息 
 	//Consumables []*ConsumablesInfo `bson:"Consumables" json:"Consumables"`//中单对线消耗品使用
 	//PurchaseInfo []*dota.CDOTAMatchMetadata_Team_ItemPurchase  `bson:"purchase_Info" json:"purchase_Info"`//装备购买信息 
 	AbilityUpgrades []uint32  `bson:"ability_upgrades" json:"ability_upgrades"`//技能加点升级信息
@@ -129,18 +132,38 @@ type PlayersHeroInfo struct{
 	//PureLastHitPec float32 `bson:"pure_last_hit_pec" json:"pure_last_hit"`
 	InventorySnapshot []*dota.CDOTAMatchMetadata_Team_InventorySnapshot `bson:"inventory_snap_shot" json:"inventory_snap_shot"`
 	Item []*dota.CDOTAMatchMetadata_Team_ItemPurchase `protobuf:"bytes,6,rep,name=items" json:"items,omitempty"`
-
+	CourierDeathTime []uint32 `bson:"courier_death_time" json:"courier_death_time" ` 
+	KillCourierCount int `bson:"kill_courier_count" json:"kill_courier_count"`
 	//Lane AgainstLaneInfo `bson:"against_lane_info,omitempty" json:"against_lane_info,omitempty"`
 }
 
 type CMsgMatchDetails struct{
-	MatchId              uint64                             `protobuf:"varint,6,opt,name=match_id,json=matchId" json:"match_id,omitempty" bson:"match_id,omitempty"`
-	RadiantTeamTag       string                             `protobuf:"bytes,37,opt,name=radiant_team_tag,json=radiantTeamTag" json:"radiant_team_tag,omitempty" bson:"radiant_team_tag,omitempty"`
-	DireTeamTag          string                             `protobuf:"bytes,38,opt,name=dire_team_tag,json=direTeamTag" json:"dire_team_tag,omitempty" bson:"dire_team_tag,omitempty"`
+	MatchId              uint64   `protobuf:"varint,6,opt,name=match_id,json=match_Id" json:"match_id,omitempty" bson:"match_id,omitempty"`
+	RadiantTeamTag       string   `protobuf:"bytes,37,opt,name=radiant_team_tag,json=radiantTeamTag" json:"radiant_team_tag,omitempty" bson:"radiant_team_tag,omitempty"`
+	DireTeamTag          string   `protobuf:"bytes,38,opt,name=dire_team_tag,json=direTeamTag" json:"dire_team_tag,omitempty" bson:"dire_team_tag,omitempty"`
 	PlayersHeroesDets	     []*PlayersHeroInfo `bson:"players_heroes_dets" json:"players_heroes_dets"`
 	AgainstHeroes 		 string `bson:"AgainstHeroes" json:"AgainstHeroes"`	
 	RadiantDestoryTower TowerState `bson:"radiant_destory_tower" json:"radiant_destory_tower"`
 	DireDestoryTower TowerState `bson:"dire_destory_tower" json:"dire_destory_tower"`
+}
+
+type League struct{
+	SeriesId uint32 `bson:"series_id" json:"series_id"`
+	LeagueId uint32 `bson:"league_id" json:"league_id"`
+	LeagueIcon string `bson:"league_icon" json:"league_icon"`
+	LeagueName string `bson:"league_name" json:"league_name"`
+}
+
+type Team struct{
+	TeamName  string `bson:"team_name" json:"team_name"`
+	TeamTagName  string `bson:"team_tag_name" json:"team_tag_name"`
+	TeamId uint32 `bson:"team_id" json:"team_id"`
+	TeamCarry string `bson:"team_carry" json:"team_carry"`
+	TeamMid string `bson:"team_mid" json:"team_mid"`
+	TeamHard string `bson:"team_hard" json:"team_hard"`
+	TeamSoftSupport string `bson:"team_soft_support" json:"team_soft_support"`
+	TeamHardSupport string `bson:"team_hard_support" json:"team_hard_support"`
+	TeamIcon string `bson:"team_icon" json:"team_icon"`
 }
 
 /*      游戏时间转换成字符串的函数                    */

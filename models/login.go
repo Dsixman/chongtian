@@ -9,11 +9,11 @@ _ "github.com/go-sql-driver/mysql"
     "fmt"
 )
 
-func LoginValidate(username string,password string, idkey string, verifyValue string) (string ,string,*sql.User){
+func LoginValidate(username string,password string, idkey string, verifyValue string) (string ,bool,*sql.User){
 	o := orm.NewOrm()
 	o.Using("default")
 	var Userinfo sql.User
-	var loginstate string
+	var loginstate bool
 	var errcode string
 	data := []byte(password)
 	has := md5.Sum(data)
@@ -30,14 +30,14 @@ func LoginValidate(username string,password string, idkey string, verifyValue st
 	if verifyResult {
 		exist := o.QueryTable("user").Filter("name", username).Filter("password", Password).Exist()
 		if exist {
-			loginstate="true"
+			loginstate=true
 			err:=o.QueryTable("user").Filter("name", username).One(&Userinfo)
 			if err!=nil{
 				fmt.Printf("queryerr:%v\n",err)
 			}
 		}else{	
 			errcode="用户不存在"
-			loginstate="false"
+			loginstate=false
 		}
 	}else{
 		errcode="验证码错误"
@@ -61,9 +61,27 @@ func Test(username,password string) *sql.User {
 		if err!=nil{
 			fmt.Printf("queryerr:%v\n",err)
 		}
-	fmt.Printf("查询到的用户信息:%v\n",&Userinfo)
+	//fmt.Printf("查询到的用户信息:%v\n",&Userinfo)
 	return &Userinfo
 }
 
+func AdminLogin(username string,password string) (bool,int){
+	o := orm.NewOrm()
+	o.Using("default")
+	
+	data := []byte(password)
+	has := md5.Sum(data)
+	Password := fmt.Sprintf("%x", has) 
+	fmt.Printf("Password:%v\n",Password)
+	exist := o.QueryTable("user").Filter("name", username).Filter("password", Password).Exist()
+	var Userinfo sql.User
+	err:=o.QueryTable("user").Filter("name", username).One(&Userinfo)
+		if err!=nil{
+			fmt.Printf("queryerr:%v\n",err)
+		}
+	privilege:=Userinfo.Privilege
+	//fmt.Printf("exist:%v\n",exist)//返回的是布尔型
+	return exist, privilege
+}
 
 

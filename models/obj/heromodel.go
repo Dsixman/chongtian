@@ -4,16 +4,18 @@ import(
 )
 
 type HeroModel struct {
-	HeroName string `json:"hero_name,omitempty"`
-	Id uint32 `json:"HeroID,omitempty" bson:"HeroID,omitempty"`
-	ImgUrl string `json:"ImgUrl,omitempty" bson:"ImgUrl,omitempty"`
-	Abilities []*Ability `json:"Abilities,omitempty"`
+	HeroName string `json:"Name"`
+	HeroID uint32 `json:"HeroID" bson:"HeroID"`
+	HeroIcon string `json:"HeroIcon" bson:"HeroIcon"`
+	StatusHealthRegen float64  `json:"StatusHealthRegen" bson:"StatusHealthRegen"`
+	StatusManaRegen float64 `json:"StatusManaRegen" bson:"StatusManaRegen"`
+	Ability []*Ability `json:"Ability"`
 	Talent []*Ability `json:"Talent"`
 	Role string `json:"Role" bson:"Role"`
 	ArmorPhysical int `json:"ArmorPhysical" bson:"ArmorPhysical"`
 	AttackDamageMin int `json:"AttackDamageMin" bson:"AttackDamageMin"`
 	AttackDamageMax int `json:"AttackDamageMax" bson:"AttackDamageMax"`
-	AttackRate int `json:"AttackRate" bson:"AttackRate"`
+	AttackRate float64 `json:"AttackRate" bson:"AttackRate"`
 	AttackRange string `json:"AttackRange" bson:"AttackRange"`
 	AttributePrimary string `json:"AttributePrimary" bson:"AttributePrimary"`
 	AttributeBaseStrength int `json:"AttributeBaseStrength" bson:"AttributeBaseStrength"`
@@ -33,31 +35,32 @@ type AllNpcHeroes struct{
 type NpcHeroes struct{
 	Role string `json:"Role" bson:"Role"`
 	HeroName string `json:"Name" bson:"Name"`
-	Id uint32 `json:"HeroID" bson:"HeroID"`
-	Abilities1 string `json:"Abilities1,omitempty" bson:"Abilities1"`
-	Abilities2 string `json:"Abilities2,omitempty" bson:"Abilities2"`
-	Abilities3 string `json:"Abilities3,omitempty" bson:"Abilities3"`
-	Abilities4 string `json:"Abilities4,omitempty" bson:"Abilities4"`
-	Abilities5 string `json:"Abilities5,omitempty" bson:"Abilities5"`
-	Abilities6 string `json:"Abilities6,omitempty" bson:"Abilities6"`
-	Abilities7 string `json:"Abilities7,omitempty" bson:"Abilities7"`
-	Abilities8 string `json:"Abilities8,omitempty" bson:"Abilities8"`
-	Abilities9 string `json:"Abilities9,omitempty" bson:"Abilities9"`
-	Abilities10 string `json:"Abilities10,omitempty" bson:"Abilities10"`
-	Abilities11 string `json:"Abilities11,omitempty" bson:"Abilities11"`
-	Abilities12 string `json:"Abilities12,omitempty" bson:"Abilities12"`
-	Abilities13 string `json:"Abilities13,omitempty" bson:"Abilities13"`
-	Abilities14 string `json:"Abilities14,omitempty" bson:"Abilities14"`
-	Abilities15 string `json:"Abilities15,omitempty" bson:"Abilities15"`
-	Abilities16 string `json:"Abilities16,omitempty" bson:"Abilities16"`
-	Abilities17 string `json:"Abilities17,omitempty" bson:"Abilities17"`
-	Abilities18 string `json:"Abilities18,omitempty" bson:"Abilities18,omitempty"`
-	Abilities19 string `json:"Abilities19,omitempty" bson:"Abilities19,omitempty"`
-	Abilities20 string `json:"Abilities20,omitempty" bson:"Abilities20,omitempty"`
-	Abilities21 string `json:"Abilities21,omitempty" bson:"Abilities21,omitempty"`
-	Abilities22 string `json:"Abilities22,omitempty" bson:"Abilities22,omitempty"`
-	Abilities23 string `json:"Abilities23,omitempty" bson:"Abilities23,omitempty"`
-	Abilities24 string `json:"Abilities24,omitempty" bson:"Abilities24,omitempty "`
+	HeroID string `json:"HeroID" bson:"HeroID"`
+	Icon string `json:"Icon" bson:"Icon"`
+	Ability1 string `json:"Ability1" bson:"Ability1"`
+	Ability2 string `json:"Ability2" bson:"Ability2"`
+	Ability3 string `json:"Ability3" bson:"Ability3"`
+	Ability4 string `json:"Ability4" bson:"Ability4"`
+	Ability5 string `json:"Ability5" bson:"Ability5"`
+	Ability6 string `json:"Ability6" bson:"Ability6"`
+	Ability7 string `json:"Ability7" bson:"Ability7"`
+	Ability8 string `json:"Ability8" bson:"Ability8"`
+	Ability9 string `json:"Ability9" bson:"Ability9"`
+	Ability10 string `json:"Ability10" bson:"Ability10"`
+	Ability11 string `json:"Ability11" bson:"Ability11"`
+	Ability12 string `json:"Ability12" bson:"Ability12"`
+	Ability13 string `json:"Ability13" bson:"Ability13"`
+	Ability14 string `json:"Ability14" bson:"Ability14"`
+	Ability15 string `json:"Ability15" bson:"Ability15"`
+	Ability16 string `json:"Ability16" bson:"Ability16"`
+	Ability17 string `json:"Ability17" bson:"Ability17"`
+	Ability18 string `json:"Ability18" bson:"Ability18"`
+	Ability19 string `json:"Ability19" bson:"Ability19"`
+	Ability20 string `json:"Ability20" bson:"Ability20"`
+	Ability21 string `json:"Ability21" bson:"Ability21"`
+	Ability22 string `json:"Ability22" bson:"Ability22"`
+	Ability23 string `json:"Ability23" bson:"Ability23"`
+	Ability24 string `json:"Ability24" bson:"Ability24 "`
 	ArmorPhysical string `json:"ArmorPhysical" bson:"ArmorPhysical"`
 	AttackDamageMin string `json:"AttackDamageMin" bson:"AttackDamageMin"`
 	AttackDamageMax string `json:"AttackDamageMax" bson:"AttackDamageMax"`
@@ -72,55 +75,57 @@ type NpcHeroes struct{
 	AttributeAgilityGain string `json:"AttributeAgilityGain" bson:"AttributeAgilityGain"`
 	MovementSpeed string `json:"MovementSpeed" bson:"MovementSpeed"`
 	MovementTurnRate string `json:"MovementTurnRate" bson:"MovementTurnRate"`
+	StatusHealthRegen string  `json:"StatusHealthRegen" bson:"StatusHealthRegen"`
+	StatusManaRegen string `json:"StatusManaRegen" bson:"StatusManaRegen"` 
 }
 
 type NpcAbilitySpecial struct{
-	Damage string `bson:"damage,omitempty" json:"damage,omitempty"`
-	BaseDamage string `bson:"base_damage,omitempty" json:"base_damage,omitempty"`
-	DamagePerTick string `bson:"damage_per_tick,omitempty" json:"damage_per_tick,omitempty"`
-	Interval string `bson:"interval,omitempty" json:"interval,omitempty"`
-	Duration string `bson:"duration,omitempty" json:"duration,omitempty"`
-	StunDuration string `bson:"stun_duration,omitempty" json:"stun_duration,omitempty"`
-	MaxStun string `bson:"max_stun,omitempty" json:"max_stun,omitempty"`
-	MinStun string `bson:"min_stun,omitempty" json:"min_stun,omitempty"`
-	DamageCount string `bson:"damage_count,omitempty" json:"damage_count,omitempty"`
-	Armor string `bson:"armor,omitempty" json:"armor,omitempty"`
-	Coefficient string `bson:"coefficient,omitempty" json:"coefficient,omitempty"`
-	AttackSpeed string `bson:"attack_speed,omitempty" json:"attack_speed,omitempty"`
-	MovementSpeed string `bson:"movement_speed,omitempty" json:"movement_speed,omitempty"`
-	MagicResistance string `bson:"magic_resistance,omitempty" json:"magic_resistance,omitempty"` 
-	LinkedSpecialBonus string `bson:"LinkedSpecialBonus,omitempty" json:"LinkedSpecialBonus,omitempty"`
-	AttackPec string `bson:"attack_pec,omitempty" json:"attack_pec,omitempty"`//增加百分比的（基础）（龙骑士全攻击力）攻击力
-	Instances string `bson:"instances,omitempty" json:"instances,omitempty"`//圣堂刺客折光次数
+	Damage string `bson:"damage" json:"damage"`
+	BaseDamage string `bson:"base_damage" json:"base_damage"`
+	DamagePerTick string `bson:"damage_per_tick" json:"damage_per_tick"`
+	Interval string `bson:"interval" json:"interval"`
+	Duration string `bson:"duration" json:"duration"`
+	StunDuration string `bson:"stun_duration" json:"stun_duration"`
+	MaxStun string `bson:"max_stun" json:"max_stun"`
+	MinStun string `bson:"min_stun" json:"min_stun"`
+	DamageCount string `bson:"damage_count" json:"damage_count"`
+	Armor string `bson:"armor" json:"armor"`
+	Coefficient string `bson:"coefficient" json:"coefficient"`
+	AttackSpeed string `bson:"attack_speed" json:"attack_speed"`
+	MovementSpeed string `bson:"movement_speed" json:"movement_speed"`
+	MagicResistance string `bson:"magic_resistance" json:"magic_resistance"` 
+	LinkedSpecialBonus string `bson:"LinkedSpecialBonus" json:"LinkedSpecialBonus"`
+	AttackPec string `bson:"attack_pec" json:"attack_pec"`//增加百分比的（基础）（龙骑士全攻击力）攻击力
+	Instances string `bson:"instances" json:"instances"`//圣堂刺客折光次数
 	//承受物理伤害百分比 (美杜莎大招和巫妖冰甲)正数就是承受的物理伤害增加，负数就是承受的物理伤害降低
-	PhysicalDamagePec string `bson:"physical_damage_pec,omitempty" json:"physical_damage_pec,omitempty"`
+	PhysicalDamagePec string `bson:"physical_damage_pec" json:"physical_damage_pec"`
 	//所有类型伤害加减 小精灵
-	AllDamagePec string `bson:"all_damage_pec,omitempty" json:"all_damage_pec,omitempty"`
+	AllDamagePec string `bson:"all_damage_pec" json:"all_damage_pec"`
 	HpRegen int `bson:"hp_regen" json:"hp_regen"`//生命恢复量
 	//HpRegenPec float32 `bson:"hp_regen_pec" json:"hp_regen_pec"`
-	//BonusDamage string `bson:"bonus_damage,omitempty" json:"bonus_damage,omitempty"`
-	//BounsAttack string `bson:"BounsAttack,omitempty" json:"BounsAttack,omitempty"`
+	//BonusDamage string `bson:"bonus_damage" json:"bonus_damage"`
+	//BounsAttack string `bson:"BounsAttack" json:"BounsAttack"`
 	//承受魔法伤害百分比 正数就是承受的魔法伤害增加，负数就是承受的魔法伤害降低
-	//MagicDamagePec string `bson:"magic_damage_pec,omitempty" json:"magic_damage_pec,omitempty"`
+	//MagicDamagePec string `bson:"magic_damage_pec" json:"magic_damage_pec"`
 	//所有类型伤害加减 小精灵
 	
 }
 type Ability struct{
 	Id string `json:"ID" bson:"ID"`
 	Name string `json:"Name" bson:"Name"`
-	IconUrl string `json:"IconUrl,omitempty"" Bson:"IconUrl",omitempty"`
+	IconUrl string `json:"Icon"" Bson:"Icon""`
 	AbilityBehavior string `json:"AbilityBehavior" bson:"AbilityBehavior"`
 	DamageType string `json:"AbilityUnitDamageType" bson:"AbilityUnitDamageType"`
-	SpellImmunityType string `json:"SpellImmunityType,omitempty" bson:"SpellImmunityType,omitempty"` //技能免疫
-	AbilityCastRange string `json:"AbilityCastRange,omitempty" bson:"AbilityCastRange,omitempty"`
-	CD string `json:"AbilityCooldown,omitempty" bson:"AbilityCooldown,omitempty"`
-	ManaCost string `json:"AbilityManaCost,omitempty" bson:"AbilityManaCost,omitempty"`
-	//BaseDamage string `json:"AbilityDamage,omitempty" bson:"AbilityDamage,omitempty"`
-	AbilitySpecial NpcAbilitySpecial `json:"AbilitySpecial,omitempty" bson:"AbilitySpecial,omitempty"`
-	AbilityDamage string `bson:"AbilityDamage,omitempty" json:"AbilityDamage,omitempty"`
-	AbilityDuration string`bson:"AbilityDuration,omitempty" json:"AbilityDuration,omitempty"`
+	SpellImmunityType string `json:"SpellImmunityType" bson:"SpellImmunityType"` //技能免疫
+	AbilityCastRange string `json:"AbilityCastRange" bson:"AbilityCastRange"`
+	CD string `json:"AbilityCooldown" bson:"AbilityCooldown"`
+	ManaCost string `json:"AbilityManaCost" bson:"AbilityManaCost"`
+	//BaseDamage string `json:"AbilityDamage" bson:"AbilityDamage"`
+	AbilitySpecial NpcAbilitySpecial `json:"AbilitySpecial" bson:"AbilitySpecial"`
+	AbilityDamage string `bson:"AbilityDamage" json:"AbilityDamage"`
+	AbilityDuration string`bson:"AbilityDuration" json:"AbilityDuration"`
 }
-type AllNpcAbilities struct{
+type AllNpcAbility struct{
 	Version string `bson:"Version" json:"Version"`
-	Abilities []*Ability `bson:"abilities" json:"abilities"`	
+	Ability []*Ability `bson:"abilities" json:"abilities"`	
 }

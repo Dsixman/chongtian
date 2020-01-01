@@ -39,6 +39,14 @@ type TestController struct {
 type AuthController struct {
 	beego.Controller
 }
+type LeagueInofController struct{
+	beego.Controller
+}
+
+type TeamInofController struct{
+	beego.Controller
+}
+
 func (this *MainController) Get() {
 	this.Data["Website"] = "beego.me"
 	this.Data["Email"] = "astaxie@gmail.com"
@@ -74,21 +82,14 @@ func (this *LoginController) Post() {
 
 }
 func (this *LoginController) Get() {
-	var loginstate string
+	var loginstate bool
 	var resp = make(map[string]interface{})
-	v:=this.GetSession("userName")
-	if v!=nil{
-		loginstate="true"
-		resp["loginState"] = loginstate
-		resp["userName"] = v.(string) 
-	}else{
-		loginstate="false"
-		key,capstr:=models.CreateCaptcha()
+	loginstate=false
+	key,capstr:=models.CreateCaptcha()
 		//fmt.Printf("key:%v\n",key)
-		resp["loginState"] = loginstate
-		resp["capKey"] =key
-		resp["capStr"] =capstr
-	}
+	resp["loginState"] = loginstate
+	resp["capKey"] =key
+	resp["capStr"] =capstr
 	this.Data["json"] = resp
 	this.ServeJSON()
 }
@@ -103,13 +104,13 @@ func (this *CaptchaController) Get(){
 
 func (this *AuthController) Get(){
 	v:=this.GetSession("userName")
-	var loginstate string
+	var loginstate bool
 	var username string
 	if v!=nil{
-		loginstate="true"
+		loginstate=true
 		username=v.(string)	
 	}else{
-		loginstate="false"
+		loginstate=false
 	}
 	resp := make(map[string]interface{})
 	resp["loginState"] = loginstate
@@ -138,10 +139,10 @@ func(this *ReplayUploadController) Post() {
 	}
 	f.Close()                       //关闭上传的文件，不然的话会出现临时文件不能清除的情况
 	this.SaveToFile("myfile", path) //存文件
-	models.Parse(version,path)
+	fname:=h.Filename
+	models.Parse(version,path,fname)
 	this.Redirect("/repupload/", 302)
 }
-
 func (this *TestController) Get(){
 	//mysql 测试
 	/*a:=models.Test("zhengzhihui","zhengzhihui123#")
@@ -174,6 +175,35 @@ type AdminLoginController struct{
 	beego.Controller
 }
 
+type GetLeagueInofController struct{
+	beego.Controller
+}
+
+func (this *SetPlayerInfoController) Get(){
+	v:=this.GetSession("userName")
+	v2:=this.GetSession("privilege")
+	var privilege int
+	if v!=nil{
+		username:=v.(string)
+		if v2!=nil{
+			privilege=v2.(int)
+			if privilege==1{
+				this.TplName="player.html"	
+				this.Data["Name"]=username
+			}else{
+				this.TplName="adminlogin.html"	
+				this.Data["Name"]="您没有权限访问player info页面,请与管理员联系"		
+			}
+		}else{
+			this.TplName="adminlogin.html"
+			this.Data["Name"]="请先登录"
+		}
+		
+	}else{
+		this.TplName="adminlogin.html"
+		this.Data["Name"]="请先登录"
+	}
+}
 func (this *AdminLoginController) Get(){
 	v:=this.GetSession("userName")
 	v2:=this.GetSession("privilege")
@@ -183,8 +213,11 @@ func (this *AdminLoginController) Get(){
 		if v2!=nil{
 			privilege=v2.(int)
 		}
-		if privilege!=1{
+		if privilege==1{
 			this.Redirect("/repupload/", 302)
+		}else{
+			this.TplName="adminlogin.html"	
+			this.Data["Name"]="请先登录"		
 		}
 	}else{
 		this.TplName="adminlogin.html"	
@@ -201,4 +234,88 @@ func (this *AdminLoginController) Post(){
 		this.SetSession("privilege",privilege)
 		this.Redirect("/repupload/", 302)
 	}
+}
+func (this *LeagueInofController) Get(){
+	v:=this.GetSession("userName")
+	v2:=this.GetSession("privilege")
+	var privilege int
+	if v!=nil{
+		username:=v.(string)
+		if v2!=nil{
+			privilege=v2.(int)
+			if privilege==1{
+				this.TplName="league.html"	
+				this.Data["Name"]=username
+			}else{
+				this.TplName="adminlogin.html"	
+				this.Data["Name"]="您没有权限访问这个页面,请与管理员联系"		
+			}
+		}else{
+			this.TplName="adminlogin.html"
+		}
+		
+	}else{
+		this.TplName="adminlogin.html"
+		this.Data["Name"]="请先登录"
+	}
+}
+
+func (this *LeagueInofController) Post(){
+	f, h, err := this.GetFile("myfile") //获取上传的文件
+	leaguename:=this.GetString("leaguename")
+	leagueid,_:=this.GetInt("leagueid")
+	seriesid,_:=this.GetInt("seriesid")
+	path := "./views/src/static/img/league/" + h.Filename    //文件目录
+	if err != nil {
+		fmt.Println(err)
+	}
+	f.Close()                       //关闭上传的文件，不然的话会出现临时文件不能清除的情况
+	this.SaveToFile("myfile", path) //存文件
+	models.SaveLeagueInfo(h.Filename,leaguename,uint32(leagueid),uint32(seriesid))
+	this.Redirect("/leagueinfo/", 302)
+}
+
+func (this *GetLeagueInofController) Get(){
+	leageuname:=this.GetString("league_name")
+	leagueinfo:=models.GetLeagueInfo(leageuname)
+	this.Data["json"] =leagueinfo
+	this.ServeJSON()
+}
+
+func (this *TeamInofController) Get(){
+	v:=this.GetSession("userName")
+	if v!=nil{
+		v2:=this.GetSession("privilege")
+		privilege:=v2.(int)
+		if privilege==1{
+			this.TplName="club.html"
+			this.Data["name"]=v.(string)
+		}else{
+			this.TplName="club.html"
+			this.Data["name"]="你没有权限访问此页面,请与管理员联系"
+		}
+	}else{
+		this.TplName="club.html"
+		this.Data["name"]="你还没有登录,请先登录"
+	}
+}
+
+func (this *TeamInofController) Post(){
+	f, h, err := this.GetFile("myfile") //获取上传的文件
+	teamname:=this.GetString("teamname")
+	teamtagname:=this.GetString("teamtagname")
+	teamid,_:=this.GetInt("teamid")
+	carry:=this.GetString("carry")
+	mid:=this.GetString("mid")
+	hard:=this.GetString("hard")
+	softsupport:=this.GetString("softsupport")
+	hardsupport:=this.GetString("hardsupport")
+	path := "./views/src/static/img/team/" + h.Filename    //文件目录
+	if err != nil {
+		fmt.Println(err)
+	}
+	f.Close()                       //关闭上传的文件，不然的话会出现临时文件不能清除的情况
+	this.SaveToFile("myfile", path) //存文件
+	models.SaveTeamInfo(h.Filename,teamname,teamtagname,uint32(teamid),carry,mid,hard,softsupport,hardsupport)
+	this.Redirect("/teaminfo/", 302)
 }

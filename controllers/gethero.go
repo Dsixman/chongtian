@@ -3,35 +3,40 @@ package controllers
 import (
 	"github.com/astaxie/beego"
 	"replayanaly/models"
-	"replayanaly/models/obj"
+	//"replayanaly/models/obj"
 	//_ "replayanaly/models/mongodb"
 	"encoding/json"
 	//"fmt"
 )
+type GetHeroIconController struct{
+	beego.Controller
+}
 type GetHeroDataController struct {
 	beego.Controller
 }
 type GetHeroJson struct{
-	IsGetHeroIcon int
-	Version string
-	HeroName string
+	Version string `json:"version"`
+	HeroName string `json:"heroname`
 }
-type PostHeroJson struct{
-	HeroIcons map[string]string `json:"hero_icons"`
+/*type PostHeroJson struct{
 	HeroData  *obj.HeroModel `json:"hero_data"`
-}
-func(this *GetHeroDataController) Get(){
+}*/
+func(this *GetHeroDataController) Post(){
 	heroobj:=&GetHeroJson{} 
 	json.Unmarshal(this.Ctx.Input.RequestBody, heroobj)
-	var heroicons map[string]string
+	//fmt.Printf("heroobj:%v\n",heroobj)
 	heroname:=heroobj.HeroName
 	version:=heroobj.Version
+	//fmt.Printf("heroname1:%v\n",heroname)
 	herodata:=models.GetHeroData(heroname,version)
-	if heroobj.IsGetHeroIcon==0{
-		heroicons=models.HeroNameIcon
-	}
-	var resp PostHeroJson
-	resp.HeroIcons=heroicons
-	resp.HeroData=herodata
+	//fmt.Printf("herodata:%v\n",herodata)
+	//resp:=&obj.HeroModel{}
+	resp:=herodata
+	this.Data["json"]=resp
+	this.ServeJSON()
+}
+
+func(this *GetHeroIconController) Get(){
+	var resp=models.HeroNameIcon
 	this.Data["json"]=resp
 }

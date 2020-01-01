@@ -43,8 +43,8 @@ func Parse (version string,demurl string,fname string) string{
 		}
 		var NewCDotaGameInfo obj.CDotaGameInfo
 		var NewCMsgDOTAMatch obj.CMsgDOTAMatch
-		var HeroIdArr []uint32
-		var AbilityArr=make([][]uint32,10)
+		//var HeroIdArr []uint32
+		//var AbilityArr=make([][]uint32,10)
 		var NewCMsgMatchDetails obj.CMsgMatchDetails
 		var player1,player2,player3,player4,player5,player6,player7,player8,player9,player10 obj.PlayersHeroInfo
 		var playersarr =[]*obj.PlayersHeroInfo{&player1,&player2,&player3,&player4,&player5,&player6,&player7,&player8,&player9,&player10}
@@ -122,7 +122,7 @@ func Parse (version string,demurl string,fname string) string{
 		var towertimei = []int64{0, 0}
 		var radiantkilltower uint32
 		var direkilltower uint32
-
+		var winnerid int32
 		p.Callbacks.OnCDemoFileInfo(func(m *dota.CDemoFileInfo) error {
 			NewCDotaGameInfo.Version=version
 			NewCDotaGameInfo.MatchId=m.GetGameInfo().GetDota().GetMatchId()
@@ -132,53 +132,28 @@ func Parse (version string,demurl string,fname string) string{
 			NewCDotaGameInfo.RadiantTeamTag=m.GetGameInfo().GetDota().GetRadiantTeamTag()
 			NewCDotaGameInfo.DireTeamTag=m.GetGameInfo().GetDota().GetDireTeamTag()		
 			NewCDotaGameInfo.EndTime=m.GetGameInfo().GetDota().GetEndTime()
-			winnerid := m.GetGameInfo().GetDota().GetGameWinner()
+			winnerid = m.GetGameInfo().GetDota().GetGameWinner()
 			if winnerid==2 {
-				if m.GetGameInfo().GetDota().GetRadiantTeamTag() != "" {
-					NewCDotaGameInfo.GameWinner=NewCDotaGameInfo.RadiantTeamTag
-					NewCDotaGameInfo.GameLoser=NewCDotaGameInfo.DireTeamTag
-					for _,value:=range NewCDotaGameInfo.PicksBans{
-						if *value.IsPick==true&&*value.Team==2{
-							NewCDotaGameInfo.GameWinnerBp=append(NewCDotaGameInfo.GameWinnerBp,value)
-						}
+				/*NewCDotaGameInfo.GameWinner=NewCDotaGameInfo.RadiantTeamTag
+				NewCDotaGameInfo.GameLoser=NewCDotaGameInfo.DireTeamTag*/
+				for _,value:=range NewCDotaGameInfo.PicksBans{
+					if *value.IsPick==true&&*value.Team==2{
+						NewCDotaGameInfo.GameWinnerBp=append(NewCDotaGameInfo.GameWinnerBp,value)
+				}
 						if *value.IsPick==true&&*value.Team==3{
-							NewCDotaGameInfo.GameLoserBp=append(NewCDotaGameInfo.GameLoserBp,value)
-						}
-					}
-				}else{
-					NewCDotaGameInfo.GameWinner="天辉"
-					NewCDotaGameInfo.GameLoser="夜魇"
-					for _,value:=range NewCDotaGameInfo.PicksBans{
-						if *value.IsPick==true&&*value.Team==2{
-							NewCDotaGameInfo.GameWinnerBp=append(NewCDotaGameInfo.GameWinnerBp,value)
-						}
-						if *value.IsPick==true&&*value.Team==3{
-							NewCDotaGameInfo.GameLoserBp=append(NewCDotaGameInfo.GameLoserBp,value)
-						}
+						NewCDotaGameInfo.GameLoserBp=append(NewCDotaGameInfo.GameLoserBp,value)
 					}
 				}
+				
 			}else{
-				if m.GetGameInfo().GetDota().GetRadiantTeamTag() != "" {
-					NewCDotaGameInfo.GameWinner=NewCDotaGameInfo.DireTeamTag
-					NewCDotaGameInfo.GameLoser=NewCDotaGameInfo.RadiantTeamTag
-					for _,value:=range NewCDotaGameInfo.PicksBans{
-						if *value.IsPick==true&&*value.Team==3{
-							NewCDotaGameInfo.GameWinnerBp=append(NewCDotaGameInfo.GameWinnerBp,value)
-						}
-						if *value.IsPick==true&&*value.Team==2{
-							NewCDotaGameInfo.GameLoserBp=append(NewCDotaGameInfo.GameLoserBp,value)
-						}
+				/*NewCDotaGameInfo.GameWinner=NewCDotaGameInfo.DireTeamTag
+				NewCDotaGameInfo.GameLoser=NewCDotaGameInfo.RadiantTeamTag*/
+				for _,value:=range NewCDotaGameInfo.PicksBans{
+					if *value.IsPick==true&&*value.Team==3{
+						NewCDotaGameInfo.GameWinnerBp=append(NewCDotaGameInfo.GameWinnerBp,value)
 					}
-				}else{
-					NewCDotaGameInfo.GameWinner="夜魇"
-					NewCDotaGameInfo.GameLoser="天辉"
-					for _,value:=range NewCDotaGameInfo.PicksBans{
-						if *value.IsPick==true&&*value.Team==3{
-							NewCDotaGameInfo.GameWinnerBp=append(NewCDotaGameInfo.GameWinnerBp,value)
-						}
-						if *value.IsPick==true&&*value.Team==2{
-							NewCDotaGameInfo.GameLoserBp=append(NewCDotaGameInfo.GameLoserBp,value)
-						}
+					if *value.IsPick==true&&*value.Team==2{
+						NewCDotaGameInfo.GameLoserBp=append(NewCDotaGameInfo.GameLoserBp,value)
 					}
 				}
 			}
@@ -191,17 +166,27 @@ func Parse (version string,demurl string,fname string) string{
 	   		timestr:=fmt.Sprintf("%s",tm.Format("2006-01-02 15:04:05"))
 			NewCMsgDOTAMatch.StartTime = timestr
 			NewCMsgDOTAMatch.Players = m.GetPlayers()
-			for _,value:=range NewCMsgDOTAMatch.Players{
+			/*for _,value:=range NewCMsgDOTAMatch.Players{
 				HeroIdArr=append(HeroIdArr,value.GetHeroId())//在切片没有初始化时不能用HeroIdArr[key]=1形式赋值
-			}
+			}*/
 			NewCMsgDOTAMatch.TowerStatus = m.GetTowerStatus()
 			NewCMsgDOTAMatch.BarracksStatus = m.GetBarracksStatus()
 			NewCMsgDOTAMatch.FirstBloodTime = m.GetFirstBloodTime()
 			NewCMsgDOTAMatch.AverageSkill = m.GetAverageSkill()
 			NewCMsgDOTAMatch.RadiantTeamId = m.GetRadiantTeamId()
-			NewCMsgDOTAMatch.DireTeamId = m.GetDireTeamId()
-			NewCMsgDOTAMatch.RadiantTeamName = m.GetRadiantTeamName()
-			NewCMsgDOTAMatch.DireTeamName = m.GetDireTeamName()
+			NewCMsgDOTAMatch.DireTeamId = m.GetDireTeamId()	
+			if m.GetRadiantTeamName()!=""{
+				NewCMsgDOTAMatch.RadiantTeamName = m.GetRadiantTeamName()
+			}else{
+				NewCMsgDOTAMatch.RadiantTeamName ="天辉"
+			}
+
+			if m.GetDireTeamName()!=""{
+				NewCMsgDOTAMatch.DireTeamName = m.GetDireTeamName()
+			}else{
+				NewCMsgDOTAMatch.DireTeamName="夜魇"
+			}
+			
 			NewCMsgDOTAMatch.MatchSeqNum = m.GetMatchSeqNum()
 			NewCMsgDOTAMatch.RadiantTeamTag = m.GetRadiantTeamTag()
 			NewCMsgDOTAMatch.DireTeamTag = m.GetDireTeamTag()
@@ -229,7 +214,7 @@ func Parse (version string,demurl string,fname string) string{
 						playersarr[playerskey].PlayerSlot=playersvalue.GetPlayerSlot()
 						playersarr[playerskey].LevelUpTimes=playersvalue.GetLevelUpTimes()
 						playersarr[playerskey].AbilityUpgrades=playersvalue.GetAbilityUpgrades()
-						AbilityArr[playerskey]=playersvalue.GetAbilityUpgrades()
+						//AbilityArr[playerskey]=playersvalue.GetAbilityUpgrades()
 						purchaseInfo:=playersvalue.GetInventorySnapshot()
 						items:=playersvalue.GetItems()
 						for _,itemvalue:=range purchaseInfo{
@@ -475,9 +460,20 @@ func Parse (version string,demurl string,fname string) string{
 								playersarr[key].LastHit.Pre5Count=herolasthit
 								playersarr[key].Denis.Pre5Count=herodenies
 								//*dota2lasthit[key] = strconv.FormatInt(herolasthit, 10) + " " + strconv.FormatInt(herodenies, 10) + ","
+								if playersarr[key].Gold==nil{
+									playersarr[key].Gold=&obj.HeroGold{}
+									if playersarr[key].Gold.Pre5MinGold==nil{
+										playersarr[key].Gold.Pre5MinGold=&obj.GoldType{}	
+									}
+									playersarr[key].Gold.Pre5MinGold.CreepsGold=creepsgold[key]//野生生物
+								}else{
+									if playersarr[key].Gold.Pre5MinGold==nil{
+										playersarr[key].Gold.Pre5MinGold=&obj.GoldType{}	
+									}
+									playersarr[key].Gold.Pre5MinGold.CreepsGold=creepsgold[key]//野生生物
+								}
+								creepsgold[key]=0
 								timei[key] = timei[key] + 1
-								playersarr[key].Gold.Pre5MinGold.CreepsGold=creepsgold[key]
-
 							}
 							if math.Floor(float64(time)) > prev10 && timei[key] < 2 && !istargettower {
 								var herolasthit, herodenies uint32
@@ -490,9 +486,12 @@ func Parse (version string,demurl string,fname string) string{
 								}
 								playersarr[key].LastHit.Pre10Count=herolasthit
 								playersarr[key].Denis.Pre10Count=herodenies
-								//*dota2lasthit[key] = *dota2lasthit[key] + strconv.FormatInt(herolasthit, 10) + " " + strconv.FormatInt(herodenies, 10) + ","
+								if playersarr[key].Gold.Pre10MinGold==nil{
+									playersarr[key].Gold.Pre10MinGold=&obj.GoldType{}	
+								}
+								playersarr[key].Gold.Pre10MinGold.CreepsGold=creepsgold[key]//野生生物
+								creepsgold[key]=0
 								timei[key] = timei[key] + 1
-								playersarr[key].Gold.Pre10MinGold.CreepsGold=creepsgold[key]
 							}
 							if math.Floor(float64(time)) > prev15 && timei[key] < 3 && !istargettower {
 								var herolasthit, herodenies uint32
@@ -505,9 +504,13 @@ func Parse (version string,demurl string,fname string) string{
 								}
 								playersarr[key].LastHit.Pre15Count=herolasthit
 								playersarr[key].Denis.Pre15Count=herodenies
-								//*dota2lasthit[key] = *dota2lasthit[key] + strconv.FormatInt(herolasthit, 10) + " " + strconv.FormatInt(herodenies, 10) + ","
+								if playersarr[key].Gold.Pre15MinGold==nil{
+									playersarr[key].Gold.Pre15MinGold=&obj.GoldType{}	
+								}
+								playersarr[key].Gold.Pre15MinGold.CreepsGold=creepsgold[key]//野生生物
+								creepsgold[key]=0
 								timei[key] = timei[key] + 1
-								playersarr[key].Gold.Pre15MinGold.CreepsGold=creepsgold[key]
+								//playersarr[key].Gold.Pre15MinGold.CreepsGold=creepsgold[key]
 							}
 							if math.Floor(float64(time)) > prev20 && timei[key] < 4 && !istargettower {
 								var herolasthit, herodenies uint32
@@ -520,9 +523,13 @@ func Parse (version string,demurl string,fname string) string{
 								}
 								playersarr[key].LastHit.Pre20Count=herolasthit
 								playersarr[key].Denis.Pre20Count=herodenies
-								//*dota2lasthit[key] = *dota2lasthit[key] + strconv.FormatInt(herolasthit, 10) + " " + strconv.FormatInt(herodenies, 10) + ","
+								if playersarr[key].Gold.Pre20MinGold==nil{
+									playersarr[key].Gold.Pre20MinGold=&obj.GoldType{}	
+								}
+								playersarr[key].Gold.Pre20MinGold.CreepsGold=creepsgold[key]//野生生物
+								creepsgold[key]=0
 								timei[key] = timei[key] + 1
-								playersarr[key].Gold.Pre20MinGold.CreepsGold=creepsgold[key]
+								//playersarr[key].Gold.Pre20MinGold.CreepsGold=creepsgold[key]
 							}
 							if math.Floor(float64(time)) > prev25 && timei[key] < 5 && !istargettower {
 								var herolasthit, herodenies uint32
@@ -535,9 +542,13 @@ func Parse (version string,demurl string,fname string) string{
 								}
 								playersarr[key].LastHit.Pre25Count=herolasthit
 								playersarr[key].Denis.Pre25Count=herodenies
-								//*dota2lasthit[key] = *dota2lasthit[key] + strconv.FormatInt(herolasthit, 10) + " " + strconv.FormatInt(herodenies, 10)
+								if playersarr[key].Gold.Pre25MinGold==nil{
+									playersarr[key].Gold.Pre25MinGold=&obj.GoldType{}	
+								}
+								playersarr[key].Gold.Pre25MinGold.CreepsGold=creepsgold[key]//野生生物
+								creepsgold[key]=0
 								timei[key] = timei[key] + 1
-								playersarr[key].Gold.Pre25MinGold.CreepsGold=creepsgold[key]
+								//playersarr[key].Gold.Pre25MinGold.CreepsGold=creepsgold[key]
 							}
 							if attackerteam == targetteam {
 								denies[key] = denies[key] + 1
@@ -588,23 +599,50 @@ func Parse (version string,demurl string,fname string) string{
 					for key1, value1 := range heroslice {
 						if target == value1 {
 							if math.Floor(float64(time)) > prev5 && gtimei[key1] < 1 {
-								allgold[key1] = allgold[key1]
-								allgoldstruct:=&obj.GoldType{}
-								allgoldstruct.AllGold=allgold[key1]
-								allgoldstruct.LastHitGold=lasthitgold[key1]
-								allgoldstruct.CombatGold=combatgold[key1]
-								playersarr[key1].Gold=&obj.HeroGold{}
-								playersarr[key1].Gold.Pre5MinGold=allgoldstruct
+								//allgold[key1] = allgold[key1]
+								if playersarr[key1].Gold==nil{
+									playersarr[key1].Gold=&obj.HeroGold{}
+									if playersarr[key1].Gold.Pre5MinGold==nil{
+										playersarr[key1].Gold.Pre5MinGold=&obj.GoldType{}
+										playersarr[key1].Gold.Pre5MinGold.AllGold=allgold[key1]
+										playersarr[key1].Gold.Pre5MinGold.LastHitGold=lasthitgold[key1]
+										playersarr[key1].Gold.Pre5MinGold.CombatGold=combatgold[key1]
+									}else{
+										playersarr[key1].Gold.Pre5MinGold.AllGold=allgold[key1]
+										playersarr[key1].Gold.Pre5MinGold.LastHitGold=lasthitgold[key1]
+										playersarr[key1].Gold.Pre5MinGold.CombatGold=combatgold[key1]
+									}
+								}else{
+									if playersarr[key1].Gold.Pre5MinGold==nil{
+										playersarr[key1].Gold.Pre5MinGold=&obj.GoldType{}
+										playersarr[key1].Gold.Pre5MinGold.AllGold=allgold[key1]
+										playersarr[key1].Gold.Pre5MinGold.LastHitGold=lasthitgold[key1]
+										playersarr[key1].Gold.Pre5MinGold.CombatGold=combatgold[key1]
+									}else{
+										playersarr[key1].Gold.Pre5MinGold.AllGold=allgold[key1]
+										playersarr[key1].Gold.Pre5MinGold.LastHitGold=lasthitgold[key1]
+										playersarr[key1].Gold.Pre5MinGold.CombatGold=combatgold[key1]
+									}
+								}
+								
+								/*else{
+									playersarr[key1].Gold.Pre5MinGold.AllGold=allgold[key1]
+								}*/
 								gtimei[key1] = gtimei[key1] + 1
 							}
 							if math.Floor(float64(time)) > prev10 && gtimei[key1] < 2 {
 								gtimei[key1] = gtimei[key1] + 1
-								allgold[key1] = allgold[key1]
-								allgoldstruct:=&obj.GoldType{}
-								allgoldstruct.AllGold=allgold[key1]
-								allgoldstruct.LastHitGold=lasthitgold[key1]
-								allgoldstruct.CombatGold=combatgold[key1]
-								playersarr[key1].Gold.Pre10MinGold=allgoldstruct
+								//allgold[key1] = allgold[key1]
+								if playersarr[key1].Gold.Pre10MinGold==nil{
+									playersarr[key1].Gold.Pre10MinGold=&obj.GoldType{}
+									playersarr[key1].Gold.Pre10MinGold.AllGold=allgold[key1]
+									playersarr[key1].Gold.Pre10MinGold.LastHitGold=lasthitgold[key1]
+									playersarr[key1].Gold.Pre10MinGold.CombatGold=combatgold[key1]
+								}else{
+									playersarr[key1].Gold.Pre10MinGold.AllGold=allgold[key1]
+									playersarr[key1].Gold.Pre10MinGold.LastHitGold=lasthitgold[key1]
+									playersarr[key1].Gold.Pre10MinGold.CombatGold=combatgold[key1]
+								}
 								runegold[key1] = 0
 								deathgold[key1] = 0
 								buybackgold[key1] = 0
@@ -616,12 +654,16 @@ func Parse (version string,demurl string,fname string) string{
 							}
 							if math.Floor(float64(time)) > prev15 && gtimei[key1] < 3 {
 								gtimei[key1] = gtimei[key1] + 1
-								allgold[key1] = allgold[key1]
-								allgoldstruct:=&obj.GoldType{}
-								allgoldstruct.AllGold=allgold[key1]
-								allgoldstruct.LastHitGold=lasthitgold[key1]
-								allgoldstruct.CombatGold=combatgold[key1]
-								playersarr[key1].Gold.Pre15MinGold=allgoldstruct
+								if playersarr[key1].Gold.Pre15MinGold==nil{
+									playersarr[key1].Gold.Pre15MinGold=&obj.GoldType{}
+									playersarr[key1].Gold.Pre15MinGold.AllGold=allgold[key1]
+									playersarr[key1].Gold.Pre15MinGold.LastHitGold=lasthitgold[key1]
+									playersarr[key1].Gold.Pre15MinGold.CombatGold=combatgold[key1]
+								}else{
+									playersarr[key1].Gold.Pre15MinGold.AllGold=allgold[key1]
+									playersarr[key1].Gold.Pre15MinGold.LastHitGold=lasthitgold[key1]
+									playersarr[key1].Gold.Pre15MinGold.CombatGold=combatgold[key1]
+								}
 								runegold[key1] = 0
 								deathgold[key1] = 0
 								buybackgold[key1] = 0
@@ -633,12 +675,16 @@ func Parse (version string,demurl string,fname string) string{
 							}
 							if math.Floor(float64(time)) > prev20 && gtimei[key1] < 4 {
 								gtimei[key1] = gtimei[key1] + 1
-								allgold[key1] = allgold[key1]
-								allgoldstruct:=&obj.GoldType{}
-								allgoldstruct.AllGold=allgold[key1]
-								allgoldstruct.LastHitGold=lasthitgold[key1]
-								allgoldstruct.CombatGold=combatgold[key1]
-								playersarr[key1].Gold.Pre20MinGold=allgoldstruct
+								if playersarr[key1].Gold.Pre20MinGold==nil{
+									playersarr[key1].Gold.Pre20MinGold=&obj.GoldType{}
+									playersarr[key1].Gold.Pre20MinGold.AllGold=allgold[key1]
+									playersarr[key1].Gold.Pre20MinGold.LastHitGold=lasthitgold[key1]
+									playersarr[key1].Gold.Pre20MinGold.CombatGold=combatgold[key1]
+								}else{
+									playersarr[key1].Gold.Pre20MinGold.AllGold=allgold[key1]
+									playersarr[key1].Gold.Pre20MinGold.LastHitGold=lasthitgold[key1]
+									playersarr[key1].Gold.Pre20MinGold.CombatGold=combatgold[key1]
+								}
 								runegold[key1] = 0
 								deathgold[key1] = 0
 								buybackgold[key1] = 0
@@ -650,12 +696,16 @@ func Parse (version string,demurl string,fname string) string{
 							}
 							if math.Floor(float64(time)) > prev25 && gtimei[key1] < 5 {
 								gtimei[key1] = gtimei[key1] + 1
-								allgold[key1] = allgold[key1]
-								allgoldstruct:=&obj.GoldType{}
-								allgoldstruct.AllGold=allgold[key1]
-								allgoldstruct.LastHitGold=lasthitgold[key1]
-								allgoldstruct.CombatGold=combatgold[key1]
-								playersarr[key1].Gold.Pre25MinGold=allgoldstruct
+								if playersarr[key1].Gold.Pre25MinGold==nil{
+									playersarr[key1].Gold.Pre25MinGold=&obj.GoldType{}
+									playersarr[key1].Gold.Pre25MinGold.AllGold=allgold[key1]
+									playersarr[key1].Gold.Pre25MinGold.LastHitGold=lasthitgold[key1]
+									playersarr[key1].Gold.Pre25MinGold.CombatGold=combatgold[key1]
+								}else{
+									playersarr[key1].Gold.Pre25MinGold.AllGold=allgold[key1]
+									playersarr[key1].Gold.Pre25MinGold.LastHitGold=lasthitgold[key1]
+									playersarr[key1].Gold.Pre25MinGold.CombatGold=combatgold[key1]
+								}
 								runegold[key1] = 0
 								deathgold[key1] = 0
 								buybackgold[key1] = 0
@@ -704,19 +754,44 @@ func Parse (version string,demurl string,fname string) string{
 		p.Start()
 		NewCMsgDOTAMatch.MatchId=NewCDotaGameInfo.MatchId
 		NewCMsgMatchDetails.MatchId=NewCDotaGameInfo.MatchId
+		if NewCDotaGameInfo.RadiantTeamTag==""{
+			NewCDotaGameInfo.RadiantTeamTag=NewCMsgDOTAMatch.RadiantTeamName	
+		}
+		if NewCDotaGameInfo.DireTeamTag==""{
+			NewCDotaGameInfo.DireTeamTag=NewCMsgDOTAMatch.DireTeamName
+		}
+		
+		if winnerid==2{
+			NewCDotaGameInfo.GameWinner=NewCDotaGameInfo.RadiantTeamTag
+			NewCDotaGameInfo.GameLoser=NewCDotaGameInfo.DireTeamTag
+		}else{
+			NewCDotaGameInfo.GameWinner=NewCDotaGameInfo.DireTeamTag 
+			NewCDotaGameInfo.GameLoser=NewCDotaGameInfo.RadiantTeamTag
+		}
 		NewCMsgMatchDetails.RadiantTeamTag=NewCDotaGameInfo.RadiantTeamTag
 		NewCMsgMatchDetails.DireTeamTag=NewCDotaGameInfo.DireTeamTag
-		var ysdirelane string=""
+/*		fmt.Printf("value.Gold.Pre20MinGold:%v value.Gold.Pre20MinGold.allgold:%v\n", playersarr[0].Gold.Pre20MinGold,playersarr[0].Gold.Pre20MinGold.AllGold)
+*/		var ysdirelane string=""
 		var lsdirelane string=""
 		var diremidlane string=""
+		//fmt.Printf("playersarr:%v\n", playersarr[0].Player)
 		for key,value:=range playersarr{
 			if value.InitLane==""{
 				value.InitLane="打野"
 			}
-			value.Gold.Pre5MinGold.TestGold=value.Gold.Pre5MinGold.TestGold
+			value.Gold.Pre5MinGold.TestGold=value.Gold.Pre5MinGold.AllGold//假设钱5分钟鸟没死亡时的金钱（还没计算工资）
+			value.Gold.Pre10MinGold.TestGold=value.Gold.Pre10MinGold.AllGold
+			value.Gold.Pre15MinGold.TestGold=value.Gold.Pre15MinGold.AllGold
+			if value.Gold.Pre20MinGold!=nil{
+				value.Gold.Pre20MinGold.TestGold=value.Gold.Pre20MinGold.AllGold	
+			} 
+			
+			if value.Gold.Pre25MinGold!=nil{
+				value.Gold.Pre25MinGold.TestGold=value.Gold.Pre20MinGold.AllGold
+			}
 			value.Player=*NewCMsgDOTAMatch.Players[key].PlayerName
 			heroid:=*NewCMsgDOTAMatch.Players[key].HeroId
-			value.HeroName=HeroIDName[heroid]
+			value.HeroName=HeroIDName[heroid] 
 			ability:=value.AbilityUpgrades
 			lvl:=value.LevelUpTimes
 			//假设有信使死亡
@@ -750,6 +825,7 @@ func Parse (version string,demurl string,fname string) string{
 			 	value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold+allsalary-persecsalary*float64(nextlvluptime-1200)
 			 	value.Gold.Pre20MinGold.TestGold=value.Gold.Pre20MinGold.TestGold+allsalary-persecsalary*float64(nextlvluptime-1200)
 			 }
+
 			 if nextlvluptime>1500&&nowlvluptime<=1500{
 			 	value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold+allsalary-persecsalary*float64(nextlvluptime-1500)
 			 	value.Gold.Pre25MinGold.TestGold=value.Gold.Pre25MinGold.TestGold+allsalary-persecsalary*float64(nextlvluptime-1500)
@@ -766,40 +842,68 @@ func Parse (version string,demurl string,fname string) string{
 			 				value.Gold.Pre5MinGold.AllGold=value.Gold.Pre5MinGold.AllGold-persecsalary*float64(deathduration)
 			 				value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-persecsalary*float64(deathduration)
 			 				value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(deathduration)
-			 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(deathduration)
-			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(deathduration)
+			 				if value.Gold.Pre20MinGold!=nil{
+				 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(deathduration)		 					
+			 				}
+
+			 				if value.Gold.Pre25MinGold!=nil{
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(deathduration)
+			 				}
+			 				
 			 			}
 
 			 			if reborntime<=nextlvluptime&&reborntime<=300&&nextlvluptime>300{
 			 				value.Gold.Pre5MinGold.AllGold=value.Gold.Pre5MinGold.AllGold-persecsalary*float64(deathduration)
 			 				value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-persecsalary*float64(deathduration)
 			 				value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(deathduration)
-			 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(deathduration)
-			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(deathduration)
+			 				if value.Gold.Pre20MinGold!=nil{
+				 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(deathduration)
+		 					
+			 				}
+			 				if value.Gold.Pre25MinGold!=nil{
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(deathduration)
+			 				}
 			 			}
 
 			 			if reborntime>nextlvluptime&&nextlvluptime<300{
 			 				value.Gold.Pre5MinGold.AllGold=value.Gold.Pre5MinGold.AllGold-persecsalary*float64(nextlvluptime-deathtime)
 			 				value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-persecsalary*float64(nextlvluptime-deathtime)
 			 				value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(nextlvluptime-deathtime)
-			 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(nextlvluptime-deathtime)
-			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-deathtime)
+			 				if value.Gold.Pre20MinGold!=nil{
+				 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(nextlvluptime-deathtime)
+		 					
+			 				}
+			 				if value.Gold.Pre25MinGold!=nil{
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-deathtime)
+			 				}
+			 				
 			 			}
 
 			 			if reborntime>nextlvluptime&&nextlvluptime>=300{
 			 				value.Gold.Pre5MinGold.AllGold=value.Gold.Pre5MinGold.AllGold-persecsalary*float64(300-deathtime)
 			 				value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-persecsalary*float64(300-deathtime)
 			 				value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(300-deathtime)
-			 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(300-deathtime)
-			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(300-deathtime)
+			 				if value.Gold.Pre20MinGold!=nil{		 					
+				 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(300-deathtime)
+		 					}
+			 				if value.Gold.Pre25MinGold!=nil{
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(300-deathtime)
+			 				}
+			 				
 			 			}
 
 			 			if reborntime<=nextlvluptime&&reborntime>300{
 			 				value.Gold.Pre5MinGold.AllGold=value.Gold.Pre5MinGold.AllGold-persecsalary*float64(300-deathtime)
 			 				value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-persecsalary*float64(300-deathtime)
 			 				value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(300-deathtime)
-			 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(300-deathtime)
-			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(300-deathtime)
+			 				if value.Gold.Pre20MinGold!=nil{
+				 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(300-deathtime)
+		 					
+			 				}
+			 				if value.Gold.Pre25MinGold!=nil{
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(300-deathtime)
+			 				}
+			 				
 			 			}	 
 			 		}
 			 		if nowlvluptime>=300&&deathtime>=nowlvluptime&&deathtime<nextlvluptime&&deathtime<600{
@@ -808,36 +912,66 @@ func Parse (version string,demurl string,fname string) string{
 			 			if reborntime<=nextlvluptime&&nextlvluptime<600{
 			 				value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-persecsalary*float64(deathduration)
 			 				value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(deathduration)
-			 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(deathduration)
-			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(deathduration)
+			 				if value.Gold.Pre20MinGold!=nil{
+				 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(deathduration)
+		 					
+			 				}
+			 				if value.Gold.Pre25MinGold!=nil{
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(deathduration)
+			 				}
+			 				
 			 			}
 
 			 			if reborntime<=nextlvluptime&&reborntime<=600&&nextlvluptime>600{
 			 				value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-persecsalary*float64(deathduration)
 			 				value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(deathduration)
-			 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(deathduration)
-			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(deathduration)
+			 				if value.Gold.Pre20MinGold!=nil{
+			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(deathduration)			 					
+			 				}
+
+			 				if value.Gold.Pre25MinGold!=nil{
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(deathduration)
+			 				}
+			 				
 			 			}
 
 			 			if reborntime>nextlvluptime&&nextlvluptime<600{
 			 				value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-persecsalary*float64(nextlvluptime-deathtime)
 			 				value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(nextlvluptime-deathtime)
-			 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(nextlvluptime-deathtime)
-			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-deathtime)
+			 				if value.Gold.Pre20MinGold!=nil{
+			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(nextlvluptime-deathtime)
+
+			 				}
+			 				if value.Gold.Pre25MinGold!=nil{
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-deathtime)
+			 				}
+			 				
 			 			}
 
 			 			if reborntime>nextlvluptime&&nextlvluptime>=600{
 			 				value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-persecsalary*float64(300-deathtime)
 			 				value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(300-deathtime)
-			 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(300-deathtime)
-			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(300-deathtime)
+			 				if value.Gold.Pre20MinGold!=nil{
+			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(300-deathtime)	
+			 				}
+			 				
+			 				if value.Gold.Pre25MinGold!=nil{
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(300-deathtime)
+			 				}
+			 				
 			 			}
 
 			 			if reborntime<=nextlvluptime&&reborntime>600{
 			 				value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-persecsalary*float64(300-deathtime)
 			 				value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(300-deathtime)
-			 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(300-deathtime)
-			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(300-deathtime)
+			 				if value.Gold.Pre20MinGold!=nil{
+			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(300-deathtime)
+			 				}
+			 				
+			 				if value.Gold.Pre25MinGold!=nil{
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(300-deathtime)
+			 				}
+			 				
 			 			}	 
 			 		}
 			 		if nowlvluptime>=600&&deathtime>=nowlvluptime&&deathtime<nextlvluptime&&deathtime<900{
@@ -845,91 +979,165 @@ func Parse (version string,demurl string,fname string) string{
 			 			reborntime:=deathtime+deathduration
 			 			if reborntime<=nextlvluptime&&nextlvluptime<900{
 			 				value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(deathduration)
-			 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(deathduration)
-			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(deathduration)
+			 				
+			 				if value.Gold.Pre20MinGold!=nil{
+			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(deathduration)
+			 				}
+			 				if value.Gold.Pre25MinGold!=nil{
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(deathduration)
+			 				}
+			 				
 			 			}
 
 			 			if reborntime<=nextlvluptime&&reborntime<=900&&nextlvluptime>900{
 			 				value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(deathduration)
-			 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(deathduration)
-			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(deathduration)
+			 				
+			 				if value.Gold.Pre20MinGold!=nil{
+			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(deathduration)
+			 				}
+			 				if value.Gold.Pre25MinGold!=nil{
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(deathduration)
+			 				}
+			 				
 			 			}
 
 			 			if reborntime>nextlvluptime&&nextlvluptime<900{
 			 				value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(nextlvluptime-deathtime)
-			 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(nextlvluptime-deathtime)
-			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-deathtime)
+			 				if value.Gold.Pre20MinGold!=nil{
+			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(nextlvluptime-deathtime)
+			 				}
+			 				
+			 				if value.Gold.Pre25MinGold!=nil{
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-deathtime)
+			 				}
+			 				
 			 			}
 
 
 			 			if reborntime>nextlvluptime&&nextlvluptime>=900{
 			 				value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(900-deathtime)
-			 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(900-deathtime)
-			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(900-deathtime)
+			 				
+			 				if value.Gold.Pre20MinGold!=nil{
+			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(900-deathtime)
+			 				}
+			 				if value.Gold.Pre25MinGold!=nil{
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(900-deathtime)
+			 				}
+			 				
 			 			}
 
-			 			if reborntime<=nextlvluptime&&reborntime>00{
+			 			if reborntime<=nextlvluptime&&reborntime>900{
 			 				value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(900-deathtime)
-			 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(900-deathtime)
-			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(900-deathtime)
+			 				
+			 				if value.Gold.Pre20MinGold!=nil{
+			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(900-deathtime)
+			 				}
+			 				if value.Gold.Pre25MinGold!=nil{
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(900-deathtime)
+			 				}
+			 				
 			 			}	 
 			 		}
 			 		if nowlvluptime>=900&&deathtime>=nowlvluptime&&deathtime<nextlvluptime&&deathtime<1200{
 			 			deathduration=uint32(50+7*(lvlkey+1))
 			 			reborntime:=deathtime+deathduration
 			 			if reborntime<=nextlvluptime&&nextlvluptime<1200{
-			 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(deathduration)
-			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(deathduration)
+			 				
+			 				if value.Gold.Pre20MinGold!=nil{
+			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(deathduration)
+			 				}
+			 				if value.Gold.Pre25MinGold!=nil{
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(deathduration)
+			 				}
+			 				
 			 			}
 
 			 			if reborntime<=nextlvluptime&&reborntime<=1200&&nextlvluptime>1200{
-			 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(deathduration)
-			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(deathduration)
+			 				
+			 				if value.Gold.Pre20MinGold!=nil{
+			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(deathduration)
+			 				}
+			 				if value.Gold.Pre25MinGold!=nil{
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(deathduration)
+			 				}
+			 				
 			 			}
 
 			 			if reborntime>nextlvluptime&&nextlvluptime<1200{
-			 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(nextlvluptime-deathtime)
-			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-deathtime)
+			 				
+			 				if value.Gold.Pre20MinGold!=nil{
+			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(nextlvluptime-deathtime)
+			 				}
+			 				if value.Gold.Pre25MinGold!=nil{
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-deathtime)
+			 				}
+			 				
 			 			}
 
 
 			 			if reborntime>nextlvluptime&&nextlvluptime>=1200{
 			 				value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-persecsalary*float64(1200-deathtime)
 			 				value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(1200-deathtime)
-			 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(1200-deathtime)
-			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(1200-deathtime)
+			 				
+			 				if value.Gold.Pre20MinGold!=nil{
+			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(1200-deathtime)
+			 				}
+			 				if value.Gold.Pre25MinGold!=nil{
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(1200-deathtime)
+			 				}
+			 				
 			 			}
 
 			 			if reborntime<=nextlvluptime&&reborntime>1200{
 			 				value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-persecsalary*float64(1200-deathtime)
 			 				value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(1200-deathtime)
-			 				value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(1200-deathtime)
-			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(1200-deathtime)
+			 				
+			 				if value.Gold.Pre20MinGold!=nil{
+			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(1200-deathtime)
+			 				}
+			 				if value.Gold.Pre25MinGold!=nil{
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(1200-deathtime)
+			 				}
+			 				
 			 			}	 
 			 		}
 			 		if nowlvluptime>=1200&&deathtime>=nowlvluptime&&deathtime<nextlvluptime&&deathtime<1500{
 			 			deathduration=uint32(50+7*(lvlkey+1))
 			 			reborntime:=deathtime+deathduration
 			 			if reborntime<=nextlvluptime&&nextlvluptime<1500{
-			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(deathduration)
+			 				if value.Gold.Pre25MinGold!=nil{
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(deathduration)
+			 				}
+			 				
 			 			}
 
 			 			if reborntime<=nextlvluptime&&reborntime<=1500&&nextlvluptime>1500{
-			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(deathduration)
+			 				if value.Gold.Pre25MinGold!=nil{
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(deathduration)
+			 				}
+			 				
 			 			}
 
 			 			if reborntime>nextlvluptime&&nextlvluptime<1500{
-			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-deathtime)
+			 				if value.Gold.Pre25MinGold!=nil{
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-deathtime)
+			 				}
+			 				
 			 			}
 
 
 			 			if reborntime>nextlvluptime&&nextlvluptime>=1500{
-
-			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(1500-deathtime)
+			 				if value.Gold.Pre25MinGold!=nil{
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(1500-deathtime)
+			 				}
+			 				
 			 			}
 
 			 			if reborntime<=nextlvluptime&&reborntime>1500{
-			 				value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(1500-deathtime)
+			 				if value.Gold.Pre25MinGold!=nil{
+			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(1500-deathtime)	
+			 				}
+			 				
 			 			}	 
 			 		}
 			 		if deathtime<deathnextlvltime&&deathnextlvltime==nowlvluptime{
@@ -938,79 +1146,156 @@ func Parse (version string,demurl string,fname string) string{
 			 					value.Gold.Pre5MinGold.AllGold=value.Gold.Pre5MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
 			 					value.Gold.Pre10MinGold.AllGold=value.Gold.Pre5MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
 			 					value.Gold.Pre15MinGold.AllGold=value.Gold.Pre5MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
-			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre5MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
-			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre5MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					if value.Gold.Pre20MinGold!=nil{
+				 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre5MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+		 						
+			 					}
+			 					if value.Gold.Pre25MinGold!=nil{
+			 						value.Gold.Pre25MinGold.AllGold=value.Gold.Pre5MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+
+			 					}
 			 				}
 			 				if deathnextlvltime<300&&nextlvluptime>300&&reborntime<300{
 			 					value.Gold.Pre5MinGold.AllGold=value.Gold.Pre5MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
 			 					value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
 			 					value.Gold.Pre15MinGold.AllGold=value.Gold.Pre5MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
-			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre5MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
-			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre5MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					if value.Gold.Pre20MinGold!=nil{
+				 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre5MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+		 						
+			 					}
+			 					if value.Gold.Pre25MinGold!=nil{
+			 						value.Gold.Pre25MinGold.AllGold=value.Gold.Pre5MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)	
+			 					}
 			 				}
 			 				if deathnextlvltime<300&&nextlvluptime>300&&reborntime>=300{
 			 					value.Gold.Pre5MinGold.AllGold=value.Gold.Pre5MinGold.AllGold-float64(300-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
 			 					value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-float64(nextlvluptime-300)*((83.0+(2.0*float64(deathlvl)))/60)
 			 					value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-float64(nextlvluptime-300)*((83.0+(2.0*float64(deathlvl)))/60)
-			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-float64(nextlvluptime-300)*((83.0+(2.0*float64(deathlvl)))/60)
-			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-float64(nextlvluptime-300)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					if value.Gold.Pre20MinGold!=nil{
+				 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-float64(nextlvluptime-300)*((83.0+(2.0*float64(deathlvl)))/60)
+		 						
+			 					}
+			 					if value.Gold.Pre25MinGold!=nil{
+				 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-float64(nextlvluptime-300)*((83.0+(2.0*float64(deathlvl)))/60)	 						
+			 					}
 			 				}
 
 			 				if nowlvluptime>=300&&nextlvluptime<600{
 			 					value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
 			 					value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
-			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
-			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					if value.Gold.Pre20MinGold!=nil{
+			 						value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+
+			 					}
+			 					if value.Gold.Pre25MinGold!=nil{
+				 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)	 						
+			 					}
 			 				}
 			 				if nowlvluptime>=300&&deathnextlvltime<600&&nextlvluptime>600&&reborntime<600{
 			 					value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
 			 					value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
-			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
-			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					if value.Gold.Pre20MinGold!=nil{
+				 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+		 						
+			 					}
+			 					if value.Gold.Pre25MinGold!=nil{
+									value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					}
 			 				}
 			 				if nowlvluptime>=300&&deathnextlvltime<600&&nextlvluptime>600&&reborntime>=600{
 			 					value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-float64(600-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
 			 					value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-float64(nextlvluptime-600)*((83.0+(2.0*float64(deathlvl)))/60)
-			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-float64(nextlvluptime-600)*((83.0+(2.0*float64(deathlvl)))/60)
-			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-float64(nextlvluptime-600)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					if value.Gold.Pre20MinGold!=nil{
+				 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-float64(nextlvluptime-600)*((83.0+(2.0*float64(deathlvl)))/60)
+		 						
+			 					}
+			 					if value.Gold.Pre25MinGold!=nil{
+				 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-float64(nextlvluptime-600)*((83.0+(2.0*float64(deathlvl)))/60)
+		 						
+			 					}
 			 				}
 
 			 				if nowlvluptime>=600&&nextlvluptime<900{
 			 					value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
-			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
-			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					if value.Gold.Pre20MinGold!=nil{
+				 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+		 						
+			 					}
+			 					if value.Gold.Pre25MinGold!=nil{
+			 						value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+
+			 					}
 			 				}
 			 				if nowlvluptime>=600&&deathnextlvltime<900&&nextlvluptime>900&&reborntime<900{
 			 					value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
-			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
-			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					if value.Gold.Pre20MinGold!=nil{
+				 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+		 						
+			 					}
+			 					if value.Gold.Pre25MinGold!=nil{
+				 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+		 						
+			 					}
 			 				}
 			 				if nowlvluptime>=600&&deathnextlvltime<900&&nextlvluptime>900&&reborntime>=900{
 			 					value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-float64(900-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
-			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-float64(nextlvluptime-900)*((83.0+(2.0*float64(deathlvl)))/60)
-			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-float64(nextlvluptime-900)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					if value.Gold.Pre20MinGold!=nil{
+				 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-float64(nextlvluptime-900)*((83.0+(2.0*float64(deathlvl)))/60)
+		 						
+			 					}
+			 					if value.Gold.Pre25MinGold!=nil{
+				 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-float64(nextlvluptime-900)*((83.0+(2.0*float64(deathlvl)))/60)
+		 						
+			 					}
 			 				}
 
 			 				if nowlvluptime>=900&&nextlvluptime<1200{
-			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
-			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					if value.Gold.Pre20MinGold!=nil{
+			 						value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+
+			 					}
+			 					if value.Gold.Pre25MinGold!=nil{
+			 						value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+
+			 					}
 			 				}
 			 				if nowlvluptime>=900&&deathnextlvltime<1200&&nextlvluptime>1200&&reborntime<1200{
-			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
-			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					if value.Gold.Pre20MinGold!=nil{
+			 						value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+	
+			 					}
+			 					if value.Gold.Pre25MinGold!=nil{
+				 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+		 						
+			 					}
 			 				}
 			 				if nowlvluptime>=900&&deathnextlvltime<1200&&nextlvluptime>1200&&reborntime>=1200{
-			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-float64(1200-nextlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
-			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-float64(nextlvluptime-1200)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					if value.Gold.Pre20MinGold!=nil{
+			 						value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-float64(1200-nextlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+	
+			 					}
+			 					if value.Gold.Pre25MinGold!=nil{
+				 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-float64(nextlvluptime-1200)*((83.0+(2.0*float64(deathlvl)))/60)
+		 						
+			 					}
 			 				}
 			 				if nowlvluptime>=1200&&nextlvluptime<1500{
-			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					if value.Gold.Pre25MinGold!=nil{
+			 						value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+
+			 					}
 			 				}
 			 				if nowlvluptime>=1200&&deathnextlvltime<1500&&nextlvluptime>1500&&reborntime<1500{
-			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					if value.Gold.Pre25MinGold!=nil{
+				 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-float64(reborntime-nowlvluptime)*((83.0+(2.0*float64(deathlvl)))/60)
+		 						
+			 					}
 			 				}
 			 				if nowlvluptime>=1200&&deathnextlvltime<1500&&nextlvluptime>1500&&reborntime>=1500{
-			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-float64(nextlvluptime-1200)*((83.0+(2.0*float64(deathlvl)))/60)
+			 					if value.Gold.Pre25MinGold!=nil{
+				 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-float64(nextlvluptime-1200)*((83.0+(2.0*float64(deathlvl)))/60)
+		 						
+			 					}
 			 				}
 
 			 			}	 			
@@ -1020,8 +1305,13 @@ func Parse (version string,demurl string,fname string) string{
 			 					value.Gold.Pre5MinGold.AllGold=value.Gold.Pre5MinGold.AllGold-persecsalary*float64(nextlvluptime-nowlvluptime)
 			 					value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-persecsalary*float64(nextlvluptime-nowlvluptime)
 			 					value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(nextlvluptime-nowlvluptime)
-			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(nextlvluptime-nowlvluptime)
-			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-nowlvluptime)
+			 					if value.Gold.Pre20MinGold!=nil{
+				 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(nextlvluptime-nowlvluptime)
+		 						
+			 					}
+			 					if value.Gold.Pre25MinGold!=nil{
+				 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-nowlvluptime)			
+			 					}
 			 					deathnextlvltime=nextlvluptime
 			 					deathlvl=lvlkey+2
 			 					
@@ -1029,26 +1319,43 @@ func Parse (version string,demurl string,fname string) string{
 			 				if nowlvluptime>300&&nextlvluptime<=600{
 			 					value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-persecsalary*float64(nextlvluptime-nowlvluptime)
 			 					value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(nextlvluptime-nowlvluptime)
-			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(nextlvluptime-nowlvluptime)
-			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-nowlvluptime)
+			 					if value.Gold.Pre20MinGold!=nil{
+				 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(nextlvluptime-nowlvluptime)
+		 						
+			 					}
+			 					if value.Gold.Pre25MinGold!=nil{
+				 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-nowlvluptime) 						
+			 					}
 			 					deathnextlvltime=nextlvluptime
 			 					deathlvl=lvlkey+2
 			 				}
 			 				if nowlvluptime>600&&nextlvluptime<=900{
 			 					value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(nextlvluptime-nowlvluptime)
-			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(nextlvluptime-nowlvluptime)
-			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-nowlvluptime)
+			 					if value.Gold.Pre20MinGold!=nil{
+				 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(nextlvluptime-nowlvluptime)
+		 						
+			 					}
+			 					if value.Gold.Pre25MinGold!=nil{
+				 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-nowlvluptime)		 						
+			 					}
 			 					deathnextlvltime=nextlvluptime
 			 					deathlvl=lvlkey+2
 			 				}
 			 				if nowlvluptime>900&&nextlvluptime<=1200{
-			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(nextlvluptime-nowlvluptime)
-			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-nowlvluptime)
+			 					if value.Gold.Pre20MinGold!=nil{
+				 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(nextlvluptime-nowlvluptime)
+		 						
+			 					}
+			 					if value.Gold.Pre25MinGold!=nil{
+				 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-nowlvluptime)	 						
+			 					}
 			 					deathnextlvltime=nextlvluptime
 			 					deathlvl=lvlkey+2
 			 				}
 			 				if nowlvluptime>1200&&nextlvluptime<=1500{
-			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-nowlvluptime)
+			 					if value.Gold.Pre25MinGold!=nil{
+				 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-nowlvluptime)	 						
+			 					}
 			 					deathnextlvltime=nextlvluptime
 			 					deathlvl=lvlkey+2
 			 				}
@@ -1056,34 +1363,56 @@ func Parse (version string,demurl string,fname string) string{
 			 					value.Gold.Pre5MinGold.AllGold=value.Gold.Pre5MinGold.AllGold-persecsalary*float64(300-nowlvluptime)
 			 					value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-persecsalary*float64(nextlvluptime-reborntime)
 			 					value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(nextlvluptime-reborntime)
-			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(nextlvluptime-reborntime)
-			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-reborntime)
+			 					if value.Gold.Pre20MinGold!=nil{
+			 						value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(nextlvluptime-reborntime)
+
+			 					}
+			 					if value.Gold.Pre25MinGold!=nil{
+				 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-reborntime)	 						
+			 					}
 			 					deathnextlvltime=nextlvluptime
 			 					deathlvl=lvlkey+2
 			 				}
 			 				if nowlvluptime<600&&nextlvluptime>=600&&nextlvluptime<900{
 			 					value.Gold.Pre10MinGold.AllGold=value.Gold.Pre10MinGold.AllGold-persecsalary*float64(600-nowlvluptime)
 			 					value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(nextlvluptime-reborntime)
-			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(nextlvluptime-reborntime)
-			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-reborntime)
+			 					if value.Gold.Pre20MinGold!=nil{
+				 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(nextlvluptime-reborntime)
+		 						
+			 					}
+			 					if value.Gold.Pre25MinGold!=nil{
+				 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-reborntime) 						
+			 					}
 			 					deathnextlvltime=nextlvluptime
 			 					deathlvl=lvlkey+2
 			 				}
 			 				if nowlvluptime<900&&nextlvluptime>=900&&nextlvluptime<1200{
 			 					value.Gold.Pre15MinGold.AllGold=value.Gold.Pre15MinGold.AllGold-persecsalary*float64(900-nowlvluptime)
-			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(nextlvluptime-reborntime)
-			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-reborntime)
+			 					if value.Gold.Pre20MinGold!=nil{
+				 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(nextlvluptime-reborntime)
+		 						
+			 					}
+			 					if value.Gold.Pre25MinGold!=nil{
+			 						value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-reborntime)
+			 					}
 			 					deathnextlvltime=nextlvluptime
 			 					deathlvl=lvlkey+2
 			 				}
 			 				if nowlvluptime<1200&&nextlvluptime>=1200&&nextlvluptime<1500{
-			 					value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(1200-nowlvluptime)
-			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-reborntime)
+			 					if value.Gold.Pre20MinGold!=nil{
+			 						value.Gold.Pre20MinGold.AllGold=value.Gold.Pre20MinGold.AllGold-persecsalary*float64(1200-nowlvluptime)
+
+			 					}
+			 					if value.Gold.Pre25MinGold!=nil{
+				 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(nextlvluptime-reborntime) 						
+			 					}
 			 					deathnextlvltime=nextlvluptime
 			 					deathlvl=lvlkey+2
 			 				}
 			 				if nowlvluptime<1500&&nextlvluptime>=1500&&nextlvluptime<2000{
-			 					value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(1500-nowlvluptime)
+			 					if value.Gold.Pre25MinGold!=nil{
+			 						value.Gold.Pre25MinGold.AllGold=value.Gold.Pre25MinGold.AllGold-persecsalary*float64(1500-nowlvluptime)
+			 					}
 			 					deathnextlvltime=nextlvluptime
 			 					deathlvl=lvlkey+2
 			 				}
@@ -1134,8 +1463,11 @@ func Parse (version string,demurl string,fname string) string{
 					if goldtalenttime>900 && goldtalenttime<=1200{
 						goldtime1:=1200-goldtalenttime
 						talentgold1 = float64(goldtime1) * (talentgold / 60.0)
-						Pre20MinGold:=playersarr[key].Gold.Pre20MinGold.AllGold
-						playersarr[key].Gold.Pre20MinGold.AllGold=Pre20MinGold+talentgold1*float64(goldtime1)
+						if playersarr[key].Gold.Pre20MinGold!=nil{
+							Pre20MinGold:=playersarr[key].Gold.Pre20MinGold.AllGold
+							playersarr[key].Gold.Pre20MinGold.AllGold=Pre20MinGold+talentgold1*float64(goldtime1)						
+						}
+
 						if playersarr[key].Gold.Pre25MinGold!=nil{
 							Pre25MinGold:=playersarr[key].Gold.Pre25MinGold.AllGold
 							playersarr[key].Gold.Pre25MinGold.AllGold=Pre25MinGold+talentgold1*5.0
@@ -1173,26 +1505,61 @@ func Parse (version string,demurl string,fname string) string{
 					diremidlane=diremidlane+value.HeroName
 				}	
 			}
-
+			var playerdbcount int
+			var playerquery string 
+			
 			count,playerdberr:=playerdb.Find(bson.M{"player_dota2_register_num_id":value.AccountId}).Count()
+			if count!=0{
+				//playeraccountid=value.AccountId
+				playerdbcount=count
+				playerquery="player_dota2_register_num_id"
+			}
+			count2,playerdberr2:=playerdb.Find(bson.M{"second_num_id":value.AccountId}).Count()
+			if count2!=0{
+				//playeraccountid2=value.AccountId
+				playerdbcount=count2
+				playerquery="second_num_id"
+			}
+			count3,playerdberr3:=playerdb.Find(bson.M{"third_num_id":value.AccountId}).Count()
+			if count3!=0{
+				//playeraccountid3=value.AccountId
+				playerdbcount=count3
+				playerquery="third_num_id"
+			}
+			count4,playerdberr4:=playerdb.Find(bson.M{"fourth_num_id":value.AccountId}).Count()
+			if count4!=0{
+				//playeraccountid4=value.AccountId
+				playerdbcount=count4
+				playerquery="fourth_num_id"
+			}
 			if playerdberr!=nil{
 				fmt.Printf("playerdberr%v\n", playerdberr)
 			}
-			if count==0{
+			if playerdberr2!=nil{
+				fmt.Printf("playerdberr2%v\n", playerdberr2)
+			}
+			if playerdberr3!=nil{
+				fmt.Printf("playerdberr3%v\n", playerdberr3)
+			}
+			if playerdberr4!=nil{
+				fmt.Printf("playerdberr4%v\n", playerdberr4)
+			}
+			//查找是否有这个选手的数据
+			if playerdbcount==0{
 				newplayer:=obj.Player{}
 				newPlayerCommonHero:=obj.PlayerCommonHero{}
 				newHeroCount:=obj.HeroCount{}
 				newplayer.PlayerState="正式选手"
 				newplayer.MatchPlayerId=value.Player
 				newplayer.PlayerDota2NumId=value.AccountId
-				if key<4{
+				if key<=4{
 					newplayer.TeamName=NewCMsgDOTAMatch.RadiantTeamName
 					newplayer.TeamNameTag=NewCDotaGameInfo.RadiantTeamTag
 					newPlayerCommonHero.ClubTeam=NewCMsgDOTAMatch.RadiantTeamName
 					newPlayerCommonHero.ClubTeamTag=NewCDotaGameInfo.RadiantTeamTag
 				}else{
-					newplayer.TeamName=NewCMsgDOTAMatch.RadiantTeamName
-					newplayer.TeamNameTag=NewCDotaGameInfo.RadiantTeamTag
+					newplayer.TeamName=NewCMsgDOTAMatch.DireTeamName
+					newplayer.TeamNameTag=NewCDotaGameInfo.DireTeamTag
 					newPlayerCommonHero.ClubTeam=NewCMsgDOTAMatch.DireTeamName
 					newPlayerCommonHero.ClubTeamTag=NewCDotaGameInfo.DireTeamTag
 				}
@@ -1200,88 +1567,148 @@ func Parse (version string,demurl string,fname string) string{
 				newHeroCount.Count=1
 				newHeroCount.Version=version
 				newPlayerCommonHero.HeroPlayCount=append(newPlayerCommonHero.HeroPlayCount,&newHeroCount)
-				if NewCDotaGameInfo.GameMode==2{
+				if NewCDotaGameInfo.GameMode==2{ 
 					newplayer.MatchPlayerHeroes=&newPlayerCommonHero
 				}else{
 					newplayer.RankPlayerHeroes=append(newplayer.RankPlayerHeroes,&newHeroCount)
 				}
 				playerinserterr := playerdb.Insert(&newplayer)
 				if playerinserterr!=nil{
-					fmt.Printf("playerinserterr :%v\n", playerinserterr)
+					fmt.Printf("player data insert err :%v\n", playerinserterr)
 				}
-				/*Updateerr:=playerdb.Update(bson.M{"Id_":1},bson.M{"$push":bson.M{&newplayer}})
-				if Updateerr!=nil{
-					fmt.Printf("Updateerr:%v\n", Updateerr)
-				}*/
+				//有这个选手的数据
 			}else{
+				//队长模式
 				if NewCDotaGameInfo.GameMode==2{
 					newplayer:=obj.Player{}
-					err:=playerdb.Find(bson.M{"player_dota2_register_num_id":value.AccountId}).Select(bson.M{"player_state":1}).Select(bson.M{"match_player_heroes":1}).One(&newplayer)
+					err:=playerdb.Find(bson.M{playerquery:value.AccountId}).One(&newplayer)
 					if err!=nil{
 						fmt.Printf("select hero_play_count err:%v\n", err)
 					}
-					heroplaycount:=newplayer.MatchPlayerHeroes.HeroPlayCount
-					Loop:
-					for _,v:=range heroplaycount{
-						if v.Version==version&&v.Hero==value.HeroName{
-							v.Count=v.Count+1
-							break Loop	
-						}
-					}
-					if key<4{
+					//遍历天辉选手
+					if key<=4{
+						//确定选手有没有更换俱乐部
 						if (newplayer.PlayerState=="正式选手"&&newplayer.MatchPlayerHeroes.ClubTeam==NewCMsgDOTAMatch.RadiantTeamName) || (newplayer.PlayerState=="正式选手"&&NewCMsgDOTAMatch.RadiantTeamName==""){
-							updateerr:=playerdb.Update(bson.M{"player_dota2_register_num_id":value.AccountId},bson.M{"$set":bson.M{"match_player_heroes.hero_play_count":heroplaycount}})
-							if updateerr!=nil{
-								fmt.Printf("playerdberr%v\n", updateerr)
+							heroplaycount:=newplayer.MatchPlayerHeroes.HeroPlayCount
+							Loop:
+							for _,v:=range heroplaycount{
+								if v.Version==version&&v.Hero==value.HeroName{
+									v.Count=v.Count+1
+									updateerr:=playerdb.Update(bson.M{playerquery:value.AccountId,"match_player_heroes.hero_play_count.version":version,"match_player_heroes.hero_play_count.hero":value.HeroName},bson.M{"$set":bson.M{"match_player_heroes.hero_play_count.$.count":v.Count}})
+									if updateerr!=nil{
+										fmt.Printf("updateerr1:%v\n", updateerr)
+									}
+									break Loop	
+								}else{
+									newherocount:=&obj.HeroCount{}
+									newherocount.Version=version
+									newherocount.Hero=value.HeroName
+									newherocount.Count=1
+									updateerr:=playerdb.Update(bson.M{playerquery:value.AccountId},bson.M{"$push":bson.M{"match_player_heroes.hero_play_count":newherocount}})
+									if updateerr!=nil{
+										fmt.Printf("updateerr2:%v\n", updateerr)
+									}
+									break Loop
+								}
 							}	
 						}
-						/*if newplayer.PlayerState=="正式选手"&&newplayer.MatchPlayerHeroes.ClubTeam!=newplayer.TeamName{
+						//如果更换了俱乐部
+						if newplayer.PlayerState=="正式选手"&&newplayer.MatchPlayerHeroes.ClubTeam!=newplayer.TeamName{
 							newplayer.OldClubPlayerHeroes=newplayer.MatchPlayerHeroes
 							newplayer.MatchPlayerHeroes.ClubTeam=NewCMsgDOTAMatch.RadiantTeamName
 							newplayer.MatchPlayerHeroes.ClubTeamTag=NewCDotaGameInfo.RadiantTeamTag
-							newHeroCounts:=obj.HeroCount
-							newHeroCounts.Hero=value.HeroName
-							newHeroCounts.Version=version
-							newHeroCounts.Count=1
-							newplayer.MatchPlayerHeroes.HeroPlayCount=[]*obj.HeroCount{&newHeroCounts}
-							Updateerr:=playerdb.Update(bson.M{"all_player_info.player_dota2_register_num_id":value.AccountId},bson.M{"$push":bson.M{&newplayer.MatchPlayerHeroes}})
-						}*/	
+							//heroplaycount:=newplayer.MatchPlayerHeroes.HeroPlayCount
+						/*	Loop1:
+							for _,v:=range heroplaycount{
+								}*/
+								newherocount:=&obj.HeroCount{}
+								newherocount.Version=version
+								newherocount.Hero=value.HeroName
+								newherocount.Count=1
+								updateerr:=playerdb.Update(bson.M{playerquery:value.AccountId},bson.M{"$push":bson.M{"match_player_heroes.hero_play_count":newherocount}})
+								if updateerr!=nil{
+									fmt.Printf("updateerr3:%v\n", updateerr)
+								}
+									//break Loop1
+								
+								
+						}	
 					}else{
-						if (newplayer.PlayerState=="正式选手"&&newplayer.MatchPlayerHeroes.ClubTeam==NewCMsgDOTAMatch.RadiantTeamName) || (newplayer.PlayerState=="正式选手"&&NewCMsgDOTAMatch.RadiantTeamName==""){
-							updateerr:=playerdb.Update(bson.M{"player_dota2_register_num_id":value.AccountId},bson.M{"$set":bson.M{"match_player_heroes.hero_play_count":heroplaycount}})	
-							if updateerr!=nil{
-								fmt.Printf("playerdberr%v\n", updateerr)
+					//遍历夜魇选手
+						if (newplayer.PlayerState=="正式选手"&&newplayer.MatchPlayerHeroes.ClubTeam==NewCMsgDOTAMatch.DireTeamName) || (newplayer.PlayerState=="正式选手"&&NewCMsgDOTAMatch.DireTeamName==""){
+							heroplaycount:=newplayer.MatchPlayerHeroes.HeroPlayCount
+							Loop2:
+							for _,v:=range heroplaycount{
+								if v.Version==version&&v.Hero==value.HeroName{
+									v.Count=v.Count+1
+									updateerr:=playerdb.Update(bson.M{playerquery:value.AccountId,"match_player_heroes.hero_play_count.version":version,"match_player_heroes.hero_play_count.hero":value.HeroName},bson.M{"$set":bson.M{"match_player_heroes.hero_play_count.$.count":v.Count}})
+									if updateerr!=nil{
+										fmt.Printf("updateerr4:%v\n", updateerr)
+									}
+									break Loop2	
+								}else{
+									newherocount:=&obj.HeroCount{}
+									newherocount.Version=version
+									newherocount.Hero=value.HeroName
+									newherocount.Count=1
+									updateerr:=playerdb.Update(bson.M{playerquery:value.AccountId},bson.M{"$push":bson.M{"match_player_heroes.hero_play_count":newherocount}})
+									if updateerr!=nil{
+										fmt.Printf("updateerr5:%v\n", updateerr)
+									}
+									break Loop2
+								}
 							}
 						}
-						/*if newplayer.PlayerState=="正式选手"&&newplayer.MatchPlayerHeroes.ClubTeam!=newplayer.TeamName{
+						if newplayer.PlayerState=="正式选手"&&newplayer.MatchPlayerHeroes.ClubTeam!=newplayer.TeamName{
 							newplayer.OldClubPlayerHeroes=newplayer.MatchPlayerHeroes
 							newplayer.MatchPlayerHeroes.ClubTeam=NewCMsgDOTAMatch.DireTeamName
 							newplayer.MatchPlayerHeroes.ClubTeamTag=NewCDotaGameInfo.DireTeamTag
-							newHeroCounts:=obj.HeroCount
+							newHeroCounts:=&obj.HeroCount{}
 							newHeroCounts.Hero=value.HeroName
 							newHeroCounts.Version=version
 							newHeroCounts.Count=1
-							newplayer.MatchPlayerHeroes.HeroPlayCount=[]*obj.HeroCount{&newHeroCounts}
-							Updateerr:=playerdb.Update(bson.M{"all_player_info.player_dota2_register_num_id":value.AccountId},bson.M{"$push":bson.M{&newplayer.MatchPlayerHeroes}})
-						}*/
+							
+								newherocount:=&obj.HeroCount{}
+								newherocount.Version=version
+								newherocount.Hero=value.HeroName
+								newherocount.Count=1
+								updateerr4:=playerdb.Update(bson.M{playerquery:value.AccountId},bson.M{"$push":bson.M{"match_player_heroes.hero_play_count":newherocount}})
+								if updateerr4!=nil{
+									fmt.Printf("updateerr4:%v\n", updateerr4)
+								}
+									
+								
+								
+						}
 					}
+					//天梯模式
 				}else{
 					newplayer:=obj.Player{}
-					err:=playerdb.Find(bson.M{"player_dota2_register_num_id":value.AccountId}).Select(bson.M{"match_player_heroes.hero_play_count":1}).One(&newplayer)
+					err:=playerdb.Find(bson.M{playerquery:value.AccountId}).One(&newplayer)
 					if err!=nil{
 						fmt.Printf("select hero_play_count err:%v\n", err)
 					}
 					heroplaycount:=newplayer.RankPlayerHeroes
-					loop:
+					Loop5:
 					for _,v:=range heroplaycount{
 						if v.Version==version&&v.Hero==value.HeroName{
 							v.Count=v.Count+1
-							break loop
+							updateerr6:=playerdb.Update(bson.M{playerquery:value.AccountId,"rank_player_heroes.version":version,"rank_player_heroes.hero":value.HeroName},bson.M{"$set":bson.M{"rank_player_heroes.$.count":v.Count}})
+									if updateerr6!=nil{
+										fmt.Printf("updateerr6:%v\n", updateerr6)
+									}
+							break Loop5
+						}else{
+							newherocount:=&obj.HeroCount{}
+							newherocount.Version=version
+							newherocount.Hero=value.HeroName
+							newherocount.Count=1
+							updateerr:=playerdb.Update(bson.M{playerquery:value.AccountId},bson.M{"$push":bson.M{"rank_player_heroes":newherocount}})
+							if updateerr!=nil{
+								fmt.Printf("updateerr6:%v\n", updateerr)
+							}
+									break Loop5
 						}
-					}
-					updateerr:=playerdb.Update(bson.M{"player_dota2_register_num_id":value.AccountId},bson.M{"$set":bson.M{"rank_player_heroes":heroplaycount}})
-					if updateerr!=nil{
-						fmt.Printf("playerdberr%v\n", updateerr)
 					}
 				}
 			}
