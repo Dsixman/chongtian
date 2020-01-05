@@ -22,6 +22,8 @@ func init() {
     beego.Router("/leagueinfo/", &controllers.LeagueInofController{})
     beego.Router("/getleagueinfo/", &controllers.GetLeagueInofController{})
     beego.Router("/teaminfo/",&controllers.TeamInofController{})
+    beego.Router("/getallteaminfo/",&controllers.AllTeamInofController{})
+    beego.Router("/getteamheropool",&controllers.TeamHeroPoolController{})
 
     beego.InsertFilter("*", beego.BeforeRouter, cors.Allow(&cors.Options{
         AllowAllOrigins:  true,

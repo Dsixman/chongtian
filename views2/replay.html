@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>admin</title>
+</head>
+<body>
+<form id="form" method="post" action="/repupload/" enctype="multipart/form-data">
+	<input type="text" name="version">
+   	<input id="myfile" name="myfile" type="file" />  
+    <input type="submit" value="保存"  />
+    <span>{{.ok}}</span>
+</form>
+</body>
+</html>

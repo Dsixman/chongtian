@@ -7,27 +7,7 @@ import(
 	"replayanaly/models/mongodb"
 	"replayanaly/models/obj"
 )
-func SaveTeamInfo(icon string,teamname string,teamtagname string,teamid uint32,carry string,mid string,hard string,softsupport string,hardsupport string){
-	var teaminfo obj.Team
-	session := mongodb.CloneSession()//调用这个获得session
-	defer session.Close()  //一定要记得释放
-    session.SetMode(mgo.Monotonic, true)
-	db := session.DB("dota2_big_data")
-	dbteam:=db.C("teaminfo")
-	teaminfo.TeamIcon=icon
-	teaminfo.TeamName=teamname
-	teaminfo.TeamTagName=teamtagname
-	teaminfo.TeamId=teamid
-	teaminfo.TeamCarry=carry
-	teaminfo.TeamMid=mid
-	teaminfo.TeamHard=hard
-	teaminfo.TeamSoftSupport=softsupport
-	teaminfo.TeamHardSupport=hardsupport
-	err:=dbteam.Insert(&teaminfo)
-	if err!=nil{
-		fmt.Printf("战队信息插入错误：%v\n", err)
-	}
-}
+
 func GetPlayerInfo (playerNumId uint32) *obj.PlayersHeroInfo {
 	var playerInfo obj.PlayersHeroInfo
 	session := mongodb.CloneSession()//调用这个获得session

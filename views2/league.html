@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<form id="form" method="post" action="/leagueinfo/" enctype="multipart/form-data">
+		<label for="leaguename">league name:</label><input type="text" name="leaguename">
+		<label for="leagueid">leagueid:</label><input type="text" name="leagueid">
+		<label for="seriesid">seriesid:</label><input type="text" name="seriesid">
+		<input id="myfile" name="myfile" type="file" />
+		<input type="submit" value="保存"  />
+		{{.Name}}
+	</form>
+</body>
+</html>

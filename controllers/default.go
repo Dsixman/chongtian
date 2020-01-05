@@ -319,3 +319,21 @@ func (this *TeamInofController) Post(){
 	models.SaveTeamInfo(h.Filename,teamname,teamtagname,uint32(teamid),carry,mid,hard,softsupport,hardsupport)
 	this.Redirect("/teaminfo/", 302)
 }
+type AllTeamInofController struct{
+	beego.Controller
+}
+func (this *AllTeamInofController) Get(){
+	allinfo:=models.GetAllTeamInfo()
+	this.Data["json"]=allinfo
+	this.ServeJSON()
+}
+type TeamHeroPoolController struct{
+	beego.Controller
+}
+func (this *TeamHeroPoolController) Get(){
+	teamtagname:=this.GetString("teamtagname")
+	version:=this.GetString("version")
+	result:=models.GetTeamHeroPool(teamtagname,version)
+	this.Data["json"]=result
+	this.ServeJSON()
+}

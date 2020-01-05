@@ -82,7 +82,9 @@ import Vue from 'vue'
                              result.loginState=data.data.loginState
                              result.userName=data.data.userName
                             this.$store.dispatch('getLoginAuth',result)
-                            //this.$router.push('/')
+                            if (result.loginState==true){
+                              this.$router.push('/hero')
+                            }
                         }).catch((err)=>{
                             console.log(err)
                         })

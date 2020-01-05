@@ -1589,38 +1589,33 @@ func Parse (version string,demurl string,fname string) string{
 					if key<=4{
 						//确定选手有没有更换俱乐部
 						if (newplayer.PlayerState=="正式选手"&&newplayer.MatchPlayerHeroes.ClubTeam==NewCMsgDOTAMatch.RadiantTeamName) || (newplayer.PlayerState=="正式选手"&&NewCMsgDOTAMatch.RadiantTeamName==""){
-							heroplaycount:=newplayer.MatchPlayerHeroes.HeroPlayCount
-							Loop:
-							for _,v:=range heroplaycount{
-								if v.Version==version&&v.Hero==value.HeroName{
-									v.Count=v.Count+1
-									updateerr:=playerdb.Update(bson.M{playerquery:value.AccountId,"match_player_heroes.hero_play_count.version":version,"match_player_heroes.hero_play_count.hero":value.HeroName},bson.M{"$set":bson.M{"match_player_heroes.hero_play_count.$.count":v.Count}})
-									if updateerr!=nil{
-										fmt.Printf("updateerr1:%v\n", updateerr)
-									}
-									break Loop	
-								}else{
-									newherocount:=&obj.HeroCount{}
-									newherocount.Version=version
-									newherocount.Hero=value.HeroName
-									newherocount.Count=1
-									updateerr:=playerdb.Update(bson.M{playerquery:value.AccountId},bson.M{"$push":bson.M{"match_player_heroes.hero_play_count":newherocount}})
-									if updateerr!=nil{
-										fmt.Printf("updateerr2:%v\n", updateerr)
-									}
-									break Loop
+							//heroplaycount:=newplayer.MatchPlayerHeroes.HeroPlayCount
+							resultcount,err:=playerdb.Find(bson.M{playerquery:value.AccountId,"match_player_heroes.hero_play_count":bson.M{"$elemMatch":bson.M{"hero":value.HeroName,"version":version}}}).Count()
+							if err!=nil{
+								fmt.Printf("find hero pool err:%v\n",err)
+							}
+							if resultcount!=0{
+								updateerr:=playerdb.Update(bson.M{playerquery:value.AccountId,"match_player_heroes.hero_play_count":bson.M{"$elemMatch":bson.M{"hero":value.HeroName,"version":version}}},bson.M{"$inc":bson.M{"match_player_heroes.hero_play_count.$.count":1}})
+								if updateerr!=nil{
+									fmt.Printf("updateerr1:%v\n", updateerr)
+								}	
+							}else{
+								newherocount:=&obj.HeroCount{}
+								newherocount.Version=version
+								newherocount.Hero=value.HeroName
+								newherocount.Count=1
+								updateerr:=playerdb.Update(bson.M{playerquery:value.AccountId},bson.M{"$push":bson.M{"match_player_heroes.hero_play_count":newherocount}})
+								if updateerr!=nil{
+									fmt.Printf("updateerr2:%v\n", updateerr)
 								}
-							}	
+							}
 						}
 						//如果更换了俱乐部
 						if newplayer.PlayerState=="正式选手"&&newplayer.MatchPlayerHeroes.ClubTeam!=newplayer.TeamName{
 							newplayer.OldClubPlayerHeroes=newplayer.MatchPlayerHeroes
 							newplayer.MatchPlayerHeroes.ClubTeam=NewCMsgDOTAMatch.RadiantTeamName
 							newplayer.MatchPlayerHeroes.ClubTeamTag=NewCDotaGameInfo.RadiantTeamTag
-							//heroplaycount:=newplayer.MatchPlayerHeroes.HeroPlayCount
-						/*	Loop1:
-							for _,v:=range heroplaycount{
-								}*/
+
 								newherocount:=&obj.HeroCount{}
 								newherocount.Version=version
 								newherocount.Hero=value.HeroName
@@ -1628,34 +1623,28 @@ func Parse (version string,demurl string,fname string) string{
 								updateerr:=playerdb.Update(bson.M{playerquery:value.AccountId},bson.M{"$push":bson.M{"match_player_heroes.hero_play_count":newherocount}})
 								if updateerr!=nil{
 									fmt.Printf("updateerr3:%v\n", updateerr)
-								}
-									//break Loop1
-								
-								
+								}			
 						}	
 					}else{
 					//遍历夜魇选手
 						if (newplayer.PlayerState=="正式选手"&&newplayer.MatchPlayerHeroes.ClubTeam==NewCMsgDOTAMatch.DireTeamName) || (newplayer.PlayerState=="正式选手"&&NewCMsgDOTAMatch.DireTeamName==""){
-							heroplaycount:=newplayer.MatchPlayerHeroes.HeroPlayCount
-							Loop2:
-							for _,v:=range heroplaycount{
-								if v.Version==version&&v.Hero==value.HeroName{
-									v.Count=v.Count+1
-									updateerr:=playerdb.Update(bson.M{playerquery:value.AccountId,"match_player_heroes.hero_play_count.version":version,"match_player_heroes.hero_play_count.hero":value.HeroName},bson.M{"$set":bson.M{"match_player_heroes.hero_play_count.$.count":v.Count}})
-									if updateerr!=nil{
-										fmt.Printf("updateerr4:%v\n", updateerr)
-									}
-									break Loop2	
-								}else{
-									newherocount:=&obj.HeroCount{}
-									newherocount.Version=version
-									newherocount.Hero=value.HeroName
-									newherocount.Count=1
-									updateerr:=playerdb.Update(bson.M{playerquery:value.AccountId},bson.M{"$push":bson.M{"match_player_heroes.hero_play_count":newherocount}})
-									if updateerr!=nil{
-										fmt.Printf("updateerr5:%v\n", updateerr)
-									}
-									break Loop2
+							resultcount,err:=playerdb.Find(bson.M{playerquery:value.AccountId,"match_player_heroes.hero_play_count":bson.M{"$elemMatch":bson.M{"hero":value.HeroName,"version":version}}}).Count()
+							if err!=nil{
+								fmt.Printf("find hero pool err:%v\n",err)
+							}
+							if resultcount!=0{
+								updateerr:=playerdb.Update(bson.M{playerquery:value.AccountId,"match_player_heroes.hero_play_count":bson.M{"$elemMatch":bson.M{"hero":value.HeroName,"version":version}}},bson.M{"$inc":bson.M{"match_player_heroes.hero_play_count.$.count":1}})
+								if updateerr!=nil{
+									fmt.Printf("updateerr7:%v\n", updateerr)
+								}	
+							}else{
+								newherocount:=&obj.HeroCount{}
+								newherocount.Version=version
+								newherocount.Hero=value.HeroName
+								newherocount.Count=1
+								updateerr:=playerdb.Update(bson.M{playerquery:value.AccountId},bson.M{"$push":bson.M{"match_player_heroes.hero_play_count":newherocount}})
+								if updateerr!=nil{
+									fmt.Printf("updateerr8:%v\n", updateerr)
 								}
 							}
 						}
@@ -1683,33 +1672,25 @@ func Parse (version string,demurl string,fname string) string{
 					}
 					//天梯模式
 				}else{
-					newplayer:=obj.Player{}
-					err:=playerdb.Find(bson.M{playerquery:value.AccountId}).One(&newplayer)
-					if err!=nil{
-						fmt.Printf("select hero_play_count err:%v\n", err)
-					}
-					heroplaycount:=newplayer.RankPlayerHeroes
-					Loop5:
-					for _,v:=range heroplaycount{
-						if v.Version==version&&v.Hero==value.HeroName{
-							v.Count=v.Count+1
-							updateerr6:=playerdb.Update(bson.M{playerquery:value.AccountId,"rank_player_heroes.version":version,"rank_player_heroes.hero":value.HeroName},bson.M{"$set":bson.M{"rank_player_heroes.$.count":v.Count}})
-									if updateerr6!=nil{
-										fmt.Printf("updateerr6:%v\n", updateerr6)
-									}
-							break Loop5
-						}else{
-							newherocount:=&obj.HeroCount{}
-							newherocount.Version=version
-							newherocount.Hero=value.HeroName
-							newherocount.Count=1
-							updateerr:=playerdb.Update(bson.M{playerquery:value.AccountId},bson.M{"$push":bson.M{"rank_player_heroes":newherocount}})
-							if updateerr!=nil{
-								fmt.Printf("updateerr6:%v\n", updateerr)
+					resultcount,err:=playerdb.Find(bson.M{playerquery:value.AccountId,"rank_player_heroes":bson.M{"$elemMatch":bson.M{"hero":value.HeroName,"version":version}}}).Count()
+							if err!=nil{
+								fmt.Printf("find hero pool err:%v\n",err)
 							}
-									break Loop5
-						}
-					}
+							if resultcount!=0{
+								updateerr:=playerdb.Update(bson.M{playerquery:value.AccountId,"rank_player_heroes":bson.M{"$elemMatch":bson.M{"hero":value.HeroName,"version":version}}},bson.M{"$inc":bson.M{"rank_player_heroes.$.count":1}})
+								if updateerr!=nil{
+									fmt.Printf("updateerr1:%v\n", updateerr)
+								}	
+							}else{
+								newherocount:=&obj.HeroCount{}
+								newherocount.Version=version
+								newherocount.Hero=value.HeroName
+								newherocount.Count=1
+								updateerr:=playerdb.Update(bson.M{playerquery:value.AccountId},bson.M{"$push":bson.M{"rank_player_heroes":newherocount}})
+								if updateerr!=nil{
+									fmt.Printf("updateerr2:%v\n", updateerr)
+								}
+							}
 				}
 			}
 

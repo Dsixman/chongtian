@@ -25,6 +25,7 @@ type Player struct{
 }
 type HeroCount struct{
 	Hero string `bson:"hero" json:"hero"`
+	HeroIcon string `bson:"hero_icon" json:"hero_icon"`
 	Version string `bson:"version" json:"version"`
 	Count int `bson:"count" json:"count"`
 }

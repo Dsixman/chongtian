@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<form id="form" method="post" action="/teaminfo/" enctype="multipart/form-data">
+		<label for="teamname">战队名称:</label><input type="text" name="teamname">
+		<label for="teamtagname">战队简称:</label><input type="text" name="teamtagname"> 
+		<label for="teamid">俱乐部ID:</label><input type="text" name="teamid">
+		<label for="carry">一号位：</label><input type="text" name="carry">
+		<label for="mid">二号位：</label><input type="text" name="mid">
+		<label for="hard">三号位：</label><input type="text" name="hard">
+		<label for="softsupport">四号位：</label><input type="text" name="softsupport">
+		<label for="hardsupport">五号位：</label><input type="text" name="hardsupport">
+		<input id="myfile" name="myfile" type="file" />
+		<input type="submit" value="保存"  />
+		{{.Name}}
+	</form>
+</body>
+</html>
