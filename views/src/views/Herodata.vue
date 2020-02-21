@@ -1,10 +1,5 @@
 <template>
 <el-container>
-	<!-- <el-aside width="200px">
-		<img :src="require('../'+heroData.HeroIcon)" width="120" /> 这样图片也可以出现，不过浏览器会报错 
-		<img :src="getHeroData.HeroIcon" width="120" />
-		<img :src="heroData.HeroIcon" /> 
-	</el-aside> -->
 	<el-main style="padding:0px;">
 		<div class="wrapper" style="border:1px solid #ff0000">
 			<div class="hero_introduce" style="border:1px solid #ff0000">
