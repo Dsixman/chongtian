@@ -5,6 +5,10 @@ export const RECEVIE_USER_NAME ='receive_user_name'
 export const RECEVIE_HERO_DATA ='receive_hero_data'
 export const RECEVIE_All_TEAM_INFO ='receive_all_team_info'
 export const RECEVIE_TEAM_HERO_POOL ='receive_team_hero_pool'
+export const RECEVIE_TEN_MIN_DATA ='receive_ten_min_data'
+export const RECEVIE_TEAM_DATA ='receive_team_data'
+export const RECEVIE_VERSION ='receive_version'
+export const RECEVIE_MATCH_DETAILS='receive_match_details'
 
 
 

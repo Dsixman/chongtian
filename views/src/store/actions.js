@@ -5,7 +5,11 @@ import {
 	RECEVIE_USER_NAME,
 	RECEVIE_HERO_DATA,
 	RECEVIE_All_TEAM_INFO,
-	RECEVIE_TEAM_HERO_POOL
+	RECEVIE_TEAM_HERO_POOL,
+	RECEVIE_TEN_MIN_DATA,
+	RECEVIE_TEAM_DATA,
+	RECEVIE_VERSION,
+	RECEVIE_MATCH_DETAILS
 } from './mutation-type'
 
 import {
@@ -15,7 +19,10 @@ import {
 	reqAuth,
 	reqHeroData,
 	reqAllTeamInfo,
-	reqTeamHeroPool
+	reqTeamHeroPool,
+	reqTenMinData,
+	reqTeamData,
+	reqMatchDetails,
 } from '../api'
 
 export default{
@@ -108,7 +115,7 @@ export default{
 				allTeamInfo[key].team_icon=require("../static/img/team/"+allTeamInfo[key].team_icon)
 			}
 			commit(RECEVIE_All_TEAM_INFO,{allTeamInfo})
-			//console.log(allTeamInfo)
+			console.log(allTeamInfo)
 		}).catch((err)=>{
 			console.log(err)
 		})
@@ -139,21 +146,124 @@ export default{
 					})
 				}
 			})
-
-			/*teamHeroPool.match_player_heroes.hero_play_count.forEach((item)=>{
-				item.hero_icon=require("../static/img/hero/"+item.hero_icon)
-			})*/
-			/*if teamHeroPool.alternate_player_heroes.HeroPlayCount.forEach((item)=>{
-				item.hero_icon=require("../static/img/hero/"+item.hero_icon)
-			})*/
 			commit(RECEVIE_TEAM_HERO_POOL,{teamHeroPool})
-			//console.log(teamHeroPool)
 		}).catch((err)=>{
 			console.log(err)
 		})
+	},
+
+	async getTenMinData({commit},param){
+		await reqTenMinData(param).then((data)=>{
+			var tenMinData=data.data
+			/*tenMinData.mid_hero_data.forEach((item)=>{
+				if (item!=null){
+					item.pre_10min_item.forEach((item2)=>{
+						item2.item_icon=require("../static/img/item/"+item2.item_icon)
+					})
+					item.consumable.forEach((item3)=>{
+						item3.item_icon=require("../static/img/item/"+item3.item_icon)
+					})
+				}
+			})
+
+			tenMinData.edge_heroes_data.forEach((item)=>{
+				if (item!=null){
+					item.pre_10min_item.forEach((item2)=>{
+						item2.item_icon=require("../static/img/item/"+item2.item_icon)
+					})
+					item.consumable.forEach((item3)=>{
+						item3.item_icon=require("../static/img/item/"+item3.item_icon)
+					})
+				}
+			})
+			tenMinData.other_edge_heroes_data.forEach((item)=>{
+				if (item!=null){
+					item.pre_10min_item.forEach((item2)=>{
+						item2.item_icon=require("../static/img/item/"+item2.item_icon)
+					})
+					item.consumable.forEach((item3)=>{
+						item3.item_icon=require("../static/img/item/"+item3.item_icon)
+					})
+				}
+			})*/
+			console.log(tenMinData)
+			commit(RECEVIE_TEN_MIN_DATA,{tenMinData})
+		})
+	},
+	async getTeamData({commit},param){
+		//console.log("111")
+		await reqTeamData(param)
+		.then((data)=>{
+			var teamData=data.data
+			teamData.team_base_info.team_icon=require("../static/img/team/"+teamData.team_base_info.team_icon)
+			teamData.team_bp.forEach((item)=>{
+				item.picks_bans.forEach((item2)=>{
+					item2.hero_icon=require("../static/img/hero/"+item2.hero_icon)
+				})
+			})
+			console.log(teamData)
+			commit(RECEVIE_TEAM_DATA,{teamData})		
+		})
+		.catch((err)=>{
+			console.log(err)
+		})
+	},
+	getVersion({commit},param){
+		var version=param
+
+		commit(RECEVIE_VERSION,{version})
+	},
+	async getMatchDetails({commit},param){
+		await reqMatchDetails(param).then((data)=>{
+			var matchDetails=data.data
+			matchDetails.game_info.picks_bans.forEach((item)=>{
+				item.hero_icon=require("../static/img/hero/"+item.hero_icon)	
+			})
+			matchDetails.details.players_heroes_dets.forEach((item)=>{
+				//console.log(item.hero_name)
+				item.hero_icon=require("../static/img/hero/"+item.hero_icon)
+				item.ability_data.forEach((item2)=>{
+					if (item2.Icon!=null){
+						if (item2.Icon!=""){
+							item2.Icon=require("../static/img/abilities/"+item2.Icon)
+						}else{
+							item2.Icon=require("../static/img/abilities/talent.jpg")
+						}
+						
+					}
+				})
+
+				item.items.forEach((item2,index)=>{
+					if (item2.item_icon!=""){
+						//console.log(index,item2.item_id)
+						item2.item_icon=require("../static/img/item/"+item2.item_icon)
+					}
+					/*if (item2.item_icon==""){
+					
+						console.log(index,item2.item_id)
+					}*/
+				})	
+			})
+			matchDetails.result_data.players.forEach((item)=>{
+				item.item.forEach((item2,index)=>{
+					if (item2!=""){
+						item.item[index]=require("../static/img/item/"+item2)		
+						/*item2=require("../static/img/item/"+item2)//这样写是无效的
+						console.log(item2)*/	
+					}
+				})
+				//console.log(item.hero_icon)
+				item.hero_icon=require("../static/img/hero/"+item.hero_icon)
+				if(item.buffs.length>0){
+					item.buffs.forEach((buffs,index)=>{
+						if (buffs.buff_id==6){
+							item.buffs[index].buffs=require("../static/img/item/tome-of-knowledge.jpg")
+						}
+					})
+				}
+			})
+			console.log(matchDetails)
+			commit(RECEVIE_MATCH_DETAILS,{matchDetails})
+		})
 	}
-/*	
-	getUserInfo({commit},userInfo){
-		commit(RECEVIE_USERINFO,{userInfo})
-	}*/
 }
