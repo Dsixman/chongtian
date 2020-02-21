@@ -731,27 +731,27 @@ var HeroENNameID = map[string]uint32{
 	129:"mars.jpg",
 }*/
 //散慧对剑 慧夜对剑 否决 永恒之盘 圣洁吊坠
-var ItemIDIcon = map[int64]string{
+var ItemIDIcon = map[uint32]string{
 	//大飞鞋 ，银月之晶，陨星锤 ，肉山盾，刷新碎片，精灵布带,凝魂之泪，慧光
 	1:  "blink-dagger.jpg",           //跳刀
 	2:  "blades-of-attack.jpg",       //攻击之爪
 	3:  "broadsword.jpg",             //阔剑
 	4:  "chainmail.jpg",              //锁子甲
 	5:  "claymore.jpg",               //大剑
-	6:  "helm_of_iron_will.jpg",      //铁意头盔
+	6:  "helm-of-iron-will.jpg",      //铁意头盔
 	7:  "javelin.jpg",                //标枪
 	8:  "mithril-hammer.jpg",         //秘银锤
 	9:  "platemail.jpg",              //板甲
 	10: "quarterstaff.jpg",           //短棍
 	11: "quelling-blade.jpg",         //补刀斧
-	12: "ring_of_protection.jpg",     //守护戒指
+	12: "ring-of-protection.jpg",     //守护戒指
 	13: "gauntlets-of-strength.jpg",  //力量手套
 	14: "slippers-of-agility.jpg",    //敏捷便鞋
 	15: "mantle-of-intelligence.jpg", //智力斗篷
 	16: "iron-branch.jpg",            //树枝
 	17: "belt-of-strength.jpg",       //力量腰带
 	18: "band-of-elvenskin.jpg",      //精灵布带
-	19: "robe-of-the-magi",           //法师长袍
+	19: "robe-of-the-magi.jpg",           //法师长袍
 	20: "circlet.jpg",                //圆环
 	21: "ogre-axe.jpg",               //食人魔之斧
 	22: "blade-of-alacrity.jpg",      //欢欣之刃
@@ -776,7 +776,7 @@ var ItemIDIcon = map[int64]string{
 	41: "bottle.jpg",             //瓶子
 	42: "observer-ward.jpg",      //假眼
 	43: "sentry-ward.jpg",        //真眼
-	44: "tango.jpg",              //吃数
+	44: "tango.jpg",              //吃树
 	45: "animal-courier.jpg",     //动物信使
 	46: "town-portal-scrol.jpg",  //TP
 	48: "boots-of-travel.jpg",    //飞鞋
@@ -888,8 +888,10 @@ var ItemIDIcon = map[int64]string{
 	212: "ring-of-aquila.jpg",          //天鹰
 	214: "tranquil-boots.jpg",          //绿鞋
 	215: "shadow-amulet.jpg",           //暗影护符
+	216:"enchanted-mango.jpg",//芒果
 	254: "glimmer-cape.jpg",            //微光披风
-	256: "aeon-disk.jpg",               //免死金牌永恒纸盘
+	256: "aeon-disk.jpg",               //免死金牌永恒之盘
+	237:"faerie-fire.jpg",//仙灵之火 //241是给的吃树
 	225: "nullifier.jpg",               //否决
 	267: "spirit-vessel.jpg",           //大骨灰
 	244: "wind-lace.jpg",               //风灵之纹
@@ -903,10 +905,10 @@ var ItemIDIcon = map[int64]string{
 	277:"yasha-and-kaya.jpg",//慧夜对剑
 	287:"keen-optic.jpg",//基恩镜片
 	288:"grove-bow.jpg", //林野长弓
-	289:"quickening-charm",//加速护符
+	289:"quickening-charm.jpg",//加速护符
 	290:"philosophers-stone.jpg",//贤者之石
 	297:"vampire-fangs.jpg",//吸血鬼獠牙
-	298:"craggy-coat",//崎岖外衣
+	298:"craggy-coat.jpg",//崎岖外衣
 	299:"greater-faerie-fire",//高级仙灵之火
 	300:"timeless-relic.jpg",//永恒遗物
 	304:"ironwood-tree.jpg",//铁树之木
@@ -946,13 +948,7 @@ var ItemIDIcon = map[int64]string{
 	377:"minotaur-horn.jpg",//灵犀角
 	379:"the-leveller.jpg",//平世剑
 	381:"titan-sliver.jpg",//巨神残铁
-
-	
-
-	
-
 	363:"illusionists-cape.jpg",//幻术师披风
-	
 	376:"paladin-sword.jpg",//骑士剑
 }
 
