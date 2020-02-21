@@ -27,5 +27,14 @@ export const reqAllTeamInfo=()=>{
 export const reqTeamHeroPool=(param)=>{
 	return Vue.axios.get('./api/getteamheropool',{params:param})
 }
+export const reqTenMinData=(param)=>{
+	return Vue.axios.post('./api/gettenmindata/',param)
+}
+export const reqTeamData=(param)=>{
+	return Vue.axios.post('./api/getteamalldata/',param)
+}
+export const reqMatchDetails=(param)=>{
+	return Vue.axios.get('./api/getmatchdetails',{params:param})
+}
 
   
