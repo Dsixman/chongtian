@@ -1,12 +1,14 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
-const Bp=()=> import('./views/Bp.vue')
+const TeamMatchData=()=> import('./views/TeamMatchData.vue')
 const Hero=()=> import('./views/Hero.vue')
 const HeroData=()=> import('./views/Herodata.vue')
 const Login=()=>import('./views/Login.vue')
 const BaseEchart=()=>import('./views/BaseEchart.vue')
 const Lineup=()=>import('./views/Lineup.vue')
+const Team=()=>import('./views/Team.vue')
+const MatchDetails=()=>import('./views/MatchDetails.vue')
 /*
 import Hero from './views/Hero.vue'
 import HeroData from './views/Herodata.vue'
@@ -28,9 +30,17 @@ export default new Router({
       }
     },
     {
-      path: '/bp',
-      name: 'bp',
-      component: Bp,
+      path: '/teammatchdata',
+      name: 'teammatchdata',
+      component: TeamMatchData,
+       meta:{
+        "requireAuth": true
+      }
+    },
+    {
+      path: '/team',
+      name: 'team',
+      component: Team,
        meta:{
         "requireAuth": true
       }
@@ -42,6 +52,11 @@ export default new Router({
       meta:{
         "requireAuth": true
       }
+    },
+    {
+      path:'/matchdetails',
+      name:'matchdetails',
+      component:MatchDetails,
     },
     {
       path: '/herodata',
