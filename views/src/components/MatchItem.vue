@@ -28,7 +28,21 @@
 								<img :src="item2.item_icon" alt="" width="30">
 							</span>
 						</td>
-						
+						<td>
+							<span v-for="item2 in item.items" v-if="(item2.purchase_time_Num>600) && (item2.purchase_time_Num<=900)">
+								<img :src="item2.item_icon" alt="" width="30">
+							</span>
+						</td>
+						<td >
+							<span v-for="item2 in item.items" v-if="(item2.purchase_time_Num>900) && (item2.purchase_time_Num<=1200)">
+								<img :src="item2.item_icon" alt="" width="30">
+							</span>
+						</td>
+						<td >
+							<span v-for="item2 in item.items" v-if="(item2.purchase_time_Num>1200) && (item2.purchase_time_Num<=1500)">
+								<img :src="item2.item_icon" alt="" width="30">
+							</span>
+						</td>
 					</tr>
 				</table>
 			</div>

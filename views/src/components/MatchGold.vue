@@ -35,12 +35,13 @@
 						<td>{{item.gold.pre_15min_gold.all_gold}}</td>
 						<td>/</td>
 						<td>{{item.gold.pre_15min_gold.combat_gold}}</td>
-						<td>{{item.gold.pre_20min_gold.all_gold}}</td>
-						<td>/</td>
-						<td>{{item.gold.pre_20min_gold.combat_gold}}</td>
-						<td>{{item.gold.pre_25min_gold.all_gold}}</td>
-						<td>/</td>
-						<td>{{item.gold.pre_25min_gold.combat_gold}}</td>
+						<td v-if="item.gold.pre_20min_gold!=null">{{item.gold.pre_20min_gold.all_gold}}</td>
+						<td v-if="item.gold.pre_20min_gold!=null">/</td>
+						<td v-if="item.gold.pre_20min_gold!=null">{{item.gold.pre_20min_gold.combat_gold}}</td>
+						<td v-if="item.gold.pre_25min_gold!=null">{{item.gold.pre_25min_gold.all_gold}}</td>
+						<td v-if="item.gold.pre_25min_gold!=null">/</td>
+						<td v-if="item.gold.pre_25min_gold!=null">{{item.gold.pre_25min_gold.combat_gold}}</td> 
+						
 					</tr>
 				</table>
 			</div>
@@ -80,16 +81,16 @@
 						<td>{{item.gold.pre_15min_gold.all_gold}}</td>
 						<td>/</td>
 						<td>{{item.gold.pre_15min_gold.combat_gold}}</td>
-						<td>{{item.gold.pre_20min_gold.all_gold}}</td>
-						<td>/</td>
-						<td>{{item.gold.pre_20min_gold.combat_gold}}</td>
-						<td>{{item.gold.pre_25min_gold.all_gold}}</td>
-						<td>/</td>
-						<td>{{item.gold.pre_25min_gold.combat_gold}}</td>
+						<td v-if="item.gold.pre_20min_gold!=null">{{item.gold.pre_20min_gold.all_gold}}</td>
+						<td v-if="item.gold.pre_20min_gold!=null">/</td>
+						<td v-if="item.gold.pre_20min_gold!=null">{{item.gold.pre_20min_gold.combat_gold}}</td>
+						<td v-if="item.gold.pre_25min_gold!=null">{{item.gold.pre_25min_gold.all_gold}}</td>
+						<td v-if="item.gold.pre_25min_gold!=null">/</td>
+						<td v-if="item.gold.pre_25min_gold!=null">{{item.gold.pre_25min_gold.combat_gold}}</td>
 					</tr>
 				</table>
 			</div>
-		</div>
+		</div> 
 	</div>
 </template>
 <script>

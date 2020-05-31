@@ -126,10 +126,10 @@
 					<td><img :src="item.ability_data[3].Icon" width="35" alt="item.ability_data[3].Name"></td>
 					<td><img :src="item.ability_data[4].Icon" width="35" alt="item.ability_data[4].Name"></td>
 					<td><img :src="item.ability_data[5].Icon" width="35" alt="item.ability_data[5].Name"></td>
-					<td><img :src="item.ability_data[6].Icon" width="35" alt="item.ability_data[6].Name"></td>
-					<td><img :src="item.ability_data[7].Icon" width="35" alt="item.ability_data[7].Name"></td>
-					<td><img :src="item.ability_data[8].Icon" width="35" alt="item.ability_data[8].Name"></td>
-					<td><img :src="item.ability_data[9].Icon" width="35" alt="item.ability_data[9].Name"></td>
+					<td><img v-if="item.ability_data[6]":src="item.ability_data[6].Icon" width="35" alt="item.ability_data[6].Name"></td>
+					<td><img v-if="item.ability_data[7]":src="item.ability_data[7].Icon" width="35" alt="item.ability_data[7].Name"></td>
+					<td><img v-if="item.ability_data[8]" :src="item.ability_data[8].Icon" width="35" alt="item.ability_data[8].Name"></td>
+					<td><img v-if="item.ability_data[9]" :src="item.ability_data[9].Icon" width="35" alt="item.ability_data[9].Name"></td>
 					<td ><img v-if="item.ability_data[10]" :src="item.ability_data[10].Icon" width="35" alt="item.ability_data[10].Name"></td>
 					<td ><img v-if="item.ability_data[11]" :src="item.ability_data[11].Icon" width="35" alt="item.ability_data[11].Name"></td>
 					<td ><img v-if="item.ability_data[12]" :src="item.ability_data[12].Icon" width="35" alt="item.ability_data[12].Name"></td>
@@ -174,11 +174,7 @@
 		props:['OverViewData'],
 	}
 </script>
-<style>
-
-.clear{
-	clear:both
-}
+<style scoped>
 	.match_content{
 		width:100%;
 	}
@@ -191,12 +187,7 @@
 	.item_img{
 		padding-right:2px
 	}
-	.player_data{
-		width:1200px;
-		margin:0 auto;
-		box-shadow: 0 0 5px rgba(10,10,10,0.4);
-    border: 1px solid #14212d; 
-	}
+
 	.picks_bans{
 		float:left;
 		width:60px;

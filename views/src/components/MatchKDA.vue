@@ -16,28 +16,28 @@
 					<tr v-for="item in details.players_heroes_dets">
 						<td><img :src="item.hero_icon" width="50" /></td>
 						<td>
-							<ul v-for="item2 in item.inventory_snap_shot" >
+							<ul v-for="item2 in item.inventory_snap_shot" class="kda">
 								<li v-if="item2.game_time==300">击杀：{{item2.kills}}</li>
 								<li v-if="item2.game_time==300">死亡：{{item2.deaths}}</li>
 								<li v-if="item2.game_time==300">助攻：{{item2.assists}}</li>
 							</ul> 
 						</td>
 						<td>
-							<ul v-for="item2 in item.inventory_snap_shot" >
+							<ul v-for="item2 in item.inventory_snap_shot" class="kda">
 								<li v-if="item2.game_time==600">击杀：{{item2.kills}}</li>
 								<li v-if="item2.game_time==600">死亡：{{item2.deaths}}</li>
 								<li v-if="item2.game_time==600">助攻：{{item2.assists}}</li>
 							</ul>
 						</td>
 						<td>
-							<ul v-for="item2 in item.inventory_snap_shot" >
+							<ul v-for="item2 in item.inventory_snap_shot" class="kda" >
 								<li v-if="item2.game_time==1200">击杀：{{item2.kills}}</li>
 								<li v-if="item2.game_time==1200">死亡：{{item2.deaths}}</li>
 								<li v-if="item2.game_time==1200">助攻：{{item2.assists}}</li>
 							</ul>
 						</td>
 						<td>
-							<ul v-for="item2 in item.inventory_snap_shot" >
+							<ul v-for="item2 in item.inventory_snap_shot" class="kda">
 								<li v-if="item2.game_time==1500">击杀：{{item2.kills}}</li>
 								<li v-if="item2.game_time==1500">死亡：{{item2.deaths}}</li>
 								<li v-if="item2.game_time==1500">助攻：{{item2.assists}}</li>
@@ -68,9 +68,9 @@
 		props:['details']
 	}
 </script>
-<style>
-ul{
+<style scoped>
+ul.kda{
 	margin:0px;padding:0px
 }
-li{margin:10px 0px 10px 0px;padding:0px}
+ul.kda li{margin:10px 0px 10px 0px;padding:0px}
 </style>
