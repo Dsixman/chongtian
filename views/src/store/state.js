@@ -3,7 +3,8 @@
 	userName:null,
 	captchaKey:null,
 	captchaStr:null,
-	heroData:{},
+	heroData:{},//基础数据
+	heroMatchData:null,//英雄比赛数据
 	version:'',
 	statusHealth:200,
 	statusMana:75,
@@ -13,4 +14,9 @@
 	tenMinData:null,
 	teamData:null,//战队数据
 	matchDetails:null,
+	lineUpRequest:null,
+	lineUpDets:null,
+	midUseHeroes:null,//中单选手某个英雄在比赛中的表现
+	playerSameHero:null,//某个选手某个英雄在比赛中的表现
+	sideLineUpData:null,
 }

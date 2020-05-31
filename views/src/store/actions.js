@@ -9,7 +9,11 @@ import {
 	RECEVIE_TEN_MIN_DATA,
 	RECEVIE_TEAM_DATA,
 	RECEVIE_VERSION,
-	RECEVIE_MATCH_DETAILS
+	RECEVIE_MATCH_DETAILS,
+	RECEVIE_MID_USE_HEROES,
+	RECEVIE_LINE_UP_REQUEST,
+	RECEVIE_PLAYER_SAME_HERO,
+	RECEVIE_SIDE_LINE_UP_DATA
 } from './mutation-type'
 
 import {
@@ -23,6 +27,9 @@ import {
 	reqTenMinData,
 	reqTeamData,
 	reqMatchDetails,
+	reqMidUseHeroes,
+	reqPlayerSameHero,
+	reqSidelineUp
 } from '../api'
 
 export default{
@@ -81,7 +88,10 @@ export default{
 
 	async getHeroData({commit},param){
 		await reqHeroData(param).then((data)=>{
-		var heroData=data.data
+		var heroData=data.data.base_data
+		var heroMatchData=data.data.match_data
+		console.log(heroData)
+		console.log(heroMatchData)
 		for (var key in heroData){
 			var str=heroData[key]
 			if (typeof(str)=="string"){
@@ -110,6 +120,7 @@ export default{
 	},
 	async getAllTeamInfo({commit}){
 		await reqAllTeamInfo().then((data)=>{
+			window.console.log("111")
 			var allTeamInfo=data.data
 			for (var key in allTeamInfo){
 				allTeamInfo[key].team_icon=require("../static/img/team/"+allTeamInfo[key].team_icon)
@@ -155,43 +166,27 @@ export default{
 	async getTenMinData({commit},param){
 		await reqTenMinData(param).then((data)=>{
 			var tenMinData=data.data
-			/*tenMinData.mid_hero_data.forEach((item)=>{
-				if (item!=null){
-					item.pre_10min_item.forEach((item2)=>{
-						item2.item_icon=require("../static/img/item/"+item2.item_icon)
-					})
-					item.consumable.forEach((item3)=>{
-						item3.item_icon=require("../static/img/item/"+item3.item_icon)
-					})
-				}
+			tenMinData.mid_hero_data.forEach((item)=>{
+				item.mid_hero_1.ability_upgrades.forEach((item2)=>{
+					item2.Icon=require("../static/img/abilities/"+item2.Icon)
+				})
+				item.mid_hero_1.consumable.forEach((item3)=>{
+					item3.item_icon=require("../static/img/item/"+item3.item_icon)
+				})
+				item.mid_hero_2.ability_upgrades.forEach((item2)=>{
+					item2.Icon=require("../static/img/abilities/"+item2.Icon)
+				})
+				item.mid_hero_2.consumable.forEach((item3)=>{
+					item3.item_icon=require("../static/img/item/"+item3.item_icon)
+				})
+				//console.log(item.mid_hero_1.hero_icon)
+				//item.mid_hero_1.hero_icon=require("../static/img/hero/"+item.mid_hero_1.hero_icon)	
 			})
-
-			tenMinData.edge_heroes_data.forEach((item)=>{
-				if (item!=null){
-					item.pre_10min_item.forEach((item2)=>{
-						item2.item_icon=require("../static/img/item/"+item2.item_icon)
-					})
-					item.consumable.forEach((item3)=>{
-						item3.item_icon=require("../static/img/item/"+item3.item_icon)
-					})
-				}
-			})
-			tenMinData.other_edge_heroes_data.forEach((item)=>{
-				if (item!=null){
-					item.pre_10min_item.forEach((item2)=>{
-						item2.item_icon=require("../static/img/item/"+item2.item_icon)
-					})
-					item.consumable.forEach((item3)=>{
-						item3.item_icon=require("../static/img/item/"+item3.item_icon)
-					})
-				}
-			})*/
 			console.log(tenMinData)
 			commit(RECEVIE_TEN_MIN_DATA,{tenMinData})
 		})
 	},
 	async getTeamData({commit},param){
-		//console.log("111")
 		await reqTeamData(param)
 		.then((data)=>{
 			var teamData=data.data
@@ -216,43 +211,40 @@ export default{
 	async getMatchDetails({commit},param){
 		await reqMatchDetails(param).then((data)=>{
 			var matchDetails=data.data
+			console.log(matchDetails)
 			matchDetails.game_info.picks_bans.forEach((item)=>{
 				item.hero_icon=require("../static/img/hero/"+item.hero_icon)	
 			})
 			matchDetails.details.players_heroes_dets.forEach((item)=>{
-				//console.log(item.hero_name)
 				item.hero_icon=require("../static/img/hero/"+item.hero_icon)
 				item.ability_data.forEach((item2)=>{
+
 					if (item2.Icon!=null){
 						if (item2.Icon!=""){
 							item2.Icon=require("../static/img/abilities/"+item2.Icon)
+
 						}else{
 							item2.Icon=require("../static/img/abilities/talent.jpg")
 						}
-						
 					}
 				})
 
 				item.items.forEach((item2,index)=>{
 					if (item2.item_icon!=""){
-						//console.log(index,item2.item_id)
 						item2.item_icon=require("../static/img/item/"+item2.item_icon)
 					}
-					/*if (item2.item_icon==""){
-					
-						console.log(index,item2.item_id)
-					}*/
 				})	
 			})
 			matchDetails.result_data.players.forEach((item)=>{
+
 				item.item.forEach((item2,index)=>{
 					if (item2!=""){
-						item.item[index]=require("../static/img/item/"+item2)		
+						item.item[index]=require("../static/img/item/"+item2)	
+
 						/*item2=require("../static/img/item/"+item2)//这样写是无效的
 						console.log(item2)*/	
 					}
 				})
-				//console.log(item.hero_icon)
 				item.hero_icon=require("../static/img/hero/"+item.hero_icon)
 				if(item.buffs.length>0){
 					item.buffs.forEach((buffs,index)=>{
@@ -264,6 +256,120 @@ export default{
 			})
 			console.log(matchDetails)
 			commit(RECEVIE_MATCH_DETAILS,{matchDetails})
+		})
+	},
+	async getMidUseHeroes({commit},param){
+		await reqMidUseHeroes(param).then((data)=>{
+			var midUseHeroes=data.data
+			for (let key in midUseHeroes){
+				midUseHeroes[key].forEach((item,index)=>{
+					item.mid_hero_1.hero_icon=require("../static/img/hero/"+item.mid_hero_1.hero_icon)
+					item.mid_hero_2.hero_icon=require("../static/img/hero/"+item.mid_hero_2.hero_icon)
+					item.mid_hero_1.ability_upgrades.forEach((item2)=>{
+						item2.Icon=require("../static/img/abilities/"+item2.Icon)
+					})
+					item.mid_hero_2.ability_upgrades.forEach((item2)=>{
+						item2.Icon=require("../static/img/abilities/"+item2.Icon)
+					})
+					item.mid_hero_1.consumable.forEach((item2)=>{
+						item2.item_icon=require("../static/img/item/"+item2.item_icon)
+					})
+					item.mid_hero_2.consumable.forEach((item2)=>{
+						if (item2.item_icon!=""){
+							item2.item_icon=require("../static/img/item/"+item2.item_icon)
+						}else{
+							item2.item_icon=require("../static/img/item/img404.png")
+						}		
+					})
+					item.mid_hero_1.pre_10min_item.forEach((item2)=>{
+						if (item2.item_icon!=""){
+						item2.item_icon=require("../static/img/item/"+item2.item_icon)
+						}else{
+							item2.item_icon=require("../static/img/item/img404.png")
+						}
+					})							
+				})
+				/*playerarr.forEach((item,index)=>{
+					midUseHeroes[key].forEach((item2,index2)=>{
+						if (item==item2.mid_hero_2.player_id){
+							midUseHeroeskey.push(item2)
+						}
+						if (lenplayerarr-1==index&&midUseHeroeskey-index2==1){
+							midUseHeroes[key]=midUseHeroeskey
+						}
+					})
+				})*/
+
+			}
+
+			console.log(data.data)
+			commit(RECEVIE_MID_USE_HEROES,{midUseHeroes})
+		}).catch((err)=>{
+			console.log(err)
+		})
+	},
+/*	async getMidUseHeroes({commit},param){
+		await reqMidUseHeroes(param).then((data)=>{
+			var midUseHeroes=data.data
+
+			console.log(data.data)
+			commit(RECEVIE_MID_USE_HEROES,{midUseHeroes})
+		}).catch((err)=>{
+			console.log(err)
+		})
+	},*/
+	async getPlayerSameHero({commit},param){
+		await reqPlayerSameHero(param).then((data)=>{
+			var playerSameHero=data.data
+			if(playerSameHero.win_data!=null){
+				playerSameHero.win_data.forEach((item)=>{
+					item.players_heroes_dets.forEach((item2)=>{
+						item2.hero_icon=require("../static/img/hero/"+item2.hero_icon)
+						item2.ability_data.forEach((item3)=>{
+							if (item3.Icon!=""){
+								item3.Icon=require("../static/img/abilities/"+item3.Icon)
+							}else{
+								item2.Icon=require("../static/img/abilities/talent.jpg")
+							}	
+						})
+					})
+				})
+			}
+			if(playerSameHero.lose_data!=null){
+				playerSameHero.lose_data.forEach((item)=>{
+					item.players_heroes_dets.forEach((item2)=>{
+						item2.hero_icon=require("../static/img/hero/"+item2.hero_icon)
+						item2.ability_data.forEach((item3)=>{
+							if (item3.Icon!=""){
+								item3.Icon=require("../static/img/abilities/"+item3.Icon)
+							}else{
+								item3.Icon=require("../static/img/abilities/talent.jpg")
+							}	
+						})
+					})
+				})
+			}
+			//console.log(data.data)
+			commit(RECEVIE_PLAYER_SAME_HERO,{playerSameHero})
+		}).catch((err)=>{
+			console.log(err)
+		})
+	},
+	getLineUpRequest({commit},param){
+		var lineUpRequest=param
+		commit(RECEVIE_LINE_UP_REQUEST,{lineUpRequest})
+	},
+	async getSidelineUp({commit},param){
+		await reqSidelineUp(param).then((data)=>{
+			console.log("111")
+			var sideLineUpData=data.data
+			//console.log(data.data)
+			commit(RECEVIE_SIDE_LINE_UP_DATA,{sideLineUpData})
+			
+			console.log(sideLineUpData)
+		})
+		.catch((err)=>{
+			console.log(err)
 		})
 	}
 }

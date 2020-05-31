@@ -9,7 +9,11 @@ import {
 	RECEVIE_TEN_MIN_DATA,
 	RECEVIE_TEAM_DATA,
 	RECEVIE_VERSION,
-	RECEVIE_MATCH_DETAILS
+	RECEVIE_MATCH_DETAILS,
+	RECEVIE_LINE_UP_REQUEST,
+	RECEVIE_MID_USE_HEROES,
+	RECEVIE_PLAYER_SAME_HERO,
+	RECEVIE_SIDE_LINE_UP_DATA
 } from './mutation-type'
 
 export default {
@@ -45,5 +49,17 @@ export default {
 	},
 	[RECEVIE_MATCH_DETAILS] (state,{matchDetails}){
 		state.matchDetails=matchDetails;
-	}
+	},
+	[RECEVIE_MID_USE_HEROES] (state,{midUseHeroes}){
+		state.midUseHeroes=midUseHeroes;
+	},
+	[RECEVIE_LINE_UP_REQUEST] (state,{lineUpRequest}){
+		state.lineUpRequest=lineUpRequest;
+	},
+	[RECEVIE_PLAYER_SAME_HERO] (state,{playerSameHero}){
+		state.playerSameHero=playerSameHero;
+	},
+	[RECEVIE_SIDE_LINE_UP_DATA] (state,{sideLineUpData}){
+		state.sideLineUpData=sideLineUpData;
+	},
 }

@@ -9,6 +9,11 @@ export const RECEVIE_TEN_MIN_DATA ='receive_ten_min_data'
 export const RECEVIE_TEAM_DATA ='receive_team_data'
 export const RECEVIE_VERSION ='receive_version'
 export const RECEVIE_MATCH_DETAILS='receive_match_details'
+export const RECEVIE_MID_USE_HEROES='receive_mid_use_heroes'
+export const RECEVIE_LINE_UP_REQUEST='receive_line_up_request'
+export const RECEVIE_PLAYER_SAME_HERO='receive_player_same_hero'
+export const RECEVIE_SIDE_LINE_UP_DATA='receive_side_line_up_data'
+
 
 
 
