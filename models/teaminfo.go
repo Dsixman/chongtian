@@ -7,7 +7,7 @@ import(
 	"replayanaly/models/mongodb"
 	"replayanaly/models/obj"
 )
-func SaveTeamInfo(icon string,teamname string,teamtagname string,teamid uint32,carry string,mid string,hard string,softsupport string,hardsupport string){
+func SaveTeamInfo(icon string,teamname string,teamtagname string,teamid uint32){
 	var teaminfo obj.Team
 	session := mongodb.CloneSession()//调用这个获得session
 	defer session.Close()  //一定要记得释放
@@ -18,11 +18,6 @@ func SaveTeamInfo(icon string,teamname string,teamtagname string,teamid uint32,c
 	teaminfo.TeamName=teamname
 	teaminfo.TeamTagName=teamtagname
 	teaminfo.TeamId=teamid
-	teaminfo.TeamCarry=carry
-	teaminfo.TeamMid=mid
-	teaminfo.TeamHard=hard
-	teaminfo.TeamSoftSupport=softsupport
-	teaminfo.TeamHardSupport=hardsupport
 	err:=dbteam.Insert(&teaminfo)
 	if err!=nil{
 		fmt.Printf("战队信息插入错误：%v\n", err)
@@ -40,14 +35,14 @@ func GetAllTeamInfo() []obj.Team{
 	return allteaminfo
 }
 
-func GetTeamHeroPool(teamtagName string,version string) []obj.Player{
+func GetTeamHeroPool(teamName string,version string) []obj.Player{
 	session := mongodb.CloneSession()//调用这个获得session
 	defer session.Close()  //一定要记得释放
     session.SetMode(mgo.Monotonic, true)
     db := session.DB("dota2_big_data")
     heropooldb:=db.C("player_info")
     var result []obj.Player
-    heropooldb.Find(bson.M{"team_name_tag":teamtagName,"player_state":"正式选手","match_player_heroes.hero_play_count.version":version}).Select(bson.M{"match_player_heroes":1,"alternate_player_heroes":1,"old_club_player_heroes":1,"rank_player_heroes":1,"player_register_string_id":1}).All(&result)
+    heropooldb.Find(bson.M{"$or":[]bson.M{bson.M{"team_name":teamName},bson.M{"team_name_tag":teamName}},"player_state":"正式选手","match_player_heroes.hero_play_count.version":version}).Select(bson.M{"match_player_heroes":1,"alternate_player_heroes":1,"old_club_player_heroes":1,"rank_player_heroes":1,"player_register_string_id":1,"player_dota2_register_num_id":1,"position":1}).All(&result)
     for _,value:=range result{
     	for _,v1:=range value.MatchPlayerHeroes.HeroPlayCount{
     		v1.HeroIcon=HeroNameIcon[v1.Hero]
@@ -69,4 +64,18 @@ func GetTeamHeroPool(teamtagName string,version string) []obj.Player{
     	}
     }
     return result
+}
+
+func GetTeamInfo(teamName string) *obj.Team{
+	session := mongodb.CloneSession()//调用这个获得session
+	defer session.Close()  //一定要记得释放
+    session.SetMode(mgo.Monotonic, true)
+    db := session.DB("dota2_big_data")
+	dbteam:=db.C("teaminfo")
+	var teaminfo obj.Team
+	err:=dbteam.Find(bson.M{"$or":[]bson.M{bson.M{"team_name":teamName},bson.M{"team_tag_name":teamName}}}).One(&teaminfo)
+	if err!=nil{
+		fmt.Printf("战队信息查询出现错误:%v\n",err)
+	}
+	return &teaminfo
 }

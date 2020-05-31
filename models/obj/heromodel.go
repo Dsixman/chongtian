@@ -113,7 +113,7 @@ type NpcAbilitySpecial struct{
 type Ability struct{
 	Id string `json:"ID" bson:"ID"`
 	Name string `json:"Name" bson:"Name"`
-	IconUrl string `json:"Icon"" Bson:"Icon""`
+	IconUrl string `json:"Icon" bson:"Icon"`
 	AbilityBehavior string `json:"AbilityBehavior" bson:"AbilityBehavior"`
 	DamageType string `json:"AbilityUnitDamageType" bson:"AbilityUnitDamageType"`
 	SpellImmunityType string `json:"SpellImmunityType" bson:"SpellImmunityType"` //技能免疫
@@ -127,5 +127,5 @@ type Ability struct{
 }
 type AllNpcAbility struct{
 	Version string `bson:"Version" json:"Version"`
-	Ability []*Ability `bson:"abilities" json:"abilities"`	
+	Ability []*Ability `bson:"Abilities" json:"Abilities"`	
 }

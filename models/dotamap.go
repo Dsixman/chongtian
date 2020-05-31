@@ -751,7 +751,7 @@ var ItemIDIcon = map[uint32]string{
 	16: "iron-branch.jpg",            //树枝
 	17: "belt-of-strength.jpg",       //力量腰带
 	18: "band-of-elvenskin.jpg",      //精灵布带
-	19: "robe-of-the-magi.jpg",           //法师长袍
+	19: "robe-of-the-magi.jpg",       //法师长袍
 	20: "circlet.jpg",                //圆环
 	21: "ogre-axe.jpg",               //食人魔之斧
 	22: "blade-of-alacrity.jpg",      //欢欣之刃

@@ -51,7 +51,7 @@ func GetHeroData(heroname string,version string) *obj.HeroModel{
 			break Loop
 		}
 	}
-	fmt.Printf("result:%v\n", result)
+	//fmt.Printf("result:%v\n", result)
 	herodata.HeroID=heroid
 	herodata.HeroName=HeroIDName[herodata.HeroID]
 	herodata.Role=result.Role
@@ -164,4 +164,5 @@ func GetHeroData(heroname string,version string) *obj.HeroModel{
 	}
 	return herodata
 }
+
 
