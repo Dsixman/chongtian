@@ -1,7 +1,16 @@
 <template>
 	<el-main style="padding:0px;">
-		<div><input v-model="getVersion" placeholder="输入要搜索数据的版本" id="version-input"></input> </div>
-		<div id="strengthhero">
+		<div>
+			<el-select v-model="value" placeholder="请选择" @change="test">
+			    <el-option
+			      v-for="item in options"
+			      :key="item.value"
+			      :label="item.label"
+			      :value="item.value">
+			    </el-option>
+			 </el-select>
+		</div>
+		<div id="strengthhero" class="heroeswrapper">
 			<ul class="herobox" >
 				<li><img src="../static/img/hero/eldertitan.jpg" width="60"  title="上古巨神" @click="getData"/></li>
 				<li><img src="../static/img/hero/undying.jpg" width="60" title="尸王" @click="getData"/></li>
@@ -44,7 +53,7 @@
 				<li><img src="../static/img/hero/dragonknight.jpg" width="60" title="龙骑士" @click="getData"/></li>
 			</ul>
 		</div>
-		<div id="agilityhero">
+		<div id="agilityhero" class="heroeswrapper">
 			<ul class="herobox" >
 				<li><img src="../static/img/hero/juggernaut.jpg" width="60"  title="主宰" @click="getData"/></li>
 				<li><img src="../static/img/hero/clinkz.jpg" width="60" title="克林克兹" @click="getData"/></li>
@@ -85,7 +94,7 @@
 				<li><img src="../static/img/hero/monkeyking.jpg" width="60" title="大圣" @click="getData"/></li>
 			</ul>
 		</div>
-		<div id="agilityhero">
+		<div id="agilityhero" class="heroeswrapper">
 			<ul class="herobox" >
 				<li><img src="../static/img/hero/tinker.jpg" width="60"  title="修补匠" @click="getData"/></li>
 				<li><img src="../static/img/hero/naturesprophet.jpg" width="60" title="先知" @click="getData"/></li>
@@ -140,6 +149,28 @@
 		data(){
 			return{
 				version:"",
+				options: [
+				{
+		          value: '',
+		          label: '无'
+		        },
+				{
+		          value: '一号位',
+		          label: '一号位'
+		        }, {
+		          value: '二号位',
+		          label: '二号位'
+		        }, {
+		          value: '三号位',
+		          label: '三号位'
+		        }, {
+		          value: '四号位',
+		          label: '四号位'
+		        }, {
+		          value: '五号位',
+		          label: '五号位'
+		        }],
+		        value: '',
 			}
 		},
 		computed:{
@@ -160,8 +191,11 @@
 		methods:{
 			getData(e){
 				var heroname=e.target.title
-				this.$router.push({name:'herodata',query:{heroname:heroname}})
+				this.$router.push({name:'herodata',query:{heroname:heroname,version:this.$store.state.version,position:this.value}})
 			},
+			test(value){
+				console.log(value)
+			}
 
 		}
 	}
@@ -182,5 +216,9 @@ background-color: #FFF;
     outline: 0;
     padding: 0 15px;
     font-size:14px
+}
+.heroeswrapper{
+	width:1200px;
+	margin:10px auto 0 auto;
 }
 </style>

@@ -1,8 +1,8 @@
 <template>
-	<div style="width:1400px;margin:0 auto">
-		<div id="match_top">
+	<div style="width:1400px;margin:0 auto" v-if="matchDetails">
+		<div id="match_top" >
 			<div class="winner_name"  v-if="matchDetails">{{matchDetails.game_info.game_winner}}胜利</div>
-			<div class="match-victory-subtitle">
+			<div class="match-victory-subtitle" v-if="matchDetails">
 				<span >{{matchDetails.result_data.radiant_team_name}}</span>
 				<span class="radiant_score">{{matchDetails.result_data.radiant_team_score}}</span>
 				<span class="duration">{{matchDetails.result_data.duration_str}}</span>
@@ -15,7 +15,7 @@
 			<OverView :OverViewData="matchDetails"></OverView>	
 	    </el-tab-pane>
 	    <el-tab-pane label="补刀" name="second">
-			<last-hit :details="matchDetails.details"></last-hit>
+			<last-hit :details="matchDetails.details" ></last-hit>
 	    </el-tab-pane>
 
 	    <el-tab-pane label="经济" name="third">
